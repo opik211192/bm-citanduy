@@ -20,5 +20,9 @@
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.32.11",
         "sass-loader": "^11.0.1"
+    },
+    "dependencies": {
+        "sweetalert2": "^11.10.8",
+        "utm-latlng": "^1.0.8"
     }
 }

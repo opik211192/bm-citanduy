@@ -81,6 +81,13 @@
         .sidebar.active {
             left: 0;
         }
+
+        .leaflet-control-zoom {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
     </style>
     <!-- Make sure you put this AFTER Leaflet's CSS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
