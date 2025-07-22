@@ -17,6 +17,11 @@ class BenchmarkResource extends JsonResource
         return [
             'id' => $this->id,
             'kode_bm' => $this->kode_bm,
+            'no_registrasi' => $this->no_registrasi,
+            'province' => $this->province->name,
+            'city' => $this->city->name,
+            'district' => $this->district->name,
+            'village' => $this->village->name,
             'nama_pekerjaan' => $this->nama_pekerjaan,
             'lat' => $this->lat,
             'long' => $this->long,

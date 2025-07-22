@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>BM Citanduy</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -16,16 +16,20 @@
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <style>
-        body {
-            background-color: white;
+        body,
+        html {
             margin: 0;
             padding: 0;
+            height: 100%;
+            overflow: hidden;
         }
 
         #map {
-            width: 100%;
-            height: calc(100vh - 56px);
-            padding-top: 56px;
+            position: absolute;
+            top: 56px;
+            left: 0;
+            right: 0;
+            bottom: 0;
         }
 
         .navbar {
@@ -116,9 +120,6 @@
         }
 
         .leaflet-control-zoom {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             z-index: 1000;
         }
 
@@ -274,35 +275,40 @@
 
     <!-- Left Sidebar -->
     <div class="sidebar left" id="sidebar">
-        <div class="sidebar-header">
-            <h3 class="text-center mb-3 fw-bold">Menu</h3>
-            <div class="btn-close" id="close-btn" onclick="toggleSidebar()"></div>
+        <div class="sidebar-header border-bottom py-3 px-3 d-flex justify-content-between align-items-center">
+            <h4 class="fw-bold mb-0">Menu</h4>
+            <button class="btn-close" onclick="toggleSidebar()"></button>
         </div>
-        <br>
-        <div class="row">
-            <div class="col mb-2">
-                <div class="card">
-                    <div class="card-header" id="headingTwo">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                Benchmark
-                            </button>
-                        </h2>
-                    </div>
-                    <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
-                        data-bs-parent="#accordionExample">
-                        <div class="card-body">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="checkedbm">
-                                <label class="form-check-label" for="checkedbm">
-                                    BM Citanduy
-                                </label>
-                            </div>
+
+        <div class="accordion accordion-flush px-3 pt-2" id="sidebarAccordion">
+            <!-- Benchmark Section -->
+            <div class="accordion-item border rounded shadow-sm mb-3">
+                <h2 class="accordion-header" id="headingBenchmark">
+                    <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseBenchmark" aria-expanded="false" aria-controls="collapseBenchmark">
+                        <i class="bi bi-bar-chart-fill me-2 text-primary"></i>Benchmark
+                    </button>
+                </h2>
+                <div id="collapseBenchmark" class="accordion-collapse collapse show" aria-labelledby="headingBenchmark"
+                    data-bs-parent="#sidebarAccordion">
+                    <div class="accordion-body">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="checkedbm">
+                            <label class="form-check-label fw-medium" for="checkedbm">
+                                BM Citanduy
+                            </label>
                         </div>
+                        {{-- <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="checkedbm2">
+                            <label class="form-check-label fw-medium" for="checkedbm2">
+                                BM Lakbok
+                            </label>
+                        </div> --}}
                     </div>
                 </div>
             </div>
+
+
         </div>
     </div>
 

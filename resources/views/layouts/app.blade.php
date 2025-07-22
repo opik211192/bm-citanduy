@@ -134,10 +134,12 @@
         <footer class="main-footer">
             <!-- To the right -->
             <div class="float-right d-none d-sm-inline">
-                Anything you want
+                {{-- Anything you want --}}
             </div>
             <!-- Default to the left -->
-            <strong>Footer &copy; 2024 <a href="#">AdminLTE.io</a>.</strong>
+            <strong>Copyright &copy;
+                <?php echo date('Y'); ?> <a href="#">SISDA BBWS Citanduy</a>.
+            </strong>
         </footer>
     </div>
 
