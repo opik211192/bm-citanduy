@@ -16,6 +16,7 @@
                         <th>Kode BM</th>
                         <th>No. Registrasi</th>
                         <th>Nama Pekerjaan</th>
+                        <th>Jenis Pekerjaan</th>
                         <th>Keterangan</th>
                         <th>Options</th>
                     </tr>
@@ -41,6 +42,7 @@
                 { data: 'kode_bm', name: 'kode_bm' },
                 { data: 'no_registrasi', name: 'no_registrasi' },
                 { data: 'nama_pekerjaan', name: 'nama_pekerjaan' },
+                { data: 'jenis_pekerjaan', name: 'jenis_pekerjaan' },
                 { data: 'keterangan', name: 'keterangan' },
                 { data: 'options', name: 'options', orderable: false, searchable: false }
             ]

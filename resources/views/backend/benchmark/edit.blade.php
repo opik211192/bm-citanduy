@@ -37,13 +37,31 @@
                     <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
                     @enderror
                 </div>
-                <div class="col-md-12 mb-2">
+                <div class="col-md-6 mb-2">
                     <label for="nama_pekerjaan" class="form-label">Nama Pekerjaan</label>
                     <input type="text" class="form-control @error('nama_pekerjaan') is-invalid @enderror"
                         id="nama_pekerjaan" name="nama_pekerjaan"
                         value="{{ old('nama_pekerjaan') ?? $benchmark->nama_pekerjaan }}" placeholder="Nama Pekerjaan">
                     @error('nama_pekerjaan')
                     <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                    @enderror
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="no_registrasi" class="form-label">Jenis Pekerjaan</label>
+                    <select id="jenis_pekerjaan" name="jenis_pekerjaan"
+                        class="form-control @error('jenis_pekerjaan') is-invalid @enderror">
+                        <option value="">Pilih Pekerjaan</option>
+                        <option value="embung" {{ $benchmark->jenis_pekerjaan == 'embung' ? 'selected' : '' }}>Embung
+                        </option>
+                        <option value="bendungan" {{ $benchmark->jenis_pekerjaan == 'bendungan' ? 'selected' : '' }}>
+                            Bendungan</option>
+                        <option value="bendung" {{ $benchmark->jenis_pekerjaan == 'bendung' ? 'selected' : '' }}>
+                            Bendung</option>
+                    </select>
+                    @error('jenis_pekerjaan')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
                     @enderror
                 </div>
                 <div class="col-md-3 mb-2">
@@ -89,7 +107,6 @@
                             {{ $item->name }}
                         </option>
                         @endforeach
-
                     </select>
 
                     @error('district_id')
@@ -108,7 +125,6 @@
                             {{ $item->name }}
                         </option>
                         @endforeach
-
                     </select>
 
                     @error('village_id')

@@ -108,6 +108,10 @@
                 <td colspan="14">{{ $benchmark->nama_pekerjaan }}</td>
             </tr>
             <tr>
+                <td colspan="4"><b>Jenis Pekerjaan</b></td>
+                <td colspan="14">{{ $benchmark->jenis_pekerjaan }}</td>
+            </tr>
+            <tr>
                 <td colspan="4"><b>Desa/Kelurahan</b></td>
                 <td colspan="5">{{ $benchmark->village->name }}</td>
                 <td colspan="4"><b>Kota/Kabupaten</b></td>

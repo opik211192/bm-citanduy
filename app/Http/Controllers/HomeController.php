@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Aset;
+use App\Models\Benchmark;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -11,11 +13,6 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * Show the application dashboard.
      *
@@ -23,6 +20,16 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('backend.dashboard');
+        $jenisPekerjaanAset = Aset::select('jenis_aset')
+            ->distinct()
+            ->orderBy('jenis_aset')
+            ->pluck('jenis_aset');
+
+         $jenisPekerjaanListBenchmark = Benchmark::select('jenis_pekerjaan')
+            ->distinct()
+            ->orderBy('jenis_pekerjaan')
+            ->pluck('jenis_pekerjaan');
+            
+        return view('home', compact('jenisPekerjaanListBenchmark', 'jenisPekerjaanAset'));
     }
 }

@@ -13,25 +13,25 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('benchmarks', function (Blueprint $table) {
+        Schema::create('asets', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_bm');
+            $table->string('nama_aset');
+            $table->string('jenis_aset');
             $table->string('no_registrasi');
-            $table->string('nama_pekerjaan');
-            $table->string('jenis_pekerjaan');
+            $table->string('kode_bmn');
             $table->unsignedBigInteger('province_id');
             $table->unsignedBigInteger('city_id');
             $table->unsignedBigInteger('district_id');
             $table->unsignedBigInteger('village_id');
-            $table->string('utm_x');
-            $table->string('utm_y');
             $table->string('lat');
             $table->string('long');
-            $table->string('zone');
-            $table->string('tinggi_orthometrik')->nullable();
-            $table->string('tinggi_elipsoid')->nullable();
+            $table->string('utm_x');
+            $table->string('utm_y');
+            $table->string('tahun_mulai_bangunan');
+            $table->string('tahun_selesai_bangunan');   
+            $table->string('kondisi_bangunan');
             $table->string('keterangan');
-            
+
             $table->foreign('province_id')->references('id')->on('indonesia_provinces');
             $table->foreign('city_id')->references('id')->on('indonesia_cities');
             $table->foreign('district_id')->references('id')->on('indonesia_districts');
@@ -48,6 +48,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('benchmarks');
+        Schema::dropIfExists('asets');
     }
 };

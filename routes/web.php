@@ -1,9 +1,13 @@
 <?php
 
-use App\Http\Controllers\BenchmarkController;
-use App\Http\Controllers\DependantDropdownController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AsetController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\BenchmarkController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DependantDropdownController;
+use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,16 +20,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-})->name('welcome');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Auth::routes();
 
-Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
 Route::get('/benchmark/print/{id}', [BenchmarkController::class, 'print'])->name('benchmark.print');
 Route::get('/benchmark/download/{id}', [BenchmarkController::class, 'download'])->name('benchmark.download');
+
+Route::get('/aset/print/{id}', [AsetController::class, 'print'])->name('aset.print');
 
 
 Route::prefix('benchmark')->middleware('auth')->group(function () {
@@ -36,6 +40,19 @@ Route::prefix('benchmark')->middleware('auth')->group(function () {
     Route::get('/edit/{benchmark}', [BenchmarkController::class, 'edit'])->name('benchmark.edit');
     Route::put('/edit/{benchmark}', [BenchmarkController::class, 'update'])->name('benchmark.update');
     Route::delete('/delete/{benchmark}', [BenchmarkController::class, 'destroy'])->name('benchmark.destroy');
+
+});
+
+Route::prefix('aset')->middleware('auth')->group(function () {
+    Route::get('/data', [AsetController::class, 'index'])->name('aset.index');
+    Route::get('/create', [AsetController::class, 'create'])->name('aset.create');
+    Route::post('/create', [AsetController::class, 'store'])->name('aset.store');
+    Route::get('/show/{aset}', [AsetController::class, 'show'])->name('aset.show');
+    Route::get('/edit/{aset}', [AsetController::class, 'edit'])->name('aset.edit');
+    Route::put('/edit/{aset}', [AsetController::class, 'update'])->name('aset.update');
+    Route::delete('/delete/{aset}', [AsetController::class, 'destroy'])->name('aset.destroy');
+
+    Route::delete('/foto-aset/{id}', [AsetController::class, 'hapusFoto'])->name('foto-aset.hapus');
 
 });
 

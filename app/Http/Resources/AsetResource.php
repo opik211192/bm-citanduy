@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BenchmarkResource extends JsonResource
+class AsetResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,18 +16,22 @@ class BenchmarkResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'kode_bm' => $this->kode_bm,
+            'nama_aset' => $this->nama_aset,
+            'jenis_aset' => $this->jenis_aset,
             'no_registrasi' => $this->no_registrasi,
+            'kode_bmn' => $this->kode_bmn,
             'province' => $this->province->name,
             'city' => $this->city->name,
             'district' => $this->district->name,
             'village' => $this->village->name,
-            'nama_pekerjaan' => $this->nama_pekerjaan,
-            'jenis_pekerjaan' => $this->jenis_pekerjaan,
             'lat' => $this->lat,
             'long' => $this->long,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'utm_x' => $this->utm_x,
+            'utm_y' => $this->utm_y,
+            'tahun_mulai_bangunan' => $this->tahun_mulai_bangunan,
+            'tahun_selesai_bangunan' => $this->tahun_selesai_bangunan,
+            'kondisi_bangunan' => $this->kondisi_bangunan,
+            'keterangan' => $this->keterangan
         ];
     }
 }

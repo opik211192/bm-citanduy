@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>BM Citanduy</title>
+    <title>Dashboard Citanduy</title>
 
     {{--
     <!-- Scripts -->
@@ -18,13 +18,24 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
+
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     {{--
     <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
     <link rel="stylesheet" href="{{ asset('css/adminlte.css') }}">
     <link rel="stylesheet" href="{{ asset('css/datatables.min.css') }}">
+    <style>
+        body,
+        .content-wrapper,
+        .main-sidebar,
+        .main-header,
+        .main-footer {
+            font-family: 'Inter', sans-serif !important;
+            font-size: 15px;
+        }
+    </style>
     @stack('styles')
 </head>
 
@@ -57,90 +68,83 @@
         <!-- /.main-header -->
 
         <!-- Sidebar -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <!-- Brand Logo -->
-            <a href="#" class="brand-link text-center">
-                <span class="brand-text font-weight-light">BM Citanduy</span>
-            </a>
+        {{-- <aside class="main-sidebar sidebar-dark-primary elevation-4"> --}}
+            <aside class="main-sidebar sidebar-light-primary elevation-4">
+                <!-- Brand Logo -->
+                <a href="#" class="brand-link text-center">
+                    <span class="brand-text font-weight-light">BM Citanduy</span>
+                </a>
 
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                        data-accordion="false">
-                        <li class="nav-item">
-                            <a href="{{ route('welcome') }}" class="nav-link ">
-                                <i class="nav-icon fas fa-home"></i>
-                                <p>Home</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('home') }}" class="nav-link @yield('menu') ? 'active' : '' ">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Dashboard
-                                </p>
-                            </a>
-                        </li>
-                        <!-- Di dalam navigasi -->
-                        <li class="nav-item @if (request()->routeIs('benchmark.*')) menu-open @endif ">
-                            <a href="#" class="nav-link @yield('benchmark')">
-                                <i class="nav-icon fas fa-map"></i>
-                                <p>
-                                    Benchmark
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('benchmark.index') }}" class="nav-link @yield('benchmark')">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Data</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('benchmark.create') }}"
-                                        class="nav-link @yield('benchmark-create')">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Tambah Data</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <!-- Add more menu items as needed -->
-                    </ul>
-                </nav>
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Sidebar Menu -->
+                    <nav class="mt-2">
+                        <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+                            <!-- Home -->
+                            <li class="nav-item">
+                                <a href="{{ route('home') }}"
+                                    class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-home"></i>
+                                    <p>Home</p>
+                                </a>
+                            </li>
 
-                <!-- /.sidebar-menu -->
+                            <!-- Dashboard -->
+                            <li class="nav-item">
+                                <a href="{{ route('dashboard') }}"
+                                    class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                                    <p>Dashboard</p>
+                                </a>
+                            </li>
+
+                            <!-- Aset -->
+                            <li class="nav-item">
+                                <a href="{{ route('aset.index') }}"
+                                    class="nav-link {{ request()->routeIs('aset.*') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-building"></i>
+                                    <p>Aset</p>
+                                </a>
+                            </li>
+
+                            <!-- Benchmark -->
+                            <li class="nav-item">
+                                <a href="{{ route('benchmark.index') }}"
+                                    class="nav-link {{ request()->routeIs('benchmark.*') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-map"></i>
+                                    <p>Benchmark</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <!-- /.sidebar -->
+            </aside>
+            <!-- /.main-sidebar -->
+
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper pt-4">
+                <!-- Main content -->
+                <section class="content">
+
+                    @yield('content')
+                    <div class="row"></div>
+                </section>
+                <!-- /.content -->
             </div>
-            <!-- /.sidebar -->
-        </aside>
-        <!-- /.main-sidebar -->
+            <!-- /.content-wrapper -->
 
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper pt-4">
-            <!-- Main content -->
-            <section class="content">
-
-                @yield('content')
-                <div class="row"></div>
-            </section>
-            <!-- /.content -->
-        </div>
-        <!-- /.content-wrapper -->
-
-        <!-- Main Footer -->
-        <footer class="main-footer">
-            <!-- To the right -->
-            <div class="float-right d-none d-sm-inline">
-                {{-- Anything you want --}}
-            </div>
-            <!-- Default to the left -->
-            <strong>Copyright &copy;
-                <?php echo date('Y'); ?> <a href="#">SISDA BBWS Citanduy</a>.
-            </strong>
-        </footer>
+            <!-- Main Footer -->
+            <footer class="main-footer">
+                <!-- To the right -->
+                <div class="float-right d-none d-sm-inline">
+                    {{-- Anything you want --}}
+                </div>
+                <!-- Default to the left -->
+                <strong>Copyright &copy;
+                    <?php echo date('Y'); ?> <a href="#">SISDA BBWS Citanduy</a>.
+                </strong>
+            </footer>
     </div>
 
     <script src="{{ asset('js/jquery.js') }}"></script>

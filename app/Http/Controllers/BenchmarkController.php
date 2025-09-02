@@ -35,7 +35,8 @@ public function index(Request $request)
                 1 => 'kode_bm',
                 2 => 'no_registrasi',
                 3 => 'Nama_pekerjaan',
-                4 => 'keterangan',
+                4 => 'jenis_pekerjaan',
+                5 => 'keterangan',
             ];
 
             $totalData = Benchmark::count();
@@ -57,6 +58,7 @@ public function index(Request $request)
                 $benchmarks = Benchmark::where('kode_bm', 'LIKE', "%{$search}%")
                     ->orWhere('no_registrasi', 'LIKE', "%{$search}%")
                     ->orWhere('nama_pekerjaan', 'LIKE', "%{$search}%")
+                    ->orWhere('jenis_pekerjaan', 'LIKE', "%{$search}%")
                     ->orWhere('keterangan', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
@@ -66,6 +68,7 @@ public function index(Request $request)
                 $totalFiltered = Benchmark::where('kode_bm', 'LIKE', "%{$search}%")
                     ->orWhere('no_registrasi', 'LIKE', "%{$search}%")
                     ->orWhere('nama_pekerjaan', 'LIKE', "%{$search}%")
+                    ->orWhere('jenis_pekerjaan', 'LIKE', "%{$search}%")
                     ->orWhere('keterangan', 'LIKE', "%{$search}%")
                     ->count();
             }
@@ -82,6 +85,7 @@ public function index(Request $request)
                     $nestedData['kode_bm'] = $benchmark->kode_bm;
                     $nestedData['no_registrasi'] = $benchmark->no_registrasi;
                     $nestedData['nama_pekerjaan'] = $benchmark->nama_pekerjaan;
+                    $nestedData['jenis_pekerjaan'] = $benchmark->jenis_pekerjaan;
                     $nestedData['keterangan'] = $benchmark->keterangan;
                     $nestedData['options'] = '<div class="d-flex">' .
                         '<a href="' .route('benchmark.edit', $benchmark->id). '" class="btn btn-info btn-sm" data-toggle="Edit" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>&nbsp;' .
@@ -137,6 +141,7 @@ public function index(Request $request)
         'kode_bm' => 'required',
         'no_registrasi' => 'required',
         'nama_pekerjaan' => 'required',
+        'jenis_pekerjaan' => 'required',
         'province_id' => 'required',
         'city_id' => 'required',
         'district_id' => 'required',
@@ -176,7 +181,8 @@ public function index(Request $request)
     $benchmark = Benchmark::create([
         'kode_bm' => $validatedData['kode_bm'],
         'no_registrasi' => $validatedData['no_registrasi'],
-        'nama_pekerjaan' => $validatedData['nama_pekerjaan'],   
+        'nama_pekerjaan' => $validatedData['nama_pekerjaan'],
+        'jenis_pekerjaan' => $validatedData['jenis_pekerjaan'],   
         'province_id' => $validatedData['province_id'],
         'city_id' => $validatedData['city_id'],
         'district_id' => $validatedData['district_id'],
@@ -267,6 +273,7 @@ public function index(Request $request)
         'kode_bm' => 'required',
         'no_registrasi' => 'required',
         'nama_pekerjaan' => 'required',
+        'jenis_pekerjaan' => 'required',
         'province_id' => 'required',
         'city_id' => 'required',
         'district_id' => 'required',
@@ -288,6 +295,7 @@ public function index(Request $request)
         'kode_bm' => $validatedData['kode_bm'],
         'no_registrasi' => $validatedData['no_registrasi'],
         'nama_pekerjaan' => $validatedData['nama_pekerjaan'],
+        'jenis_pekerjaan' => $validatedData['jenis_pekerjaan'],
         'province_id' => $validatedData['province_id'],
         'city_id' => $validatedData['city_id'],
         'district_id' => $validatedData['district_id'],
@@ -397,15 +405,37 @@ public function index(Request $request)
     }
 
 
-    public function api_benchmark()
+    // public function api_benchmark()
+    // {
+    //     try {
+    //         $dataBenchmark = Benchmark::all();
+    //         return response()->json(BenchmarkResource::collection($dataBenchmark), 200);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['error' => 'Failed to fetch benchmarks'], 500);
+    //     }
+    // }
+    public function api_benchmark(Request $request)
     {
         try {
-            $dataBenchmark = Benchmark::all();
+            $query = Benchmark::query();
+
+            if ($request->has('jenis_pekerjaan')) {
+                $jenis = $request->jenis_pekerjaan;
+                if (is_array($jenis)) {
+                    $query->whereIn('jenis_pekerjaan', $jenis);
+                } else {
+                    $query->where('jenis_pekerjaan', $jenis);
+                }
+            }
+
+            $dataBenchmark = $query->get();
             return response()->json(BenchmarkResource::collection($dataBenchmark), 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch benchmarks'], 500);
         }
     }
+
+
 
 
     public function api_benchmark_detail($id)
