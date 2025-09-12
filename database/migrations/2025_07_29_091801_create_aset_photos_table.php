@@ -13,11 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('aset_photos', function (Blueprint $table) {
+       Schema::create('aset_photos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('aset_id')->constrained('asets')->onDelete('cascade');
+            $table->string('kode_integrasi');
             $table->string('file_path');
             $table->timestamps();
+
+            $table->foreign('kode_integrasi')
+                ->references('kode_integrasi')
+                ->on('asets')
+                ->onDelete('restrict');
         });
     }
 

@@ -103,7 +103,7 @@
                 <div class="card-body d-flex flex-column align-items-center justify-content-center text-center">
                     <h4 class="text-dark font-weight-bold mb-4" style="font-size:1.5rem;">
                         <i class="fas fa-database mr-2 text-primary"></i>
-                        Total Asset
+                        Total Aset
                     </h4>
                     <h1 class="text-success font-weight-bold" style="font-size:4rem; line-height:1;">
                         {{ $total_asset }}

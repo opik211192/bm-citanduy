@@ -16,22 +16,23 @@ class AsetResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'kode_integrasi' => $this->kode_integrasi,
+            'kode_bmn' => $this->kode_bmn,
             'nama_aset' => $this->nama_aset,
             'jenis_aset' => $this->jenis_aset,
-            'no_registrasi' => $this->no_registrasi,
-            'kode_bmn' => $this->kode_bmn,
-            'province' => $this->province->name,
-            'city' => $this->city->name,
-            'district' => $this->district->name,
-            'village' => $this->village->name,
+            'wilayah_sungai' => $this->wilayah_sungai,
+            'das' => $this->das,
+            'province' => $this->province,
+            'city' => $this->city,
+            'district' => $this->district,
+            'village' => $this->village,
             'lat' => $this->lat,
             'long' => $this->long,
-            'utm_x' => $this->utm_x,
-            'utm_y' => $this->utm_y,
             'tahun_mulai_bangunan' => $this->tahun_mulai_bangunan,
             'tahun_selesai_bangunan' => $this->tahun_selesai_bangunan,
             'kondisi_bangunan' => $this->kondisi_bangunan,
-            'keterangan' => $this->keterangan
+            'status_operasi' => $this->status_operasi,
+            'kondisi_infrastruktur' => $this->kondisi_infrastruktur
         ];
     }
 }

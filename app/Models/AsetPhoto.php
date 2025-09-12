@@ -11,8 +11,13 @@ class AsetPhoto extends Model
 
     protected $guarded = [];
 
+    // public function aset()
+    // {
+    //     return $this->belongsTo(Aset::class);
+    // }
     public function aset()
     {
-        return $this->belongsTo(Aset::class);
+        return $this->belongsTo(Aset::class, 'kode_integrasi', 'kode_integrasi');
     }
+
 }

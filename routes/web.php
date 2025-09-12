@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AsetController;
+use App\Http\Controllers\AsetPhotoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BenchmarkController;
 use App\Http\Controllers\DashboardController;
@@ -47,10 +48,16 @@ Route::prefix('aset')->middleware('auth')->group(function () {
     Route::get('/data', [AsetController::class, 'index'])->name('aset.index');
     Route::get('/create', [AsetController::class, 'create'])->name('aset.create');
     Route::post('/create', [AsetController::class, 'store'])->name('aset.store');
-    Route::get('/show/{aset}', [AsetController::class, 'show'])->name('aset.show');
+    Route::get('/show/{id}', [AsetController::class, 'show'])->name('aset.show');
     Route::get('/edit/{aset}', [AsetController::class, 'edit'])->name('aset.edit');
     Route::put('/edit/{aset}', [AsetController::class, 'update'])->name('aset.update');
     Route::delete('/delete/{aset}', [AsetController::class, 'destroy'])->name('aset.destroy');
+    Route::post('/import', [AsetController::class, 'import'])->name('aset.import');
+
+    Route::get('/photos/{kode_integrasi}', [AsetController::class, 'getPhotos'])->name('aset.photos');
+    Route::delete('/photos/{kode_integrasi}', [AsetController::class, 'photos_destroy'])->name('photos.destroy');
+    Route::post('/photos', [AsetController::class, 'photos_store'])->name('photos.store');
+
 
     Route::delete('/foto-aset/{id}', [AsetController::class, 'hapusFoto'])->name('foto-aset.hapus');
 

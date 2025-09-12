@@ -13,11 +13,17 @@ class Aset extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    public $timestamps = true; 
 
+    // public function photos()
+    // {
+    //     return $this->hasMany(AsetPhoto::class);
+    // }
     public function photos()
     {
-        return $this->hasMany(AsetPhoto::class);
+        return $this->hasMany(AsetPhoto::class, 'kode_integrasi', 'kode_integrasi');
     }
+
 
     public function province()
     {

@@ -5,63 +5,25 @@ var mymap = L.map("map", {
 
 // --- Layer dasar ---
 const baseMaps = {
-    // OpenStreetMap: L.tileLayer(
-    //     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    //     { attribution: "&copy; OpenStreetMap contributors" }
-    // ),
-    // "Toner Lite": L.tileLayer(
-    //     "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    //     { attribution: '&copy; <a href="https://carto.com/">CARTO</a>' }
-    // ),
-    // Satellite: L.tileLayer(
-    //     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    //     { attribution: "&copy; Esri &mdash; Source: Esri, USGS, etc." }
-    // ),
-    // google: L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
-    //     maxZoom: 20,
-    //     subdomains: ["mt0", "mt1", "mt2", "mt3"],
-    // }),
-
-    // Satelit Esri (tanpa label)
     "Esri Satellite": L.tileLayer(
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         { attribution: "&copy; Esri &mdash; Source: Esri, USGS, etc." }
     ),
-
-    // Google Streets
     "Google Streets": L.tileLayer(
         "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-        {
-            maxZoom: 20,
-            subdomains: ["mt0", "mt1", "mt2", "mt3"],
-        }
+        { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
     ),
-
-    // Google Hybrid (satelit + jalan + label)
     "Google Hybrid": L.tileLayer(
         "http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}",
-        {
-            maxZoom: 20,
-            subdomains: ["mt0", "mt1", "mt2", "mt3"],
-        }
+        { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
     ),
-
-    // Google Satellite (pure satelit)
     "Google Satellite": L.tileLayer(
         "http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        {
-            maxZoom: 20,
-            subdomains: ["mt0", "mt1", "mt2", "mt3"],
-        }
+        { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
     ),
-
-    // Google Terrain (dengan kontur)
     "Google Terrain": L.tileLayer(
         "http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",
-        {
-            maxZoom: 20,
-            subdomains: ["mt0", "mt1", "mt2", "mt3"],
-        }
+        { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
     ),
 };
 baseMaps["Google Satellite"].addTo(mymap);
@@ -73,68 +35,215 @@ L.control
 L.control.zoom({ position: "bottomright" }).addTo(mymap);
 
 // --- Marker icons ---
+function getColorByJenis(jenis) {
+    switch ((jenis || "").toLowerCase()) {
+        case "embung":
+            return "#0d6efd";
+        case "bendung":
+            return "#6c757d";
+        case "bendungan":
+            return "#0dcaf0";
+        case "pengaman pantai":
+            return "#6f42c1";
+        case "pengendali sedimen":
+            return "#9c956d";
+        case "pengendali banjir":
+            return "#d63384";
+        default:
+            return "#212529";
+    }
+}
+
+function createColoredIcon(color, label = "", borderColor = "#ffffff") {
+    return L.divIcon({
+        className: "custom-marker",
+        html: `<div style="
+            background:${color};
+            color:#fff;
+            font-size:11px;
+            font-weight:bold;
+            text-align:center;
+            line-height:26px;
+            width:26px;
+            height:26px;
+            border-radius:50%;
+            border:3px solid ${borderColor};
+            box-shadow:0 0 3px rgba(0,0,0,0.5);
+        ">${label}</div>`,
+        iconSize: [26, 26],
+        iconAnchor: [13, 26],
+        popupAnchor: [0, -26],
+    });
+}
+
+// mapping icon
 const iconMap = {
-    embung: L.icon({
-        iconUrl: "/img/embung.png",
-        iconSize: [32, 32],
-        iconAnchor: [16, 32],
-        popupAnchor: [0, -32],
-    }),
-    bendung: L.icon({
-        iconUrl: "/img/bendung.png",
-        iconSize: [32, 32],
-        iconAnchor: [16, 32],
-        popupAnchor: [0, -32],
-    }),
-    bendungan: L.icon({
-        iconUrl: "/img/bendungan.png",
-        iconSize: [32, 32],
-        iconAnchor: [16, 32],
-        popupAnchor: [0, -32],
-    }),
-    "pengaman pantai": L.icon({
-        iconUrl: "/img/pengaman_pantai.png",
-        iconSize: [32, 32],
-        iconAnchor: [16, 32],
-        popupAnchor: [0, -32],
-    }),
-    "pengendali sedimen": L.icon({
-        iconUrl: "/img/pengendali_sedimen.png",
-        iconSize: [32, 32],
-        iconAnchor: [16, 32],
-        popupAnchor: [0, -32],
-    }),
-    "pengendali banjir": L.icon({
-        iconUrl: "/img/pengendali_banjir.png",
-        iconSize: [32, 32],
-        iconAnchor: [16, 32],
-        popupAnchor: [0, -32],
-    }),
+    embung: createColoredIcon(getColorByJenis("embung"), "E"),
+    bendung: createColoredIcon(getColorByJenis("bendung"), "B"),
+    bendungan: createColoredIcon(getColorByJenis("bendungan"), "BD"),
+    "pengendali banjir": createColoredIcon(
+        getColorByJenis("pengendali banjir"),
+        "PB"
+    ),
+    "pengaman pantai": createColoredIcon(
+        getColorByJenis("pengaman pantai"),
+        "PP"
+    ),
+    "pengendali sedimen": createColoredIcon(
+        getColorByJenis("pengendali sedimen"),
+        "PS"
+    ),
 };
 
 // --- URL API ---
 const urlBM = "http://localhost:8000/api/data/bm";
 const urlAsset = "http://localhost:8000/api/data/aset";
 
-// --- Storage marker dipisah ---
+// --- Storage marker & cache ---
+// simpan data aset supaya tidak fetch ulang
 var markersAset = {};
 var markersBM = {};
+var cacheAset = {};
+var cacheBM = {};
 
 // --- Layer khusus untuk pencarian ---
 var searchLayer = L.layerGroup().addTo(mymap);
 
-// --- Fungsi clear marker ---
+// clear marker
 function clearMarkers(storage, jenis) {
     if (storage[jenis]) {
         storage[jenis].forEach((m) => {
             mymap.removeLayer(m);
-            searchLayer.removeLayer(m); // hapus juga dari searchLayer
+            searchLayer.removeLayer(m);
         });
         storage[jenis] = [];
     }
 }
 
-// --- Fetch Data Aset ---
+// --- Border Color by Kondisi ---
+function getBorderColorByKondisi(kondisi) {
+    if (!kondisi) return "#ffffff"; // default putih
+    switch (kondisi.trim()) {
+        case "Baik / Beroperasi":
+            return "#198754"; // hijau bootstrap success
+        case "Rusak Ringan":
+            return "#ffc107"; // kuning bootstrap warning
+        case "Rusak Berat":
+            return "#dc3545"; // merah bootstrap danger
+        case "Hilang":
+            return "#212529"; // hitam bootstrap dark
+        default:
+            return "#ffffff"; // putih default
+    }
+}
+
+// fungsi render marker dari data cache
+function renderAset(jenis, data) {
+    clearMarkers(markersAset, jenis);
+    markersAset[jenis] = [];
+
+    data.forEach((item) => {
+        const iconKey = (item.jenis_aset || "").toLowerCase();
+        const borderColor = getBorderColorByKondisi(item.kondisi_infrastruktur);
+        const marker = L.marker([parseFloat(item.lat), parseFloat(item.long)], {
+            icon: createColoredIcon(
+                getColorByJenis(iconKey),
+                iconKey.substring(0, 2).toUpperCase(), // label 2 huruf
+                borderColor
+            ),
+        }).addTo(mymap);
+
+        function getKondisiBadge(kondisi) {
+            if (!kondisi || kondisi.trim() === "") return `-`;
+            switch (kondisi.trim()) {
+                case "Baik / Beroperasi":
+                    return `<span class="badge bg-success">${kondisi}</span>`;
+                case "Rusak Ringan":
+                    return `<span class="badge bg-warning text-dark">${kondisi}</span>`;
+                case "Rusak Berat":
+                    return `<span class="badge bg-danger">${kondisi}</span>`;
+                case "Hilang":
+                    return `<span class="badge bg-dark text-white">${kondisi}</span>`;
+                default:
+                    return kondisi;
+            }
+        }
+
+        marker.bindPopup(`
+            <div class="card shadow-sm border-0" style="width:320px;font-size:0.85rem;border-radius:12px;overflow:hidden;">
+                <div class="card-header bg-primary text-white py-2 px-3">
+                    <div class="fw-bold">${item.nama_aset}</div>
+                    <small class="text-light">${item.jenis_aset}</small>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-sm mb-0">
+                        <tr><th style="width:40%;">WS</th><td>${
+                            item.wilayah_sungai
+                        }</td></tr>
+                        <tr><th>DAS</th><td>${item.das}</td></tr>
+                        <tr><th>Koordinat</th><td>${item.lat}, ${
+            item.long
+        }</td></tr>
+                        <tr><th>Lokasi</th><td>${item.village}, ${
+            item.district
+        }, ${item.city}</td></tr>
+                        <tr><th>Kondisi</th><td>${getKondisiBadge(
+                            item.kondisi_infrastruktur
+                        )}</td></tr>
+                    </table>
+                </div>
+                <div class="card-footer bg-light p-2">
+                    <button class="btn btn-sm btn-primary w-100" onclick="detailAset(${
+                        item.id
+                    })">
+                        <i class="fa fa-info-circle me-1"></i> Detail
+                    </button>
+                </div>
+            </div>
+        `);
+
+        markersAset[jenis].push(marker);
+        marker.feature = { properties: { name: item.nama_aset } };
+        searchLayer.addLayer(marker);
+    });
+}
+
+function renderBM(jenis, data) {
+    clearMarkers(markersBM, jenis);
+    markersBM[jenis] = [];
+
+    data.forEach((item) => {
+        const iconKey = (item.jenis_pekerjaan || "").toLowerCase();
+        const marker = L.marker([parseFloat(item.lat), parseFloat(item.long)], {
+            icon: iconMap[iconKey] || new L.Icon.Default(),
+        }).addTo(mymap);
+
+        marker.bindPopup(`
+            <div class="card shadow-sm border-0" style="width:320px;font-size:0.85rem;border-radius:12px;overflow:hidden;">
+                <div class="card-header bg-warning text-white py-2 px-3">
+                    <div class="fw-bold">${item.nama_pekerjaan}</div>
+                    <small class="text-light">${item.jenis_pekerjaan}</small>
+                </div>
+                <div class="card-body p-3">
+                    <div><b>Kode BM:</b> ${item.kode_bm}</div>
+                    <div><b>No. Registrasi:</b> ${item.no_registrasi}</div>
+                    <div><b>Lokasi:</b> ${item.village}, ${item.district}, ${item.city}</div>
+                </div>
+                <div class="card-footer bg-light p-2">
+                    <button class="btn btn-sm btn-warning w-100" onclick="detailbm(${item.id})">
+                        <i class="fa fa-info-circle me-1"></i> Detail
+                    </button>
+                </div>
+            </div>
+        `);
+
+        markersBM[jenis].push(marker);
+        marker.feature = { properties: { name: item.nama_pekerjaan } };
+        searchLayer.addLayer(marker);
+    });
+}
+
+// --- Fetch Data Aset dengan cache ---
 async function fetchDataAset() {
     const selected = [];
     document.querySelectorAll(".jenis-aset").forEach((cb) => {
@@ -146,56 +255,24 @@ async function fetchDataAset() {
     });
 
     for (const jenis of selected) {
-        const urlParams = new URL(urlAsset);
-        urlParams.searchParams.append("jenis_aset[]", jenis);
-
-        try {
-            const res = await fetch(urlParams);
-            const data = await res.json();
-
-            clearMarkers(markersAset, jenis);
-            markersAset[jenis] = [];
-
-            data.forEach((item) => {
-                const iconKey = (item.jenis_aset || "").toLowerCase();
-                const marker = L.marker(
-                    [parseFloat(item.lat), parseFloat(item.long)],
-                    { icon: iconMap[iconKey] || new L.Icon.Default() }
-                ).addTo(mymap);
-
-                marker.bindPopup(`
-                    <div class="card shadow-sm border-0" style="width:320px;font-size:0.85rem;border-radius:12px;overflow:hidden;">
-                        <div class="card-header bg-primary text-white py-2 px-3">
-                            <div class="fw-bold">${item.nama_aset}</div>
-                            <small class="text-light">${item.jenis_aset}</small>
-                        </div>
-                        <div class="card-body p-3">
-                            <div><b>Kode Integrasi:</b> ${item.no_registrasi}</div>
-                            <div><b>Kode BMN:</b> ${item.kode_bmn}</div>
-                            <div><b>Lokasi:</b> ${item.village}, ${item.district}, ${item.city}</div>
-                        </div>
-                        <div class="card-footer bg-light p-2">
-                            <button class="btn btn-sm btn-primary w-100" onclick="detailAset(${item.id})">
-                                <i class="fa fa-info-circle me-1"></i> Detail
-                            </button>
-                        </div>
-                    </div>
-                `);
-
-                // simpan marker
-                markersAset[jenis].push(marker);
-
-                // masukkan marker ke searchLayer
-                marker.feature = { properties: { name: item.nama_aset } };
-                searchLayer.addLayer(marker);
-            });
-        } catch (err) {
-            console.error("Error Aset:", err.message);
+        if (cacheAset[jenis]) {
+            renderAset(jenis, cacheAset[jenis]);
+        } else {
+            const urlParams = new URL(urlAsset);
+            urlParams.searchParams.append("jenis_aset[]", jenis);
+            try {
+                const res = await fetch(urlParams);
+                const data = await res.json();
+                cacheAset[jenis] = data; // simpan ke cache
+                renderAset(jenis, data);
+            } catch (err) {
+                console.error("Error Aset:", err.message);
+            }
         }
     }
 }
 
-// --- Fetch Data Benchmark ---
+// --- Fetch Data BM dengan cache ---
 async function fetchDataBM() {
     const selected = [];
     document.querySelectorAll(".jenis-benchmark").forEach((cb) => {
@@ -207,64 +284,31 @@ async function fetchDataBM() {
     });
 
     for (const jenis of selected) {
-        const urlParams = new URL(urlBM);
-        urlParams.searchParams.append("jenis_pekerjaan[]", jenis);
-
-        try {
-            const res = await fetch(urlParams);
-            const data = await res.json();
-
-            clearMarkers(markersBM, jenis);
-            markersBM[jenis] = [];
-
-            data.forEach((item) => {
-                const iconKey = (item.jenis_pekerjaan || "").toLowerCase();
-                const marker = L.marker(
-                    [parseFloat(item.lat), parseFloat(item.long)],
-                    { icon: iconMap[iconKey] || new L.Icon.Default() }
-                ).addTo(mymap);
-
-                marker.bindPopup(`
-                    <div class="card shadow-sm border-0" style="width:320px;font-size:0.85rem;border-radius:12px;overflow:hidden;">
-                        <div class="card-header bg-warning text-white py-2 px-3">
-                            <div class="fw-bold">${item.nama_pekerjaan}</div>
-                            <small class="text-light">${item.jenis_pekerjaan}</small>
-                        </div>
-                        <div class="card-body p-3">
-                            <div><b>Kode BM:</b> ${item.kode_bm}</div>
-                            <div><b>No. Registrasi:</b> ${item.no_registrasi}</div>
-                            <div><b>Lokasi:</b> ${item.village}, ${item.district}, ${item.city}</div>
-                        </div>
-                        <div class="card-footer bg-light p-2">
-                            <button class="btn btn-sm btn-warning w-100" onclick="detailbm(${item.id})">
-                                <i class="fa fa-info-circle me-1"></i> Detail
-                            </button>
-                        </div>
-                    </div>
-                `);
-
-                markersBM[jenis].push(marker);
-
-                // masukkan marker ke searchLayer
-                marker.feature = { properties: { name: item.nama_pekerjaan } };
-                searchLayer.addLayer(marker);
-            });
-        } catch (err) {
-            console.error("Error BM:", err.message);
+        if (cacheBM[jenis]) {
+            renderBM(jenis, cacheBM[jenis]);
+        } else {
+            const urlParams = new URL(urlBM);
+            urlParams.searchParams.append("jenis_pekerjaan[]", jenis);
+            try {
+                const res = await fetch(urlParams);
+                const data = await res.json();
+                cacheBM[jenis] = data; // simpan ke cache
+                renderBM(jenis, data);
+            } catch (err) {
+                console.error("Error BM:", err.message);
+            }
         }
     }
 }
 
 // --- Event listener ---
 const spinner = document.getElementById("spinner");
-
 document.querySelectorAll(".jenis-aset").forEach((cb) => {
     cb.addEventListener("change", () => {
         spinner.style.display = "block";
         fetchDataAset().finally(() => (spinner.style.display = "none"));
     });
 });
-
 document.querySelectorAll(".jenis-benchmark").forEach((cb) => {
     cb.addEventListener("change", () => {
         spinner.style.display = "block";
@@ -275,51 +319,14 @@ document.querySelectorAll(".jenis-benchmark").forEach((cb) => {
 // --- Control Search ---
 var searchControl = new L.Control.Search({
     layer: searchLayer,
-    propertyName: "name", // cari berdasarkan nama_aset / nama_pekerjaan
+    propertyName: "name",
     marker: false,
     moveToLocation: function (latlng, title, map) {
         map.setView(latlng, 15);
     },
     position: "topright",
 });
-
 searchControl.on("search:locationfound", function (e) {
     e.layer.openPopup();
 });
-
 mymap.addControl(searchControl);
-
-// fungsi untuk scale icon sesuai zoom
-function getScaledIcon(baseIcon, zoom) {
-    let scale = 1;
-    if (zoom >= 15) scale = 1.8; // zoom besar → icon lebih besar
-    else if (zoom >= 12) scale = 1.4;
-    else if (zoom >= 10) scale = 1.2;
-
-    return L.icon({
-        iconUrl: baseIcon.options.iconUrl,
-        iconSize: [32 * scale, 32 * scale],
-        iconAnchor: [16 * scale, 32 * scale],
-        popupAnchor: [0, -32 * scale],
-    });
-}
-// setiap kali zoom berubah → resize semua marker
-mymap.on("zoomend", () => {
-    const zoom = mymap.getZoom();
-
-    // resize marker aset
-    Object.values(markersAset).forEach((markerArr) => {
-        markerArr.forEach((m) => {
-            const currentIcon = m.options.icon;
-            m.setIcon(getScaledIcon(currentIcon, zoom));
-        });
-    });
-
-    // resize marker benchmark
-    Object.values(markersBM).forEach((markerArr) => {
-        markerArr.forEach((m) => {
-            const currentIcon = m.options.icon;
-            m.setIcon(getScaledIcon(currentIcon, zoom));
-        });
-    });
-});

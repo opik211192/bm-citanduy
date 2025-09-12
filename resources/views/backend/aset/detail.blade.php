@@ -77,6 +77,26 @@
             opacity: 0.85 !important;
             background-color: #000 !important;
         }
+
+        /* Mobile */
+        @media (max-width: 576px) {
+            table {
+                font-size: 12px;
+            }
+
+            .header-table h5 {
+                font-size: 12px;
+            }
+
+            .header-table div {
+                font-size: 10px;
+            }
+
+            img.previewable {
+                max-width: 100%;
+                height: auto;
+            }
+        }
     </style>
 </head>
 
@@ -108,8 +128,8 @@
         </thead>
         <tbody>
             <tr>
-                <td colspan="4"><b>No. Integrasi</b></td>
-                <td colspan="14">{{ $asset->no_registrasi }}</td>
+                <td colspan="4"><b>Kode Integrasi</b></td>
+                <td colspan="14">{{ $asset->kode_integrasi }}</td>
             </tr>
             <tr>
                 <td colspan="4"><b>Nama Aset</b></td>
@@ -120,28 +140,40 @@
                 <td colspan="14">{{ Str::title($asset->jenis_aset) }}</td>
             </tr>
             <tr>
+                <td colspan="4"><b>Wilayah Sungai</b></td>
+                <td colspan="14">{{ Str::title($asset->wilayah_sungai) }}</td>
+            </tr>
+            <tr>
+                <td colspan="4"><b>DAS</b></td>
+                <td colspan="14">{{ Str::title($asset->das) }}</td>
+            </tr>
+            <tr>
                 <td colspan="4"><b>Desa/Kelurahan</b></td>
-                <td colspan="5">{{ Str::title($asset->village->name) }}</td>
+                <td colspan="5">{{ Str::title($asset->village) }}</td>
                 <td colspan="4"><b>Kota/Kabupaten</b></td>
-                <td colspan="5">{{ Str::title($asset->city->name) }}</td>
+                <td colspan="5">{{ Str::title($asset->city) }}</td>
             </tr>
             <tr>
                 <td colspan="4"><b>Kecamatan</b></td>
-                <td colspan="5">{{ Str::title($asset->district->name) }}</td>
+                <td colspan="5">{{ Str::title($asset->district) }}</td>
                 <td colspan="4"><b>Provinsi</b></td>
-                <td colspan="5">{{ Str::title($asset->province->name) }}</td>
+                <td colspan="5">{{ Str::title($asset->province) }}</td>
             </tr>
             <tr>
                 <td colspan="4"><b>Latitude</b></td>
-                <td colspan="5">{{ number_format($asset->lat, 6) }}</td>
+                <td colspan="5">{{ $asset->lat,}}</td>
                 <td colspan="4"><b>Longitude</b></td>
-                <td colspan="5">{{ number_format($asset->long, 6) }}</td>
+                <td colspan="5">{{ $asset->long }}</td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td colspan="4"><b>X</b></td>
                 <td colspan="5">{{ $asset->utm_x }}</td>
                 <td colspan="4"><b>Y</b></td>
                 <td colspan="5">{{ $asset->utm_y }}</td>
+            </tr> --}}
+            <tr>
+                <td colspan="4"><b>Kondisi Bangunan</b></td>
+                <td colspan="14">{{ Str::title($asset->kondisi_bangunan) }}</td>
             </tr>
             <tr>
                 <td colspan="4"><b>Tahun Mulai Pembangunan</b></td>
@@ -150,12 +182,12 @@
                 <td colspan="5">{{ Str::title($asset->tahun_selesai_bangunan) }}</td>
             </tr>
             <tr>
-                <td colspan="4"><b>Kondisi Bangunan</b></td>
-                <td colspan="14">{{ Str::title($asset->kondisi_bangunan) }}</td>
+                <td colspan="4"><b>Status Operasi</b></td>
+                <td colspan="14">{{ Str::title($asset->status_operasi) }}</td>
             </tr>
             <tr>
-                <td colspan="4"><b>Keterangan</b></td>
-                <td colspan="14">{{ Str::title($asset->keterangan) }}</td>
+                <td colspan="4"><b>Kondisi Infrastruktur</b></td>
+                <td colspan="14">{{ Str::title($asset->kondisi_infrastruktur) }}</td>
             </tr>
         </tbody>
     </table>
@@ -179,7 +211,7 @@
                 </td>
                 @php
                 $count++;
-                if($count % 3 == 0) echo '
+                if($count % 2 == 0) echo '
             </tr>
             <tr>';
                 @endphp

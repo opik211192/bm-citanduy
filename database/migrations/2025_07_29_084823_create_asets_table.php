@@ -15,30 +15,35 @@ return new class extends Migration
     {
         Schema::create('asets', function (Blueprint $table) {
             $table->id();
+            $table->string('kode_integrasi')->unique()->nullable();
+            $table->string('kode_bmn');
             $table->string('nama_aset');
             $table->string('jenis_aset');
-            $table->string('no_registrasi');
-            $table->string('kode_bmn');
-            $table->unsignedBigInteger('province_id');
-            $table->unsignedBigInteger('city_id');
-            $table->unsignedBigInteger('district_id');
-            $table->unsignedBigInteger('village_id');
-            $table->string('lat');
-            $table->string('long');
-            $table->string('utm_x');
-            $table->string('utm_y');
-            $table->string('tahun_mulai_bangunan');
-            $table->string('tahun_selesai_bangunan');   
-            $table->string('kondisi_bangunan');
-            $table->string('keterangan');
+            $table->string('wilayah_sungai');
+            $table->string('das');
 
-            $table->foreign('province_id')->references('id')->on('indonesia_provinces');
-            $table->foreign('city_id')->references('id')->on('indonesia_cities');
-            $table->foreign('district_id')->references('id')->on('indonesia_districts');
-            $table->foreign('village_id')->references('id')->on('indonesia_villages');
-            
+            // Lokasi langsung string
+            $table->string('province')->nullable();
+            $table->string('city')->nullable();
+            $table->string('district')->nullable();
+            $table->string('village')->nullable();
+
+            // Koordinat
+            $table->string('lat')->nullable();
+            $table->string('long')->nullable();
+            $table->string('utm_x')->nullable();
+            $table->string('utm_y')->nullable();
+
+            // Informasi bangunan
+            $table->string('tahun_mulai_bangunan')->nullable();
+            $table->string('tahun_selesai_bangunan')->nullable();
+            $table->string('kondisi_bangunan')->nullable();
+            $table->string('status_operasi')->nullable();
+            $table->text('kondisi_infrastruktur')->nullable();
+
             $table->timestamps();
         });
+
     }
 
     /**

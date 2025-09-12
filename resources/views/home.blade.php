@@ -5,13 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Infrastruktur Citanduy</title>
+    <title>Sistem Informasi Geospasial Citanduy</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ asset('img/citanduy.png') }}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -32,7 +33,8 @@
 
         #map {
             position: absolute;
-            top: 56px;
+            /* top: 56px; */
+            top: 0;
             left: 0;
             right: 0;
             bottom: 0;
@@ -65,7 +67,7 @@
 
         .sidebar {
             position: fixed;
-            top: 56px;
+            top: 70px;
             bottom: 0;
             width: 320px;
             padding: 20px;
@@ -94,9 +96,6 @@
         }
 
         .sidebar-header .btn-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             cursor: pointer;
         }
 
@@ -106,7 +105,10 @@
             top: 50%;
             transform: translateY(-50%);
             width: 40px;
-            background-color: #007bff;
+            background: rgba(0, 123, 255, 0.4);
+            /* transparan */
+            backdrop-filter: blur(4px);
+            /* efek blur kaca */
             color: white;
             display: flex;
             flex-direction: column;
@@ -115,6 +117,14 @@
             padding: 5px;
             border-radius: 0 8px 8px 0;
             cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            /* biar agak timbul */
+            transition: background 0.3s ease;
+        }
+
+        .mini-menu:hover {
+            background: rgba(0, 123, 255, 0.7);
+            /* lebih pekat pas hover */
         }
 
         .mini-menu div {
@@ -250,7 +260,7 @@
         /* Balikin posisi default (stack vertikal kanan atas) */
         .leaflet-top.leaflet-right {
             display: block;
-            margin-top: 10px;
+            margin-top: 80px;
             /* tetap bisa geser turun biar ga ketabrak navbar */
         }
 
@@ -339,6 +349,29 @@
             display: none;
             /* default tersembunyi */
         }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 50%;
+                /* jangan 100%, misalnya 80% saja */
+                left: -80%;
+                /* posisi awal sembunyi */
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .sidebar.right {
+                width: 80%;
+                /* kanan juga jangan full */
+                right: -80%;
+            }
+
+            .sidebar.right.active {
+                right: 0;
+            }
+        }
     </style>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -346,21 +379,24 @@
 
 <body>
     <!-- Navbar -->
-    <div class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <div class="navbar navbar-expand-lg fixed-top shadow-sm"
+        style="background: rgba(0, 123, 255, 0.4); backdrop-filter: blur(5px);" data-bs-theme="dark">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="#">
                 <div class="d-flex">
-                    <img src="{{ asset('img/citanduy.png') }}" alt="logo citanduy" width="50" height="35" class="me-2">
-                    <div>B</div>
-                    <div>M</div>
-                    <div>&nbsp;Citanduy</div>
+                    <img src="{{ asset('img/citanduy.png') }}" alt="logo citanduy" width="70" height="45" class="me-3"
+                        style="filter: drop-shadow(0 0 8px rgba(0,123,255,0.9));">
+                    <span class="align-self-center text-wrap" style="max-width: 250px; line-height: 1;">
+                        SISTEM INFORMASI <br> GEOSPASIAL CITANDUY
+                    </span>
                 </div>
             </a>
-            <div class="toggle-btn" id="toggle-btn">&#9776;</div>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon">&#9776;</span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+
+            <!-- Tombol toggle sidebar kiri -->
+            <div class="toggle-btn d-lg-none" id="toggle-btn">&#9776;</div>
+
+            <!-- Menu kanan (desktop) -->
+            <div class="collapse navbar-collapse d-none d-lg-block" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
                     <li class="nav-item">
@@ -374,6 +410,17 @@
                     </li>
                 </ul>
             </div>
+
+            <!-- Menu kanan (mobile) -->
+            <div class="d-lg-none">
+                @if (Route::has('login'))
+                @auth
+                <a href="{{ url('/dashboard') }}" class="btn btn-sm btn-primary">Dashboard</a>
+                @else
+                <a href="{{ route('login') }}" class="btn btn-sm btn-primary">Log in</a>
+                @endauth
+                @endif
+            </div>
         </div>
     </div>
 
@@ -385,10 +432,11 @@
     <!-- Left Sidebar -->
     <div class="sidebar left" id="sidebar">
         <div class="sidebar-header border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
-            <h4 class="fw-bold mb-0">Data Infrastruktur</h4>
-            <button class="btn border-0" onclick="toggleSidebar()">
-                <i class="fas fa-times fs-5"></i>
-            </button>
+            <span class="fw-semibold text-uppercase" style="font-size: 1rem; letter-spacing: .5px;">
+                Data Peta
+            </span>
+            <button type="button" class="btn-close ms-2" aria-label="Close" onclick="toggleSidebar()"
+                style="font-size: .9rem;"></button>
         </div>
 
         <div class="accordion accordion-flush px-2 pt-1" id="sidebarAccordion">
@@ -403,16 +451,55 @@
                 <div id="collapseAset" class="accordion-collapse collapse show">
                     <div class="accordion-body">
                         @foreach ($jenisPekerjaanAset as $jenis)
+                        @php
+                        // fungsi sama dengan getColorByJenis di JS
+                        $color = match(strtolower($jenis)) {
+                        'embung' => '#0d6efd', // biru
+                        'bendung' => '#6c757d', // abu
+                        'bendungan' => '#0dcaf0', // cyan
+                        'pengaman pantai' => '#6f42c1', // purple
+                        'pengendali sedimen' => '#9c956d', // sage
+                        'pengendali banjir' => '#d63384', // pink
+                        default => '#212529', // dark
+                        };
+                        @endphp
                         <div class="form-check mb-2">
                             <input class="form-check-input jenis-aset" type="checkbox" id="aset-{{ $jenis }}"
                                 value="{{ $jenis }}">
-                            <label class="form-check-label d-flex align-items-center gap-2" for="aset-{{ $jenis }}">
-                                <img src="{{ asset('img/' . str_replace(' ', '_', strtolower($jenis)) . '.png') }}"
-                                    width="24" height="24">
+                            <label class="form-check-label d-flex align-items-center gap-2 fw-bold"
+                                for="aset-{{ $jenis }}">
+                                <div style="
+                                background: {{ $color }};
+                                width: 24px;
+                                height: 24px;
+                                border-radius: 50%;
+                                border: 2px solid white;
+                                box-shadow: 0 0 3px rgba(0,0,0,0.5);
+                            "></div>
                                 {{ ucfirst($jenis) }}
                             </label>
                         </div>
                         @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tampilkan DAS -->
+            <div class="accordion-item border rounded shadow-sm mb-3">
+                <h2 class="accordion-header" id="headingBatas">
+                    <button class="accordion-button fw-semibold" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseBatas" aria-expanded="true" aria-controls="collapseBatas">
+                        <i class="fa-solid fa-draw-polygon me-2 text-danger"></i>Batas DAS
+                    </button>
+                </h2>
+                <div id="collapseBatas" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="batas-das">
+                            <label class="form-check-label fw-bold" for="batas-das">
+                                <i class="fa-solid fa-draw-polygon me-2 text-danger"></i>Batas DAS
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -444,12 +531,16 @@
     </div>
 
     <!-- Right Sidebar -->
-    <div class="sidebar right" id="sidebar-right">
-        <div class="sidebar-header">
-            <h5 class="text-center mb-3 fw-bold">Detail</h5>
-            <div class="btn-close" id="close-btn-right" onclick="toggleDetailSidebar()"></div>
+    <div style="z-index: 10000;" class="sidebar right" id="sidebar-right">
+        <div class="sidebar-header d-flex justify-content-between align-items-center border-bottom px-2 py-1">
+            <button type="button" id="download-aset-button" class="btn btn-sm btn-outline-secondary d-none"
+                title="Cetak / Download">
+                <i class="fas fa-print"></i>
+            </button>
+            <button type="button" class="btn-close" id="close-btn-right" aria-label="Close"
+                onclick="toggleDetailSidebar()"></button>
         </div>
-        <div id="detail-content"></div>
+        <div id="detail-content" class="p-2"></div>
     </div>
 
     <!-- Map -->
@@ -462,15 +553,15 @@
     </div>
 
     <!-- Tombol toggle koordinat -->
-    <div id="toggle-coord" onclick="toggleCoordinateBox()">
+    {{-- <div id="toggle-coord" onclick="toggleCoordinateBox()">
         <i class="fa-solid fa-location-crosshairs"></i>
-    </div>
+    </div> --}}
 
     <!-- Koordinat Info -->
-    <div id="coordinate-box">
+    {{-- <div id="coordinate-box">
         <span id="coord-text">Klik peta untuk melihat koordinat</span>
         <button id="reset-coord" onclick="resetCoordinateBox()">×</button>
-    </div>
+    </div> --}}
 
 
     <!-- JS -->
@@ -522,6 +613,37 @@
     
             // Tambahkan marker baru
             coordMarker = L.marker([lat, lng]).addTo(mymap);
+        });
+    </script>
+    <script>
+        let batasDasLayer = null;
+    
+        // Load GeoJSON sekali saja
+        fetch("{{ asset('js/batasDas.geojson') }}")
+            .then(res => res.json())
+            .then(data => {
+                batasDasLayer = L.geoJSON(data, {
+                    style: {
+                        color: "blue",
+                        weight: 2,
+                        fillOpacity: 0.05
+                    },
+                    onEachFeature: function (feature, layer) {
+                        if (feature.properties && feature.properties.nama) {
+                            layer.bindPopup("DAS: " + feature.properties.nama);
+                        }
+                    }
+                });
+            });
+        
+        // Toggle pakai checkbox
+        document.getElementById("batas-das").addEventListener("change", function(e) {
+            if (e.target.checked) {
+                batasDasLayer.addTo(mymap);
+                mymap.fitBounds(batasDasLayer.getBounds());
+            } else {
+                mymap.removeLayer(batasDasLayer);
+            }
         });
     </script>
 </body>
