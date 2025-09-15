@@ -566,6 +566,11 @@
 
     <!-- JS -->
     <script src="https://unpkg.com/leaflet-search@3.0.0/dist/leaflet-search.min.js"></script>
+    <script>
+        const APP_URL = "{{ url('') }}";
+        const urlBM = APP_URL + "/api/data/bm";
+        const urlAsset = APP_URL + "/api/data/aset";
+    </script>
     <script src="{{ asset('js/map.js') }}"></script>
     <script src="{{ asset('js/detail.js') }}"></script>
     <script>

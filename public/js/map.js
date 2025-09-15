@@ -95,10 +95,6 @@ const iconMap = {
     ),
 };
 
-// --- URL API ---
-const urlBM = "http://localhost:8000/api/data/bm";
-const urlAsset = "http://localhost:8000/api/data/aset";
-
 // --- Storage marker & cache ---
 // simpan data aset supaya tidak fetch ulang
 var markersAset = {};
