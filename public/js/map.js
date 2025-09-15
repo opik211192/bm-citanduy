@@ -95,7 +95,6 @@ const iconMap = {
     ),
 };
 
-// --- Storage marker & cache ---
 // simpan data aset supaya tidak fetch ulang
 var markersAset = {};
 var markersBM = {};
