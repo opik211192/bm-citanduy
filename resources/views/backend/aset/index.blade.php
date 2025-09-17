@@ -42,7 +42,7 @@
         <div class="card-header bg-primary border-0 py-3 px-4">
             <div class="d-flex justify-content-between align-items-center">
                 <h4 class="mb-0 fw-bold text-white">
-                    <i class="fas fa-database me-2"></i> Data Aset
+                    <i class="fas fa-building me-2"></i> Data Aset
                 </h4>
                 <a href="#" class="btn btn-sm btn-success shadow-sm rounded-pill px-3" data-bs-toggle="modal"
                     data-bs-target="#importModal">
@@ -343,20 +343,20 @@
                 },
                {
             data: 'updated_at',
-            render: function(data) {
-            if (!data) return '';
-            const d = new Date(data);
-            
-            const day = ('0' + d.getDate()).slice(-2);
-            const month = ('0' + (d.getMonth() + 1)).slice(-2);
-            const year = d.getFullYear();
-            
-            const hours = ('0' + d.getHours()).slice(-2);
-            const minutes = ('0' + d.getMinutes()).slice(-2);
-            const seconds = ('0' + d.getSeconds()).slice(-2);
-            
-            return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
-            }
+                render: function(data) {
+                    if (!data) return '';
+                        const d = new Date(data);
+                        
+                        const day = ('0' + d.getDate()).slice(-2);
+                        const month = ('0' + (d.getMonth() + 1)).slice(-2);
+                        const year = d.getFullYear();
+                        
+                        const hours = ('0' + d.getHours()).slice(-2);
+                        const minutes = ('0' + d.getMinutes()).slice(-2);
+                        const seconds = ('0' + d.getSeconds()).slice(-2);
+                    
+                        return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+                    }
             },
                 { data: 'options', orderable: false, searchable: false },
             ]

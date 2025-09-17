@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AirBaku;
 use App\Models\Aset;
 use App\Models\Benchmark;
 use Illuminate\Http\Request;
@@ -29,7 +30,12 @@ class HomeController extends Controller
             ->distinct()
             ->orderBy('jenis_pekerjaan')
             ->pluck('jenis_pekerjaan');
+
+        $jenisAirBaku = AirBaku::select('jenis_aset')
+            ->distinct()
+            ->orderBy('jenis_aset')
+            ->pluck('jenis_aset');
             
-        return view('home', compact('jenisPekerjaanListBenchmark', 'jenisPekerjaanAset'));
+        return view('home', compact('jenisPekerjaanListBenchmark', 'jenisPekerjaanAset', 'jenisAirBaku'));
     }
 }

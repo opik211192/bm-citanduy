@@ -76,6 +76,38 @@ function createColoredIcon(color, label = "", borderColor = "#ffffff") {
     });
 }
 
+function getColorByAirBaku(jenis) {
+    switch ((jenis || "").toLowerCase()) {
+        case "sumur":
+            return "#198754"; // hijau
+        case "mata air":
+            return "#20c997"; // teal
+        case "intake sungai":
+            return "#0dcaf0"; // cyan
+        case "pah/absah":
+            return "#ffc107"; // kuning
+        case "tampungan air baku":
+            return "#dc3545"; // merah
+        default:
+            return "#6c757d"; // abu
+    }
+}
+
+// --- Border Color by Status Operasi ---
+function getBorderColorByStatusOperasi(status) {
+    if (!status) return "#ffffff"; // default putih
+    switch (status.trim()) {
+        case "Beroperasi":
+            return "#198754"; // hijau
+        case "Tidak Beroperasi":
+            return "#dc3545"; // merah
+        case "Dalam Pembangunan":
+            return "#ffc107"; // kuning
+        default:
+            return "#ffffff"; // putih
+    }
+}
+
 // mapping icon
 const iconMap = {
     embung: createColoredIcon(getColorByJenis("embung"), "E"),
@@ -98,8 +130,10 @@ const iconMap = {
 // simpan data aset supaya tidak fetch ulang
 var markersAset = {};
 var markersBM = {};
+var markerAirbaku = {};
 var cacheAset = {};
 var cacheBM = {};
+var cacheAirbaku = {};
 
 // --- Layer khusus untuk pencarian ---
 var searchLayer = L.layerGroup().addTo(mymap);
@@ -238,6 +272,72 @@ function renderBM(jenis, data) {
     });
 }
 
+// --- Render Air Baku ---
+function renderAirbaku(jenis, data) {
+    clearMarkers(markerAirbaku, jenis);
+    markerAirbaku[jenis] = [];
+
+    data.forEach((item) => {
+        const iconKey = (item.jenis_aset || "").toLowerCase();
+        const color = getColorByAirBaku(iconKey);
+        const borderColor = getBorderColorByStatusOperasi(item.status_operasi);
+
+        // Label otomatis: ambil huruf pertama tiap kata
+        const label = (item.jenis_aset || "")
+            .split(" ")
+            .map((w) => w[0])
+            .join("")
+            .substring(0, 2)
+            .toUpperCase();
+
+        const marker = L.marker([parseFloat(item.lat), parseFloat(item.long)], {
+            icon: createColoredIcon(color, label, borderColor),
+        }).addTo(mymap);
+
+        marker.bindPopup(`
+            <div class="card shadow-sm border-0" style="width:320px;font-size:0.85rem;border-radius:12px;overflow:hidden;">
+                <div class="card-header bg-info text-white py-2 px-3">
+                    <div class="fw-bold">${item.nama_aset ?? "-"}</div>
+                    <small class="text-light">${item.jenis_aset ?? "-"}</small>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-sm mb-0">
+                        <tr><th style="width:40%;">WS</th><td>${
+                            item.wilayah_sungai ?? "-"
+                        }</td></tr>
+                        <tr><th>DAS</th><td>${item.das ?? "-"}</td></tr>
+                        <tr><th>Koordinat</th><td>${item.lat}, ${
+            item.long
+        }</td></tr>
+                        <tr><th>Lokasi</th><td>${item.village ?? "-"}, ${
+            item.district ?? "-"
+        }, ${item.city ?? "-"}</td></tr>
+                        <tr><th>Tahun</th><td>${
+                            item.tahun_pembangunan ?? "-"
+                        }</td></tr>
+                        <tr><th>Status Operasi</th><td>${
+                            item.status_operasi ?? "-"
+                        }</td></tr>
+                        <tr><th>Status Pekerjaan</th><td>${
+                            item.status_pekerjaan ?? "-"
+                        }</td></tr>
+                    </table>
+                </div>
+                <div class="card-footer bg-light p-2">
+                    <button class="btn btn-sm btn-info w-100" onclick="detailAirbaku(${
+                        item.id
+                    })">
+                        <i class="fa fa-info-circle me-1"></i> Detail
+                    </button>
+                </div>
+            </div>
+        `);
+
+        markerAirbaku[jenis].push(marker);
+        marker.feature = { properties: { name: item.nama_aset } };
+        searchLayer.addLayer(marker);
+    });
+}
 // --- Fetch Data Aset dengan cache ---
 async function fetchDataAset() {
     const selected = [];
@@ -296,6 +396,34 @@ async function fetchDataBM() {
     }
 }
 
+async function fetchDataAirbaku() {
+    const selected = [];
+    document.querySelectorAll(".jenis-air-baku").forEach((cb) => {
+        if (cb.checked) {
+            selected.push(cb.value);
+        } else {
+            clearMarkers(markerAirbaku, cb.value);
+        }
+    });
+
+    for (const jenis of selected) {
+        if (cacheAirbaku[jenis]) {
+            renderAirbaku(jenis, cacheAirbaku[jenis]);
+        } else {
+            const urlParams = new URL(urlAirbaku);
+            urlParams.searchParams.append("jenis_aset[]", jenis);
+            try {
+                const res = await fetch(urlParams);
+                const data = await res.json();
+                cacheAirbaku[jenis] = data;
+                renderAirbaku(jenis, data);
+            } catch (err) {
+                console.error("Error Airbaku:", err.message);
+            }
+        }
+    }
+}
+
 // --- Event listener ---
 const spinner = document.getElementById("spinner");
 document.querySelectorAll(".jenis-aset").forEach((cb) => {
@@ -308,6 +436,13 @@ document.querySelectorAll(".jenis-benchmark").forEach((cb) => {
     cb.addEventListener("change", () => {
         spinner.style.display = "block";
         fetchDataBM().finally(() => (spinner.style.display = "none"));
+    });
+});
+
+document.querySelectorAll(".jenis-air-baku").forEach((cb) => {
+    cb.addEventListener("change", () => {
+        spinner.style.display = "block";
+        fetchDataAirbaku().finally(() => (spinner.style.display = "none"));
     });
 });
 

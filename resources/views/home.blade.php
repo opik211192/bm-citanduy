@@ -504,6 +504,7 @@
                 </div>
             </div>
 
+            {{--
             <!-- Benchmark Section -->
             <div class="accordion-item border rounded shadow-sm mb-3">
                 <h2 class="accordion-header" id="headingBenchmark">
@@ -521,6 +522,89 @@
                             <label class="form-check-label d-flex align-items-center gap-2" for="bm-{{ $jenis }}">
                                 <img src="{{ asset('img/' . strtolower($jenis) . '.png') }}" width="24" height="24">
                                 {{ ucfirst($jenis) }}
+                            </label>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div> --}}
+
+            {{-- <div class="accordion-item border rounded shadow-sm mb-3">
+                <h2 class="accordion-header" id="headingAirBaku">
+                    <button class="accordion-button fw-semibold" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseAirBaku" aria-expanded="true" aria-controls="collapseAirBaku">
+                        <i class="fa-solid fa-droplet me-2 text-success"></i>Air Baku (SIATAB)
+                    </button>
+                </h2>
+                <div id="collapseAirBaku" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        @foreach ($jenisAirBaku as $jenis)
+                        <div class="form-check mb-2">
+                            <input class="form-check-input jenis-air-baku" type="checkbox" id="airbaku-{{ $jenis }}"
+                                value="{{ $jenis }}">
+                            <label class="form-check-label d-flex align-items-center gap-2 fw-bold"
+                                for="airbaku-{{ $jenis }}">
+                                @switch($jenis)
+                                @case('Sumur')
+                                <i class="fa-solid fa-water text-primary"></i>
+                                @break
+                                @case('Mata Air')
+                                <i class="fa-solid fa-droplet text-success"></i>
+                                @break
+                                @case('Intake Sungai')
+                                <i class="fa-solid fa-arrow-down-wide-short text-info"></i>
+                                @break
+                                @case('PAH/ABSAH')
+                                <i class="fa-solid fa-jar text-warning"></i>
+                                @break
+                                @case('Tampungan Air Baku')
+                                <i class="fa-solid fa-database text-danger"></i>
+                                @break
+                                @default
+                                <i class="fa-solid fa-circle text-secondary"></i>
+                                @endswitch
+                                {{ $jenis }}
+                            </label>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div> --}}
+            <div class="accordion-item border rounded shadow-sm mb-3">
+                <h2 class="accordion-header" id="headingAirBaku">
+                    <button class="accordion-button fw-semibold" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseAirBaku" aria-expanded="true" aria-controls="collapseAirBaku">
+                        <i class="fa-solid fa-droplet me-2 text-success"></i>Air Baku (SIATAB)
+                    </button>
+                </h2>
+                <div id="collapseAirBaku" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        @foreach ($jenisAirBaku as $jenis)
+                        @php
+                        // warna berbeda dengan aset
+                        $color = match($jenis) {
+                        'Sumur' => '#198754', // hijau
+                        'Mata Air' => '#20c997', // teal
+                        'Intake Sungai' => '#0dcaf0', // cyan
+                        'PAH/ABSAH' => '#ffc107', // kuning
+                        'Tampungan Air Baku' => '#dc3545', // merah
+                        default => '#6c757d', // abu
+                        };
+                        @endphp
+                        <div class="form-check mb-2">
+                            <input class="form-check-input jenis-air-baku" type="checkbox" id="airbaku-{{ $jenis }}"
+                                value="{{ $jenis }}">
+                            <label class="form-check-label d-flex align-items-center gap-2 fw-bold"
+                                for="airbaku-{{ $jenis }}">
+                                <div style="
+                                    background: {{ $color }};
+                                    width: 24px;
+                                    height: 24px;
+                                    border-radius: 50%;
+                                    border: 2px solid white;
+                                    box-shadow: 0 0 3px rgba(0,0,0,0.5);
+                                "></div>
+                                {{ $jenis }}
                             </label>
                         </div>
                         @endforeach
@@ -570,6 +654,7 @@
         const APP_URL = "{{ url('') }}";
         const urlBM = APP_URL + "/api/data/bm";
         const urlAsset = APP_URL + "/api/data/aset";
+        const urlAirbaku = APP_URL + "/api/data/airbaku";
     </script>
     <script src="{{ asset('js/map.js') }}"></script>
     <script src="{{ asset('js/detail.js') }}"></script>

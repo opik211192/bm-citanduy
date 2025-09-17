@@ -109,6 +109,15 @@
                                 </a>
                             </li>
 
+                            <!-- Air Baku  -->
+                            <li class="nav-item">
+                                <a href="{{ route('airbaku.index') }}"
+                                    class="nav-link {{ request()->routeIs('airbaku.*') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-tint"></i>
+                                    <p>Air Baku (SIATAB)</p>
+                                </a>
+                            </li>
+
                             <!-- Benchmark -->
                             <li class="nav-item">
                                 <a href="{{ route('benchmark.index') }}"

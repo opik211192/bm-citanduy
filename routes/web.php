@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AsetController;
-use App\Http\Controllers\AsetPhotoController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AirBakuController;
+use App\Http\Controllers\AsetPhotoController;
 use App\Http\Controllers\BenchmarkController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DependantDropdownController;
@@ -44,6 +45,7 @@ Route::prefix('benchmark')->middleware('auth')->group(function () {
 
 });
 
+//Route untuk aset
 Route::prefix('aset')->middleware('auth')->group(function () {
     Route::get('/data', [AsetController::class, 'index'])->name('aset.index');
     Route::get('/create', [AsetController::class, 'create'])->name('aset.create');
@@ -61,6 +63,17 @@ Route::prefix('aset')->middleware('auth')->group(function () {
 
     Route::delete('/foto-aset/{id}', [AsetController::class, 'hapusFoto'])->name('foto-aset.hapus');
 
+});
+
+//Route untuk air baku
+Route::prefix('airbaku')->middleware('auth')->group(function () {
+    Route::get('/', [AirBakuController::class, 'index'])->name('airbaku.index');
+    Route::post('/import', [AirBakuController::class, 'import'])->name('airbaku.import');
+
+    // Photos
+    Route::get('/{kode_integrasi}/photos', [AirBakuController::class, 'getPhotos'])->name('airbaku.photos');
+    Route::post('/photos', [AirBakuController::class, 'photos_store'])->name('airbaku.photos.store');
+    Route::delete('/photos/{id}', [AirBakuController::class, 'photos_destroy'])->name('airbaku.photos.destroy');
 });
 
 

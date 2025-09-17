@@ -15,25 +15,36 @@ class AsetImport implements ToModel, WithHeadingRow
         $this->jenisAset = $jenisAset;
     }
 
-    // Excel pakai header di baris pertama
     public function headingRow(): int
     {
         return 2;
     }
 
+    // Helper ambil nilai dari beberapa kemungkinan nama kolom
+    private function getExcelValue(array $row, array $keys, $default = null)
+    {
+        foreach ($keys as $key) {
+            if (!empty($row[$key])) {
+                return $row[$key];
+            }
+        }
+        return $default;
+    }
+
     public function model(array $row)
     {
-        // cek minimal harus ada kode_integrasi dan nama
         if (empty($row['kode_integrasi']) || empty($row['nama'])) {
-            return null; // skip baris kosong
+            return null;
         }
 
-        // Cari aset lama berdasarkan kode_integrasi
         $aset = Aset::where('kode_integrasi', $row['kode_integrasi'])->first();
 
+        // alias untuk tahun mulai
+        $tahunMulai = $this->getExcelValue($row, ['tahun_mulai_pembangunan', 'tahun_pembangunan'], $aset->tahun_mulai_bangunan ?? '');
+        $tahunSelesai = $this->getExcelValue($row, ['tahun_selesai_pembangunan'], $aset->tahun_selesai_bangunan ?? '');
+
         if ($aset) {
-            // update hanya kolom yang ada di excel, kolom lain tetap
-            $aset->updateOrCreate([
+            $aset->update([
                 'kode_bmn'       => $row['kode_bmn'] ?? $aset->kode_bmn,
                 'nama_aset'      => $row['nama'] ?? $aset->nama_aset,
                 'jenis_aset'     => $this->jenisAset,
@@ -47,20 +58,18 @@ class AsetImport implements ToModel, WithHeadingRow
 
                 'lat'  => $row['latitude'] ?? $aset->lat,
                 'long' => $row['longitude'] ?? $aset->long,
-                'utm_x' => $aset->utm_x, // default tidak berubah
-                'utm_y' => $aset->utm_y,
 
-                'tahun_mulai_bangunan'   => $row['tahun_mulai_pembangunan'] ?? $aset->tahun_mulai_bangunan,
-                'tahun_selesai_bangunan' => $row['tahun_selesai_pembangunan'] ?? $aset->tahun_selesai_bangunan,
+                // pakai helper alias
+                'tahun_mulai_bangunan'   => $tahunMulai,
+                'tahun_selesai_bangunan' => $tahunSelesai,
                 'kondisi_bangunan'       => $row['kondisi_bangunan'] ?? $aset->kondisi_bangunan,
                 'status_operasi'         => $row['status_operasi'] ?? $aset->status_operasi,
                 'kondisi_infrastruktur'  => $row['kondisi_infrastruktur'] ?? $aset->kondisi_infrastruktur,
             ]);
 
-            return null; // return null biar tidak bikin record baru
+            return null;
         }
 
-        // kalau tidak ada, buat aset baru
         return new Aset([
             'kode_integrasi' => $row['kode_integrasi'] ?? uniqid('ASSET_'),
             'kode_bmn'       => $row['kode_bmn'] ?? '',
@@ -76,11 +85,10 @@ class AsetImport implements ToModel, WithHeadingRow
 
             'lat'  => $row['latitude'] ?? '',
             'long' => $row['longitude'] ?? '',
-            'utm_x' => null,
-            'utm_y' => null,
 
-            'tahun_mulai_bangunan'   => $row['tahun_mulai_pembangunan'] ?? '',
-            'tahun_selesai_bangunan' => $row['tahun_selesai_pembangunan'] ?? '',
+            // pakai helper alias juga
+            'tahun_mulai_bangunan'   => $this->getExcelValue($row, ['tahun_mulai_pembangunan', 'tahun_pembangunan'], ''),
+            'tahun_selesai_bangunan' => $this->getExcelValue($row, ['tahun_selesai_pembangunan'], ''),
             'kondisi_bangunan'       => $row['kondisi_bangunan'] ?? '',
             'status_operasi'         => $row['status_operasi'] ?? '',
             'kondisi_infrastruktur'  => $row['kondisi_infrastruktur'] ?? '',
