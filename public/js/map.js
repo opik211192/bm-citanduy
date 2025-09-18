@@ -87,7 +87,7 @@ function getColorByAirBaku(jenis) {
         case "pah/absah":
             return "#ffc107"; // kuning
         case "tampungan air baku":
-            return "#dc3545"; // merah
+            return "#9f4951"; // merah
         default:
             return "#6c757d"; // abu
     }

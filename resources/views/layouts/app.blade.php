@@ -105,7 +105,7 @@
                                 <a href="{{ route('aset.index') }}"
                                     class="nav-link {{ request()->routeIs('aset.*') ? 'active' : '' }}">
                                     <i class="nav-icon fas fa-building"></i>
-                                    <p>Aset</p>
+                                    <p>Infrastruktur</p>
                                 </a>
                             </li>
 

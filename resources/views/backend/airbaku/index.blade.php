@@ -18,6 +18,38 @@
         justify-content: center;
         flex-direction: column;
     }
+
+    /* kasih warna badge sesuai jenis */
+    .badge-sumur {
+        background-color: #198754;
+        /* hijau */
+        color: #fff;
+    }
+
+    .badge-mata-air {
+        background-color: #20c997;
+        /* teal */
+        color: #fff;
+    }
+
+    .badge-intake {
+        background-color: #0dcaf0;
+        /* cyan */
+        color: #fff;
+    }
+
+    .badge-pah {
+        background-color: #ffc107;
+        /* kuning */
+        color: #212529;
+        /* teks gelap biar kebaca di kuning */
+    }
+
+    .badge-tampungan {
+        background-color: #9f4951;
+        /* merah */
+        color: #fff;
+    }
 </style>
 @endpush
 
@@ -220,11 +252,32 @@
         columns: [
             { data: 'DT_RowIndex', orderable: false, searchable: false },
             { data: 'nama_aset' },
-            { data: 'jenis_aset' },
+            { data: 'jenis_aset', 
+                render: function(data) {
+                    if (!data) return '';
+                    let badgeClass = '';
+                    switch (data) {
+                        case 'Sumur': badgeClass = 'badge-sumur'; break;
+                        case 'Mata Air': badgeClass = 'badge-mata-air'; break;
+                        case 'Intake Sungai': badgeClass = 'badge-intake'; break;
+                        case 'PAH/ABSAH': badgeClass = 'badge-pah'; break;
+                        case 'Tampungan Air Baku': badgeClass = 'badge-tampungan'; break;
+                    }
+                    return `<span class="badge ${badgeClass}">${data}</span>`;
+                } 
+            },
             { data: 'kode_bmn' },
             { data: 'koordinat' , orderable: false, searchable: false },
             { data: 'tahun_pembangunan' },
-            { data: 'status_operasi' },
+            { data: 'status_operasi', render: function(data, type, row) {
+            if (data && data.toLowerCase() === 'beroperasi') {
+            return '<span class="badge bg-success">Beroperasi</span>';
+            } else if (data && data.toLowerCase() === 'tidak beroperasi') {
+            return '<span class="badge bg-danger">Tidak Beroperasi</span>';
+            } else {
+            return '<span class="badge bg-secondary">-</span>';
+            }
+            } },
             { data: 'status_pekerjaan' },
             { data: 'updated_at', 
                 render: function(data) {

@@ -279,9 +279,18 @@
         /* Input search posisinya expand ke kiri */
         .leaflet-control-search .search-input {
             text-align: left;
-            /* biar teks mulai dari kiri */
             padding-right: 30px;
-            /* kasih ruang untuk icon di kanan */
+            width: 260px;
+            transition: width 0.3s ease;
+        }
+
+        .leaflet-control-search.active .search-input {
+            width: 260px;
+        }
+
+        .leaflet-control-search .search-input:focus {
+            width: 260px;
+            /* ukuran pas diklik/focus */
         }
 
         /* Posisikan tombol search (ikon lupanya) di kanan */
@@ -587,7 +596,7 @@
                         'Mata Air' => '#20c997', // teal
                         'Intake Sungai' => '#0dcaf0', // cyan
                         'PAH/ABSAH' => '#ffc107', // kuning
-                        'Tampungan Air Baku' => '#dc3545', // merah
+                        'Tampungan Air Baku' => '#9f4951', // merah
                         default => '#6c757d', // abu
                         };
                         @endphp
@@ -736,6 +745,7 @@
             }
         });
     </script>
+
 </body>
 
 </html>

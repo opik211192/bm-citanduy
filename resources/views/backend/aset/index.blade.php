@@ -42,11 +42,11 @@
         <div class="card-header bg-primary border-0 py-3 px-4">
             <div class="d-flex justify-content-between align-items-center">
                 <h4 class="mb-0 fw-bold text-white">
-                    <i class="fas fa-building me-2"></i> Data Aset
+                    <i class="fas fa-building me-2"></i> Data Infrastruktur
                 </h4>
                 <a href="#" class="btn btn-sm btn-success shadow-sm rounded-pill px-3" data-bs-toggle="modal"
                     data-bs-target="#importModal">
-                    <i class="fas fa-file-excel me-1"></i> Import Aset
+                    <i class="fas fa-file-excel me-1"></i> Import Infrastruktur
                 </a>
                 {{-- <a href="{{ route('aset.create') }}" class="btn btn-sm btn-light shadow-sm rounded-pill px-3">
                     <i class="fas fa-plus-circle me-1 text-primary"></i> Tambah Aset
@@ -59,8 +59,8 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Aset</th>
-                            <th>Jenis Aset</th>
+                            <th>Nama</th>
+                            <th>Jenis</th>
                             <th>Kode BMN</th>
                             <th>Koordinat</th>
                             <th>Tahun Bangun</th>
@@ -82,14 +82,14 @@
             class="modal-content">
             @csrf
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title"><i class="fas fa-file-excel"></i> Import Data Aset</h5>
+                <h5 class="modal-title"><i class="fas fa-file-excel"></i> Import Data Infrastruktur</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="jenis_aset" class="form-label">Pilih Jenis Aset</label>
+                    <label for="jenis_aset" class="form-label">Pilih Jenis Infrastruktur</label>
                     <select name="jenis_aset" id="jenis_aset" class="form-select" required>
-                        <option value="">-- Pilih Jenis Aset --</option>
+                        <option value="">-- Pilih Jenis Infrastruktur --</option>
                         <option value="Embung">Embung</option>
                         <option value="Bendung">Bendung</option>
                         <option value="Bendungan">Bendungan</option>
@@ -135,7 +135,7 @@
             <div class="modal-header bg-primary text-white">
                 <div class="d-flex flex-column w-100">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="modal-title mb-0" id="asetModalLabel">Detail Aset</h5>
+                        <h5 class="modal-title mb-0" id="asetModalLabel">Detail Infrastruktur</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="d-flex justify-content-end mt-1">
@@ -152,11 +152,11 @@
                 <!-- Tabel detail aset -->
                 <table class="table table-bordered" style="width:60%;">
                     <tr>
-                        <th>Nama Aset</th>
+                        <th>Nama Infrastruktur</th>
                         <td id="detailNama"></td>
                     </tr>
                     <tr>
-                        <th>Jenis Aset</th>
+                        <th>Jenis Infrastruktur</th>
                         <td id="detailJenis"></td>
                     </tr>
                     <tr>
