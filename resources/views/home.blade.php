@@ -454,7 +454,7 @@
                 <h2 class="accordion-header" id="headingAset">
                     <button class="accordion-button fw-semibold" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseAset" aria-expanded="true" aria-controls="collapseAset">
-                        <i class="fa-solid fa-building me-2 text-primary"></i>Data Aset
+                        <i class="fa-solid fa-building me-2 text-primary"></i>Data Infrastruktur
                     </button>
                 </h2>
                 <div id="collapseAset" class="accordion-collapse collapse show">
