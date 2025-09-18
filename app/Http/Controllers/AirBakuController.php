@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\AirBaku;
 use App\Models\AirBakuPhoto;
+use App\Http\Resources\AirbakuResource;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Http\Resources\AirBakuResource;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
 
@@ -268,7 +268,7 @@ class AirBakuController extends Controller
             }
 
             $dataAirBaku = $query->get();
-            return response()->json(AirBakuResource::collection($dataAirBaku), 200);
+            return response()->json(AirbakuResource::collection($dataAirBaku), 200);
 
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
