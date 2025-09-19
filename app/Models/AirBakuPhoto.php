@@ -12,7 +12,7 @@ class AirBakuPhoto extends Model
 
     public function airBaku()
     {
-        return $this->belongsTo(AirBaku::class);
+        return $this->belongsTo(AirBaku::class, 'kode_integrasi', 'kode_integrasi');
     }
 
 }

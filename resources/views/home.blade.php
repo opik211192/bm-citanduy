@@ -448,7 +448,7 @@
                 style="font-size: .9rem;"></button>
         </div>
 
-        <div class="accordion accordion-flush px-2 pt-1" id="sidebarAccordion">
+        <div class="accordion accordion-flush px-2 pt-1 mt-2" id="sidebarAccordion">
             <!-- Aset Section -->
             <div class="accordion-item border rounded shadow-sm mb-3">
                 <h2 class="accordion-header" id="headingAset">

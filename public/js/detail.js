@@ -53,12 +53,53 @@ async function detailAset(id) {
         // aktifkan tombol download di header
         downloadBtn.classList.remove("d-none");
         downloadBtn.onclick = () => {
-            window.open(`/aset/download/${detailAset.id}`, "_blank");
+            //window.open(`/aset/download/${detailAset.id}`, "_blank");
+            //window.open("#");
         };
 
         document.getElementById("sidebar-right").classList.add("active");
     } catch (error) {
         detailContentDiv.innerHTML = `<p class="text-danger">Gagal memuat detail</p>`;
         console.error("Failed to fetch detail aset:", error);
+    }
+}
+
+async function detailAirbaku(id) {
+    const detailContentDiv = document.getElementById("detail-content");
+    const downloadBtn = document.getElementById("download-aset-button");
+
+    // tampilkan loading dulu
+    detailContentDiv.innerHTML = `
+        <div class="d-flex flex-column justify-content-center align-items-center" 
+             style="height:300px;">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Loading detail air baku...</p>
+        </div>
+    `;
+    downloadBtn.classList.add("d-none"); // sembunyikan tombol download sementara
+
+    try {
+        const detailResponse = await fetch(`/api/data/airbaku/${id}`);
+        if (!detailResponse.ok) throw new Error("Network response was not ok");
+
+        const detailAirbaku = await detailResponse.json();
+
+        // tampilkan iframe detail
+        detailContentDiv.innerHTML = `
+            <iframe src="/airbaku/print/${detailAirbaku.id}" 
+                title="Air Baku Detail" width="100%" height="600"></iframe>
+        `;
+
+        // aktifkan tombol download
+        downloadBtn.classList.remove("d-none");
+        downloadBtn.onclick = () => {
+            //window.open(`/airbaku/download/${detailAirbaku.id}`, "_blank");
+            //window.open("#");
+        };
+
+        document.getElementById("sidebar-right").classList.add("active");
+    } catch (error) {
+        detailContentDiv.innerHTML = `<p class="text-danger">Gagal memuat detail air baku</p>`;
+        console.error("Failed to fetch detail airbaku:", error);
     }
 }

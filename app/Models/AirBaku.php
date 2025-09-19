@@ -13,6 +13,6 @@ class AirBaku extends Model
 
     public function photos()
     {
-        return $this->hasMany(AirBakuPhoto::class);
+        return $this->hasMany(AirBakuPhoto::class, 'kode_integrasi', 'kode_integrasi');
     }
 }

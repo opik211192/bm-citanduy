@@ -32,6 +32,8 @@ Route::get('/benchmark/print/{id}', [BenchmarkController::class, 'print'])->name
 Route::get('/benchmark/download/{id}', [BenchmarkController::class, 'download'])->name('benchmark.download');
 
 Route::get('/aset/print/{id}', [AsetController::class, 'print'])->name('aset.print');
+Route::get('/airbaku/print/{id}', [AirBakuController::class, 'print'])->name('airbaku.print');
+
 
 
 Route::prefix('benchmark')->middleware('auth')->group(function () {
@@ -74,6 +76,8 @@ Route::prefix('airbaku')->middleware('auth')->group(function () {
     Route::get('/{kode_integrasi}/photos', [AirBakuController::class, 'getPhotos'])->name('airbaku.photos');
     Route::post('/photos', [AirBakuController::class, 'photos_store'])->name('airbaku.photos.store');
     Route::delete('/photos/{id}', [AirBakuController::class, 'photos_destroy'])->name('airbaku.photos.destroy');
+
+    // Print
 });
 
 

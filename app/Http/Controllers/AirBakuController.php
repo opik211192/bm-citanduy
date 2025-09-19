@@ -285,4 +285,10 @@ class AirBakuController extends Controller
         }
     }
 
+    public function print($id)
+    {
+        $airBaku = AirBaku::with('photos')->findOrFail($id);
+        return view('backend.airbaku.detail', compact('airBaku'));
+    }
+
 }

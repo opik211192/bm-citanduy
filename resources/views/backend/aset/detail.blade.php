@@ -123,7 +123,7 @@
     <table style="margin-top: 30px">
         <thead>
             <tr>
-                <th colspan="18" class="section-title">DESKRIPSI ASET BBWS CITANDUY</th>
+                <th colspan="18" class="section-title">DESKRIPSI INFRASTRUKTUR</th>
             </tr>
         </thead>
         <tbody>
@@ -132,11 +132,11 @@
                 <td colspan="14">{{ $asset->kode_integrasi }}</td>
             </tr>
             <tr>
-                <td colspan="4"><b>Nama Aset</b></td>
+                <td colspan="4"><b>Nama</b></td>
                 <td colspan="14">{{ Str::title($asset->nama_aset) }}</td>
             </tr>
             <tr>
-                <td colspan="4"><b>Jenis Aset</b></td>
+                <td colspan="4"><b>Jenis</b></td>
                 <td colspan="14">{{ Str::title($asset->jenis_aset) }}</td>
             </tr>
             <tr>
