@@ -294,6 +294,18 @@ function renderAirbaku(jenis, data) {
             icon: createColoredIcon(color, label, borderColor),
         }).addTo(mymap);
 
+        function getStatusOperasiBadge(status) {
+            if (!status || status.trim() === "") return `-`;
+            switch (status.trim()) {
+                case "Beroperasi":
+                    return `<span class="badge bg-success">${status}</span>`;
+                case "Tidak Beroperasi":
+                    return `<span class="badge bg-danger">${status}</span>`;
+                default:
+                    return status;
+            }
+        }
+
         marker.bindPopup(`
             <div class="card shadow-sm border-0" style="width:320px;font-size:0.85rem;border-radius:12px;overflow:hidden;">
                 <div class="card-header bg-info text-white py-2 px-3">
@@ -315,9 +327,10 @@ function renderAirbaku(jenis, data) {
                         <tr><th>Tahun</th><td>${
                             item.tahun_pembangunan ?? "-"
                         }</td></tr>
-                        <tr><th>Status Operasi</th><td>${
-                            item.status_operasi ?? "-"
-                        }</td></tr>
+                        <tr><th>Status Operasi</th><td>
+                            ${getStatusOperasiBadge(
+                                item.status_operasi ?? "-"
+                            )}</td></tr>
                         <tr><th>Status Pekerjaan</th><td>${
                             item.status_pekerjaan ?? "-"
                         }</td></tr>
