@@ -115,7 +115,7 @@
             </td>
             <td colspan="5" class="col-right">
                 <div><b>Kode BMN</b></div>
-                {{ $airBaku->kode_bmn }}
+                {{ $airBaku->kode_bmn ?? '-' }}
             </td>
         </tr>
     </table>
