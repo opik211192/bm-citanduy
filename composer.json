@@ -20,6 +20,7 @@
         "laravolt/indonesia": "^0.34.0",
         "maatwebsite/excel": "^3.1",
         "rap2hpoutre/laravel-log-viewer": "2.2.0",
+        "spatie/laravel-permission": "^6.21",
         "yajra/laravel-datatables": "^9.0"
     },
     "require-dev": {

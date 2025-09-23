@@ -14,7 +14,8 @@ use Laravolt\Indonesia\Models\Village;
 use Illuminate\Support\Facades\Storage;
 use Laravolt\Indonesia\Models\District;
 use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;   // atau Imagick kalau server Anda ada extension Imagick
+use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Facades\Auth;
 
 class AsetController extends Controller
 {
@@ -99,21 +100,26 @@ class AsetController extends Controller
                 $nestedData['kondisi_infrastruktur'] = $aset->kondisi_infrastruktur;
                 $nestedData['status_operasi'] = $aset->status_operasi;
                 $nestedData['updated_at'] = $aset->updated_at;
-                $nestedData['options'] = '
-                    <div class="d-flex">
-                        <button type="button" 
-                            class="btn btn-outline-primary btn-sm me-1 mr-1 show-aset" 
-                            data-id="'.$aset->id.'" 
-                            title="Detail">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                       <a href="javascript:void(0)" 
-                            class="btn btn-outline-success btn-sm me-1 btn-tambah-foto" 
-                            data-id="'.$aset->kode_integrasi.'"
-                            title="Tambah Foto">
-                            <i class="fas fa-camera"></i>
-                        </a>
-                    </div>';
+                $nestedData['options'] = '<div class="d-flex">';
+                $nestedData['options'] .= '<button type="button" 
+                    class="btn btn-outline-primary btn-sm me-1 show-aset" 
+                    data-id="'.$aset->id.'" 
+                    title="Detail">
+                    <i class="fas fa-info-circle"></i>
+                </button>';
+
+                // cek permission sebelum render tombol "Tambah Foto"
+                if (Auth::user()->can('upload foto infrastruktur')) {
+                    $nestedData['options'] .= '<a href="javascript:void(0)" 
+                        class="btn btn-outline-success btn-sm me-1 btn-tambah-foto" 
+                        data-id="'.$aset->kode_integrasi.'"
+                        title="Tambah Foto">
+                        <i class="fas fa-camera"></i>
+                    </a>';
+                }
+
+                $nestedData['options'] .= '</div>';
+
                 $data[] = $nestedData;
             }
 

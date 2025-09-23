@@ -44,10 +44,12 @@
                 <h4 class="mb-0 fw-bold text-white">
                     <i class="fas fa-building me-2"></i> Data Infrastruktur
                 </h4>
+                @can('import infrastruktur')
                 <a href="#" class="btn btn-sm btn-success shadow-sm rounded-pill px-3" data-bs-toggle="modal"
                     data-bs-target="#importModal">
                     <i class="fas fa-file-excel me-1"></i> Import Infrastruktur
                 </a>
+                @endcan
                 {{-- <a href="{{ route('aset.create') }}" class="btn btn-sm btn-light shadow-sm rounded-pill px-3">
                     <i class="fas fa-plus-circle me-1 text-primary"></i> Tambah Aset
                 </a> --}}
@@ -156,7 +158,7 @@
                         <td id="detailNama"></td>
                     </tr>
                     <tr>
-                        <th>Jenis Infrastruktur</th>
+                        <th>Jenis Infrastruktur </th>
                         <td id="detailJenis"></td>
                     </tr>
                     <tr>

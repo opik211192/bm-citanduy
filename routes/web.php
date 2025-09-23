@@ -4,11 +4,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AsetController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AirBakuController;
 use App\Http\Controllers\AsetPhotoController;
 use App\Http\Controllers\BenchmarkController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DependantDropdownController;
+use App\Http\Controllers\RoleandPermissionController;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 
 /*
@@ -36,7 +38,7 @@ Route::get('/airbaku/print/{id}', [AirBakuController::class, 'print'])->name('ai
 
 
 
-Route::prefix('benchmark')->middleware('auth')->group(function () {
+Route::prefix('benchmark')->middleware(['auth', 'role:Admin|Benchmark Manager'])->group(function () {
     Route::get('/data', [BenchmarkController::class, 'index'])->name('benchmark.index');
     Route::get('/create', [BenchmarkController::class, 'create'])->name('benchmark.create');
     Route::post('/create', [BenchmarkController::class, 'store'])->name('benchmark.store');
@@ -47,28 +49,38 @@ Route::prefix('benchmark')->middleware('auth')->group(function () {
 
 });
 
-//Route untuk aset
-Route::prefix('aset')->middleware('auth')->group(function () {
-    Route::get('/data', [AsetController::class, 'index'])->name('aset.index');
-    Route::get('/create', [AsetController::class, 'create'])->name('aset.create');
-    Route::post('/create', [AsetController::class, 'store'])->name('aset.store');
-    Route::get('/show/{id}', [AsetController::class, 'show'])->name('aset.show');
-    Route::get('/edit/{aset}', [AsetController::class, 'edit'])->name('aset.edit');
-    Route::put('/edit/{aset}', [AsetController::class, 'update'])->name('aset.update');
-    Route::delete('/delete/{aset}', [AsetController::class, 'destroy'])->name('aset.destroy');
-    Route::post('/import', [AsetController::class, 'import'])->name('aset.import');
+// Route untuk aset (Infrastruktur)
+Route::prefix('infrastruktur')->middleware(['auth'])->group(function () {
+    // Hanya yang punya permission 'view infrastruktur' bisa akses index & show
+    Route::get('/data', [AsetController::class, 'index'])->middleware('permission:view infrastruktur')->name('aset.index');
+    Route::get('/show/{id}', [AsetController::class, 'show'])->middleware('permission:view infrastruktur')->name('aset.show');
 
-    Route::get('/photos/{kode_integrasi}', [AsetController::class, 'getPhotos'])->name('aset.photos');
-    Route::delete('/photos/{kode_integrasi}', [AsetController::class, 'photos_destroy'])->name('photos.destroy');
-    Route::post('/photos', [AsetController::class, 'photos_store'])->name('photos.store');
+    // Hanya yang punya permission 'import infrastruktur' bisa akses create & store
+    Route::get('/create', [AsetController::class, 'create'])->middleware('permission:import infrastruktur')->name('aset.create');
 
+    Route::post('/create', [AsetController::class, 'store'])->middleware('permission:import infrastruktur')->name('aset.store');
 
-    Route::delete('/foto-aset/{id}', [AsetController::class, 'hapusFoto'])->name('foto-aset.hapus');
+    // Edit & update (permission disesuaikan)
+    Route::get('/edit/{aset}', [AsetController::class, 'edit'])->middleware('permission:upload foto infrastruktur') ->name('aset.edit');
 
+    Route::put('/edit/{aset}', [AsetController::class, 'update'])->middleware('permission:upload foto infrastruktur')->name('aset.update');
+
+    Route::delete('/delete/{aset}', [AsetController::class, 'destroy']) ->middleware('permission:delete infrastruktur') ->name('aset.destroy');
+
+    Route::post('/import', [AsetController::class, 'import'])->middleware('permission:import infrastruktur')->name('aset.import');
+
+    Route::get('/photos/{kode_integrasi}', [AsetController::class, 'getPhotos'])->middleware('permission:view infrastruktur')->name('aset.photos');
+
+    Route::delete('/photos/{kode_integrasi}', [AsetController::class, 'photos_destroy'])->middleware('permission:upload foto infrastruktur')->name('photos.destroy');
+
+    Route::post('/photos', [AsetController::class, 'photos_store'])->middleware('permission:upload foto infrastruktur')->name('photos.store');
+
+    Route::delete('/foto-aset/{id}', [AsetController::class, 'hapusFoto'])->middleware('permission:upload foto infrastruktur') ->name('foto-aset.hapus');
 });
 
+
 //Route untuk air baku
-Route::prefix('airbaku')->middleware('auth')->group(function () {
+Route::prefix('airbaku')->middleware(['auth', 'role:Admin|Air Baku Manager'])->group(function () {
     Route::get('/', [AirBakuController::class, 'index'])->name('airbaku.index');
     Route::post('/import', [AirBakuController::class, 'import'])->name('airbaku.import');
 
@@ -80,6 +92,34 @@ Route::prefix('airbaku')->middleware('auth')->group(function () {
     // Print
 });
 
+// Route untuk manajemen user (hanya Admin)
+Route::middleware(['auth', 'role:Admin'])->group(function () {
+    Route::resource('users', UserController::class);
+});
+
+Route::prefix('roles')->middleware(['auth', 'role:Admin'])->group(function(){
+    //roles
+    Route::get('/', [RoleandPermissionController::class, 'index'])->name('roles.index');
+    Route::post('/', [RoleandPermissionController::class, 'store'])->name('roles.store');
+    Route::put('/{id}', [RoleandPermissionController::class, 'update'])->name('roles.update');
+    Route::delete('/{id}', [RoleandPermissionController::class, 'destroy'])->name('roles.destroy');
+
+    //permissions
+    Route::post('/permissions', [RoleandPermissionController::class, 'storePermission'])->name('permissions.store');
+    Route::put('/permissions/{id}', [RoleandPermissionController::class, 'updatePermission'])->name('permissions.update');
+    Route::delete('/permissions/{id}', [RoleandPermissionController::class, 'destroyPermission'])->name('permissions.destroy');
+     
+    //assign permission
+    Route::post('/assign-permission', [RoleandPermissionController::class, 'assignPermission'])->name('roles.assign-permission');
+    Route::delete('/{id}/revoke-all', [RoleandPermissionController::class, 'revokeAll'])->name('roles.revoke-all');
+
+    //get roles
+    Route::get('/get-roles', [RoleandPermissionController::class, 'getRoles'])->name('roles.get-roles');
+    //form check
+    Route::get('/permissions/form-check', [RoleandPermissionController::class, 'formCheck'])->name('roles.form-check');
+
+});
+
 
 Route::get('/provinces', [DependantDropdownController::class, 'provinces'])->name('provinces');
 Route::get('/cities', [DependantDropdownController::class, 'cities'])->name('cities');
@@ -87,4 +127,6 @@ Route::get('/districts', [DependantDropdownController::class, 'districts'])->nam
 Route::get('/villages', [DependantDropdownController::class, 'villages'])->name('villages');
 
 //log-viewers
-Route::get('log-viewers', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+Route::get('log-viewers', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])
+        ->middleware(['auth, role:Admin'])
+        ->name('log-viewers');

@@ -10,6 +10,7 @@ use Intervention\Image\ImageManager;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Facades\Auth;
 
 class AirBakuController extends Controller
 {
@@ -81,21 +82,25 @@ class AirBakuController extends Controller
                 $nestedData['status_operasi'] = $air->status_operasi;
                 $nestedData['status_pekerjaan'] = $air->status_pekerjaan;
                 $nestedData['updated_at'] = $air->updated_at;
-                $nestedData['options'] = '
-                    <div class="d-flex">
-                        <button type="button" 
-                            class="btn btn-outline-primary btn-sm me-1 show-airbaku" 
-                            data-id="'.$air->id.'" 
-                            title="Detail">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                    <a href="javascript:void(0)" 
-                            class="btn btn-outline-success btn-sm me-1 btn-tambah-foto" 
-                            data-id="'.$air->kode_integrasi.'"
-                            title="Tambah Foto">
-                            <i class="fas fa-camera"></i>
-                        </a>
-                    </div>';
+                $nestedData['options'] = '<div class="d-flex">';
+                $nestedData['options'] .= '<button type="button" 
+                    class="btn btn-outline-primary btn-sm me-1 show-airbaku" 
+                    data-id="'.$air->id.'" 
+                    title="Detail">
+                    <i class="fas fa-info-circle"></i>
+                </button>';
+
+                // cek permission sebelum render tombol "Tambah Foto"
+                if (Auth::user()->can('upload foto airbaku')) {
+                    $nestedData['options'] .= '<a href="javascript:void(0)" 
+                        class="btn btn-outline-success btn-sm me-1 btn-tambah-foto" 
+                        data-id="'.$air->kode_integrasi.'"
+                        title="Tambah Foto">
+                        <i class="fas fa-camera"></i>
+                    </a>';
+                }
+
+                $nestedData['options'] .= '</div>';
                 $data[] = $nestedData;
             }
 
