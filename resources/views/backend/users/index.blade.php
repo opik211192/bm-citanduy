@@ -103,11 +103,11 @@
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->roles->pluck('name')->implode(', ') }}</td>
                         <td>
-                            <a href="#" class="btn btn-sm btn-warning btn-edit" title="Edit">
+                            <a href="#" class="btn btn-sm btn-outline-dark btn-edit" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
                             @if(!$user->hasRole('Admin'))
-                            <button class="btn btn-sm btn-danger btn-delete" title="Hapus">
+                            <button class="btn btn-sm btn-outline-danger btn-delete" title="Hapus">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                             @endif

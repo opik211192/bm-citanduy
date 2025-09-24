@@ -51,10 +51,10 @@
                                     <td>{{ $role->name }}</td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-dark btn-edit">
-                                            <i class="fa fa-pencil" title="Edit"></i>
+                                            <i class="fas fa-edit" title="Edit"></i>
                                         </button>
                                         <button class="btn btn-sm btn-outline-danger btn-delete">
-                                            <i class="fa fa-trash" title="Hapus"></i>
+                                            <i class="fas fa-trash-alt" title="Hapus"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -119,10 +119,10 @@
                                     <td>{{ $permission->name }}</td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-dark btn-edit-permission">
-                                            <i class="fa fa-pencil" title="Edit"></i>
+                                            <i class="fas fa-edit" title="Edit"></i>
                                         </button>
                                         <button class="btn btn-sm btn-outline-danger btn-delete-permission">
-                                            <i class="fa fa-trash" title="Hapus"></i>
+                                            <i class="fas fa-trash-alt" title="Hapus"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -206,7 +206,7 @@
                         <tbody>
                             @foreach($roles as $role)
                             <tr data-id="{{ $role->id }}">
-                                <td>{{ $role->name }}</td>
+                                <td style="font-weight: bold">{{ $role->name }}</td>
                                 <td>
                                     @if($role->permissions->count())
                                     {{ $role->permissions->pluck('name')->implode(', ') }}
@@ -215,11 +215,11 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline-dark btn-edit-assign"><i class="fa fa-pencil"
+                                    <button class="btn btn-sm btn-outline-dark btn-edit-assign"><i class="fas fa-edit"
                                             title="Edit"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-danger btn-delete-assign"><i
-                                            class="fa fa-trash" title="Hapus"></i></button>
+                                            class="fas fa-trash-alt" title="Hapus"></i></button>
                                 </td>
                             </tr>
                             @endforeach
