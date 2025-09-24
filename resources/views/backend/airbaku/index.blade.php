@@ -80,7 +80,7 @@
                             <th>Tahun Pembangunan</th>
                             <th>Status Operasi</th>
                             <th>Status Pekerjaan</th>
-                            <th>Updated At</th>
+                            <th>Tgl. Pembaharuan</th>
                             <th>Options</th>
                         </tr>
                     </thead>
