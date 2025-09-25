@@ -173,7 +173,13 @@ function renderAset(jenis, data) {
 
     data.forEach((item) => {
         const iconKey = (item.jenis_aset || "").toLowerCase();
-        const borderColor = getBorderColorByKondisi(item.kondisi_infrastruktur);
+        // Ambil kondisi dari infrastruktur dulu, kalau kosong pakai bangunan
+        const kondisiFinal =
+            item.kondisi_infrastruktur &&
+            item.kondisi_infrastruktur.trim() !== ""
+                ? item.kondisi_infrastruktur
+                : item.kondisi_bangunan;
+        const borderColor = getBorderColorByKondisi(kondisiFinal);
         const marker = L.marker([parseFloat(item.lat), parseFloat(item.long)], {
             icon: createColoredIcon(
                 getColorByJenis(iconKey),
@@ -217,7 +223,7 @@ function renderAset(jenis, data) {
             item.district
         }, ${item.city}</td></tr>
                         <tr><th>Kondisi</th><td>${getKondisiBadge(
-                            item.kondisi_infrastruktur
+                            kondisiFinal
                         )}</td></tr>
                     </table>
                 </div>
