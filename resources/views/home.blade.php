@@ -69,7 +69,7 @@
             position: fixed;
             top: 70px;
             bottom: 0;
-            width: 320px;
+            width: 375px;
             padding: 20px;
             background-color: #ffffff;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -77,7 +77,7 @@
             overflow-y: auto;
             z-index: 9999;
             transition: left 0.3s ease;
-            left: -320px;
+            left: -375px;
         }
 
         .sidebar.active {
@@ -449,6 +449,33 @@
         </div>
 
         <div class="accordion accordion-flush px-2 pt-1 mt-2" id="sidebarAccordion">
+
+            <!-- Tampilkan DAS -->
+            <div class="accordion-item border rounded shadow-sm mb-3">
+                <h2 class="accordion-header" id="headingBatas">
+                    <button class="accordion-button fw-semibold" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseBatas" aria-expanded="true" aria-controls="collapseBatas">
+                        <i class="fa-solid fa-water  me-2 text-danger"></i>DAS
+                    </button>
+                </h2>
+                <div id="collapseBatas" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="batas-das">
+                            <label class="form-check-label fw-bold" for="batas-das">
+                                <i class="fa-solid fa-draw-polygon me-2 text-primary"></i>Batas DAS
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="sungai-das">
+                            <label class="form-check-label fw-bold" for="sungai-das">
+                                <i class="fa-solid fa-droplet me-2 text-info"></i>Sungai
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Aset Section -->
             <div class="accordion-item border rounded shadow-sm mb-3">
                 <h2 class="accordion-header" id="headingAset">
@@ -485,7 +512,8 @@
                                 border: 2px solid white;
                                 box-shadow: 0 0 3px rgba(0,0,0,0.5);
                             "></div>
-                                {{ ucfirst($jenis) }}
+                                <span class="fw-bold">{{ ucfirst($jenis) }}</span>
+                                <span class="fw-normal">({{ $asetCounts[$jenis] ?? 0 }})</span>
                             </label>
                         </div>
                         @endforeach
@@ -493,25 +521,7 @@
                 </div>
             </div>
 
-            <!-- Tampilkan DAS -->
-            <div class="accordion-item border rounded shadow-sm mb-3">
-                <h2 class="accordion-header" id="headingBatas">
-                    <button class="accordion-button fw-semibold" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseBatas" aria-expanded="true" aria-controls="collapseBatas">
-                        <i class="fa-solid fa-draw-polygon me-2 text-danger"></i>Batas DAS
-                    </button>
-                </h2>
-                <div id="collapseBatas" class="accordion-collapse collapse show">
-                    <div class="accordion-body">
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" id="batas-das">
-                            <label class="form-check-label fw-bold" for="batas-das">
-                                <i class="fa-solid fa-draw-polygon me-2 text-danger"></i>Batas DAS
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
 
             {{--
             <!-- Benchmark Section -->
@@ -613,7 +623,8 @@
                                     border: 2px solid white;
                                     box-shadow: 0 0 3px rgba(0,0,0,0.5);
                                 "></div>
-                                {{ $jenis }}
+                                <span class="fw-bold">{{ ucfirst($jenis) }}</span>
+                                <span class="fw-normal">({{ $airBakuCounts[$jenis] ?? 0 }})</span>
                             </label>
                         </div>
                         @endforeach
@@ -746,6 +757,38 @@
         });
     </script>
 
+
+    <script>
+        let sungaiDasLayer = null;
+
+    // Load GeoJSON Sungai DAS sekali saja
+    fetch("{{ asset('js/sungai.geojson') }}")
+        .then(res => res.json())
+        .then(data => {
+            sungaiDasLayer = L.geoJSON(data, {
+                style: {
+                    color: "cyan",
+                    weight: 2,
+                    opacity: 0.8
+                },
+                onEachFeature: function (feature, layer) {
+                    if (feature.properties && feature.properties.nama) {
+                        layer.bindPopup("Sungai: " + feature.properties.nama);
+                    }
+                }
+            });
+        });
+
+    // Toggle pakai checkbox
+    document.getElementById("sungai-das").addEventListener("change", function(e) {
+        if (e.target.checked) {
+            sungaiDasLayer.addTo(mymap);
+            mymap.fitBounds(sungaiDasLayer.getBounds());
+        } else {
+            mymap.removeLayer(sungaiDasLayer);
+        }
+    });
+    </script>
 </body>
 
 </html>

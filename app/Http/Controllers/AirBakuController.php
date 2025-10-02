@@ -148,7 +148,12 @@ class AirBakuController extends Controller
 
             public function model(array $row)
             {
-                if (empty($row['kode_integrasi']) || empty($row['nama'])) return null;
+                if (empty($row['kode_integrasi']) || (empty($row['nama']) && empty($row['nama_aset']))) {
+                    return null;
+                }
+
+
+                $nama = $row['nama_aset'] ?? $row['nama'] ?? '';
 
                 // simpan kode integrasi ke array
                 $this->importedKode[] = $row['kode_integrasi'];
@@ -158,7 +163,7 @@ class AirBakuController extends Controller
                     ['kode_integrasi' => $row['kode_integrasi']],
                     [
                         'kode_bmn'          => $row['kode_bmn'] ?? '',
-                        'nama_aset'         => $row['nama'] ?? '',
+                        'nama_aset'         => $nama,
                         'jenis_aset'        => $this->jenisAset,
                         'wilayah_sungai'    => $row['wilayah_sungai'] ?? '',
                         'das'               => $row['daerah_aliran_sungai'] ?? '',
