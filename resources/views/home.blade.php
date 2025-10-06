@@ -490,7 +490,7 @@
                                     <div class="form-check mb-2 border-bottom pb-2">
                                         <input class="form-check-input sungai-filter" type="checkbox"
                                             id="sungai-all-inner" value="all">
-                                        <label class="form-check-label" for="sungai-all-inner">Semua (All)</label>
+                                        <label class="form-check-label" for="sungai-all-inner">Semua Orde</label>
                                     </div>
 
                                     @foreach ($ordes as $orde)
