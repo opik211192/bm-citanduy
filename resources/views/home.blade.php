@@ -466,11 +466,44 @@
                                 <i class="fa-solid fa-draw-polygon me-2 text-primary"></i>Batas DAS
                             </label>
                         </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" id="sungai-das">
-                            <label class="form-check-label fw-bold" for="sungai-das">
-                                <i class="fa-solid fa-droplet me-2 text-info"></i>Sungai
-                            </label>
+                        <!-- Dropdown Sungai -->
+                        <div class="mb-2">
+                            <div class="d-flex align-items-center justify-content-between sungai-header"
+                                data-bs-toggle="collapse" data-bs-target="#collapseSungai" aria-expanded="false"
+                                aria-controls="collapseSungai" style="cursor: pointer;">
+
+                                <div class="d-flex align-items-center">
+                                    <input class="form-check-input sungai-filter" type="checkbox" id="sungai-all"
+                                        value="all">
+                                    <label class="form-check-label fw-bold d-flex align-items-center mb-0"
+                                        for="sungai-all">
+                                        <i class="bi bi-water me-2 text-primary"></i>
+                                        Sungai
+                                    </label>
+                                </div>
+
+                                <i class="bi bi-caret-down-fill toggle-icon"></i>
+                            </div>
+
+                            <div class="collapse" id="collapseSungai">
+                                <div class="pt-3 px-3" style="max-height: 220px; overflow-y: auto;">
+                                    <div class="form-check mb-2 border-bottom pb-2">
+                                        <input class="form-check-input sungai-filter" type="checkbox"
+                                            id="sungai-all-inner" value="all">
+                                        <label class="form-check-label" for="sungai-all-inner">Semua (All)</label>
+                                    </div>
+
+                                    @foreach ($ordes as $orde)
+                                    <div class="form-check mb-1">
+                                        <input class="form-check-input sungai-filter" type="checkbox"
+                                            id="sungai-{{ $orde }}" value="{{ $orde }}">
+                                        <label class="form-check-label" for="sungai-{{ $orde }}">
+                                            Orde {{ $orde }}
+                                        </label>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -505,13 +538,13 @@
                             <label class="form-check-label d-flex align-items-center gap-2 fw-bold"
                                 for="aset-{{ $jenis }}">
                                 <div style="
-                                background: {{ $color }};
-                                width: 24px;
-                                height: 24px;
-                                border-radius: 50%;
-                                border: 2px solid white;
-                                box-shadow: 0 0 3px rgba(0,0,0,0.5);
-                            "></div>
+                                    background: {{ $color }};
+                                    width: 24px;
+                                    height: 24px;
+                                    border-radius: 50%;
+                                    border: 2px solid white;
+                                    box-shadow: 0 0 3px rgba(0,0,0,0.5);
+                                "></div>
                                 <span class="fw-bold">{{ ucfirst($jenis) }}</span>
                                 <span class="fw-normal">({{ $asetCounts[$jenis] ?? 0 }})</span>
                             </label>
@@ -616,13 +649,13 @@
                             <label class="form-check-label d-flex align-items-center gap-2 fw-bold"
                                 for="airbaku-{{ $jenis }}">
                                 <div style="
-                                    background: {{ $color }};
-                                    width: 24px;
-                                    height: 24px;
-                                    border-radius: 50%;
-                                    border: 2px solid white;
-                                    box-shadow: 0 0 3px rgba(0,0,0,0.5);
-                                "></div>
+                                        background: {{ $color }};
+                                        width: 24px;
+                                        height: 24px;
+                                        border-radius: 50%;
+                                        border: 2px solid white;
+                                        box-shadow: 0 0 3px rgba(0,0,0,0.5);
+                                    "></div>
                                 <span class="fw-bold">{{ ucfirst($jenis) }}</span>
                                 <span class="fw-normal">({{ $airBakuCounts[$jenis] ?? 0 }})</span>
                             </label>
@@ -670,123 +703,116 @@
 
     <!-- JS -->
     <script src="https://unpkg.com/leaflet-search@3.0.0/dist/leaflet-search.min.js"></script>
+
     <script>
         const APP_URL = "{{ url('') }}";
-        const urlBM = APP_URL + "/api/data/bm";
-        const urlAsset = APP_URL + "/api/data/aset";
-        const urlAirbaku = APP_URL + "/api/data/airbaku";
+            const urlBM = APP_URL + "/api/data/bm";
+            const urlAsset = APP_URL + "/api/data/aset";
+            const urlAirbaku = APP_URL + "/api/data/airbaku";
     </script>
     <script src="{{ asset('js/map.js') }}"></script>
     <script src="{{ asset('js/detail.js') }}"></script>
     <script>
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const miniMenu = document.querySelector('.mini-menu');
-            sidebar.classList.toggle('active');
-            miniMenu.style.display = sidebar.classList.contains('active') ? 'none' : 'flex';
-        }
-        function toggleDetailSidebar() {
-            document.getElementById('sidebar-right').classList.toggle('active');
-        }
-        document.getElementById('toggle-btn').addEventListener('click', toggleSidebar);
+                const sidebar = document.getElementById('sidebar');
+                const miniMenu = document.querySelector('.mini-menu');
+                sidebar.classList.toggle('active');
+                miniMenu.style.display = sidebar.classList.contains('active') ? 'none' : 'flex';
+            }
+            function toggleDetailSidebar() {
+                document.getElementById('sidebar-right').classList.toggle('active');
+            }
+            document.getElementById('toggle-btn').addEventListener('click', toggleSidebar);
     </script>
     <script>
         let coordMarker = null; // simpan marker terakhir
-    
-        function toggleCoordinateBox() {
-            const box = document.getElementById("coordinate-box");
-            box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
-                
-        }
-    
-        function resetCoordinateBox() {
-            document.getElementById("coord-text").innerHTML = "Klik peta untuk melihat koordinat";
-            document.getElementById("coordinate-box").style.display = "none";
-            if (coordMarker) {
-                mymap.removeLayer(coordMarker); // hapus marker
-                coordMarker = null;
+        
+            function toggleCoordinateBox() {
+                const box = document.getElementById("coordinate-box");
+                box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
+                    
             }
-        }
-    
-        mymap.on("click", function (e) {
-            const lat = e.latlng.lat.toFixed(6);
-            const lng = e.latlng.lng.toFixed(6);
-    
-            // Update teks di box
-            document.getElementById("coord-text").innerHTML = `Lat: <b>${lat}</b>, Lng: <b>${lng}</b>`;
-            document.getElementById("coordinate-box").style.display = "block";
-    
-            // Hapus marker lama kalau ada
-            if (coordMarker) {
-                mymap.removeLayer(coordMarker);
+        
+            function resetCoordinateBox() {
+                document.getElementById("coord-text").innerHTML = "Klik peta untuk melihat koordinat";
+                document.getElementById("coordinate-box").style.display = "none";
+                if (coordMarker) {
+                    mymap.removeLayer(coordMarker); // hapus marker
+                    coordMarker = null;
+                }
             }
-    
-            // Tambahkan marker baru
-            coordMarker = L.marker([lat, lng]).addTo(mymap);
-        });
+        
+            mymap.on("click", function (e) {
+                const lat = e.latlng.lat.toFixed(6);
+                const lng = e.latlng.lng.toFixed(6);
+        
+                // Update teks di box
+                document.getElementById("coord-text").innerHTML = `Lat: <b>${lat}</b>, Lng: <b>${lng}</b>`;
+                document.getElementById("coordinate-box").style.display = "block";
+        
+                // Hapus marker lama kalau ada
+                if (coordMarker) {
+                    mymap.removeLayer(coordMarker);
+                }
+        
+                // Tambahkan marker baru
+                coordMarker = L.marker([lat, lng]).addTo(mymap);
+            });
     </script>
     <script>
         let batasDasLayer = null;
-    
-        // Load GeoJSON sekali saja
-        fetch("{{ asset('js/batasDas.geojson') }}")
-            .then(res => res.json())
-            .then(data => {
-                batasDasLayer = L.geoJSON(data, {
-                    style: {
-                        color: "blue",
-                        weight: 2,
-                        fillOpacity: 0.05
-                    },
-                    onEachFeature: function (feature, layer) {
-                        if (feature.properties && feature.properties.nama) {
-                            layer.bindPopup("DAS: " + feature.properties.nama);
-                        }
-                    }
-                });
-            });
         
-        // Toggle pakai checkbox
-        document.getElementById("batas-das").addEventListener("change", function(e) {
-            if (e.target.checked) {
-                batasDasLayer.addTo(mymap);
-                mymap.fitBounds(batasDasLayer.getBounds());
-            } else {
-                mymap.removeLayer(batasDasLayer);
-            }
-        });
-    </script>
-
-
-    <script>
-        let sungaiDasLayer = null;
-
-    // Load GeoJSON Sungai DAS sekali saja
-    fetch("{{ asset('js/sungai.geojson') }}")
-        .then(res => res.json())
-        .then(data => {
-            sungaiDasLayer = L.geoJSON(data, {
-                style: {
-                    color: "cyan",
-                    weight: 2,
-                    opacity: 0.8
-                },
-                onEachFeature: function (feature, layer) {
-                    if (feature.properties && feature.properties.nama) {
-                        layer.bindPopup("Sungai: " + feature.properties.nama);
-                    }
+            // Load GeoJSON sekali saja
+            fetch("{{ asset('js/batasDas.geojson') }}")
+                .then(res => res.json())
+                .then(data => {
+                    batasDasLayer = L.geoJSON(data, {
+                        style: {
+                            color: "blue",
+                            weight: 2,
+                            fillOpacity: 0.05
+                        },
+                        onEachFeature: function (feature, layer) {
+                            if (feature.properties && feature.properties.nama) {
+                                layer.bindPopup("DAS: " + feature.properties.nama);
+                            }
+                        }
+                    });
+                });
+            
+            // Toggle pakai checkbox
+            document.getElementById("batas-das").addEventListener("change", function(e) {
+                if (e.target.checked) {
+                    batasDasLayer.addTo(mymap);
+                    mymap.fitBounds(batasDasLayer.getBounds());
+                } else {
+                    mymap.removeLayer(batasDasLayer);
                 }
             });
-        });
-
-    // Toggle pakai checkbox
-    document.getElementById("sungai-das").addEventListener("change", function(e) {
-        if (e.target.checked) {
-            sungaiDasLayer.addTo(mymap);
-            mymap.fitBounds(sungaiDasLayer.getBounds());
-        } else {
-            mymap.removeLayer(sungaiDasLayer);
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const sungaiAllOuter = document.getElementById('sungai-all');
+        const sungaiAllInner = document.getElementById('sungai-all-inner');
+        const sungaiItems = document.querySelectorAll('.sungai-filter:not(#sungai-all):not(#sungai-all-inner)');
+    
+        function syncAll(checked) {
+            sungaiItems.forEach(cb => cb.checked = checked);
+            sungaiAllOuter.checked = checked;
+            sungaiAllInner.checked = checked;
+            updateSungaiLayer(checked ? ["all"] : []); // fungsi kamu untuk refresh layer
         }
+    
+        sungaiAllOuter.addEventListener('change', e => syncAll(e.target.checked));
+        sungaiAllInner.addEventListener('change', e => syncAll(e.target.checked));
+    
+        sungaiItems.forEach(cb => {
+            cb.addEventListener('change', () => {
+                const allChecked = Array.from(sungaiItems).every(c => c.checked);
+                sungaiAllOuter.checked = allChecked;
+                sungaiAllInner.checked = allChecked;
+            });
+        });
     });
     </script>
 </body>

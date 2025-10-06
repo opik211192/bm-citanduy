@@ -97,7 +97,7 @@ class AsetController extends Controller
                 $nestedData['kode_bmn'] = $aset->kode_bmn;
                 $nestedData['koordinat'] = $aset->lat . ', ' . $aset->long;
                 $nestedData['tahun_mulai_bangunan'] = $aset->tahun_mulai_bangunan . ' - ' . $aset->tahun_selesai_bangunan;
-                $nestedData['kondisi_infrastruktur'] = $aset->kondisi_infrastruktur;
+                $nestedData['kondisi'] = !empty($aset->kondisi_infrastruktur) ? $aset->kondisi_infrastruktur : $aset->kondisi_bangunan;
                 $nestedData['status_operasi'] = $aset->status_operasi;
                 $nestedData['updated_at'] = $aset->updated_at;
                 $nestedData['options'] = '<div class="d-flex">';

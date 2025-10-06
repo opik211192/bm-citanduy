@@ -465,6 +465,101 @@ document.querySelectorAll(".jenis-air-baku").forEach((cb) => {
     });
 });
 
+// ini untuk geojson sungai
+let sungaiLayer; // untuk menyimpan layer sungai
+let allSungaiData = null;
+
+// 1️⃣ Ambil data GeoJSON sekali saja
+fetch("js/sungai.geojson")
+    .then((res) => res.json())
+    .then((data) => {
+        allSungaiData = data;
+        console.log("Data sungai loaded:", allSungaiData);
+    });
+
+// 2️⃣ Fungsi untuk menggambar sungai berdasarkan orde terpilih
+function updateSungaiLayer(selectedOrdes) {
+    if (!allSungaiData) return;
+
+    // hapus layer lama
+    if (sungaiLayer) mymap.removeLayer(sungaiLayer);
+
+    // hapus semua layer dari searchLayer
+    searchLayer.clearLayers();
+
+    // filter fitur berdasarkan orde yang dipilih
+    const filteredFeatures = allSungaiData.features.filter((f) => {
+        const orde = f.properties?.ORDE;
+        return (
+            selectedOrdes.includes("all") ||
+            selectedOrdes.includes(orde.toString())
+        );
+    });
+
+    // buat layer baru
+    sungaiLayer = L.geoJSON(
+        { type: "FeatureCollection", features: filteredFeatures },
+        {
+            style: (feature) => ({
+                color: "#007bff",
+                weight: feature.properties.orde === 1 ? 3 : 2,
+                opacity: 0.8,
+            }),
+            onEachFeature: (feature, layer) => {
+                const p = feature.properties;
+
+                const popupContent = `
+                <div class="table-responsive" style="font-size:13px;">
+                    <table class="table table-sm table-bordered mb-0">
+                        <tr><th style="width:40%;">Nama Objek</th><td>${
+                            p.NAMOBJ || "-"
+                        }</td></tr>
+                        <tr><th>Remark</th><td>${p.REMARK || "-"}</td></tr>
+                        <tr><th>Layer</th><td>${p.layer || "-"}</td></tr>
+                        <tr><th>Panjang</th><td>${p.Panjang || "-"} m</td></tr>
+                        <tr><th>DAS</th><td>${p.DAS || "-"}</td></tr>
+                    </table>
+                </div>
+                `;
+
+                layer.bindPopup(popupContent);
+
+                // 💡 Tambahkan properti searchable
+                layer.feature = {
+                    properties: { name: p.NAMOBJ || "Sungai Tanpa Nama" },
+                };
+
+                // 💡 Masukkan ke search layer
+                searchLayer.addLayer(layer);
+            },
+        }
+    ).addTo(mymap);
+}
+
+// 3️⃣ Event listener untuk semua checkbox sungai
+document.querySelectorAll(".sungai-filter").forEach((cb) => {
+    cb.addEventListener("change", () => {
+        const allCb = document.getElementById("sungai-all");
+
+        if (cb.value === "all" && cb.checked) {
+            // ✅ Jika "All" dicentang → centang semua
+            document
+                .querySelectorAll(".sungai-filter")
+                .forEach((el) => (el.checked = true));
+        } else if (cb.value !== "all") {
+            // ❌ Jika salah satu orde diubah → hapus centang "All"
+            allCb.checked = false;
+        }
+
+        // Ambil semua yang dicentang untuk update peta
+        const checked = Array.from(
+            document.querySelectorAll(".sungai-filter:checked")
+        ).map((el) => el.value);
+
+        updateSungaiLayer(checked.length ? checked : []);
+    });
+});
+
 // --- Control Search ---
 var searchControl = new L.Control.Search({
     layer: searchLayer,

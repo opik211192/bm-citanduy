@@ -331,7 +331,7 @@
                 { data: 'kode_bmn' },
                 { data: 'koordinat' },
                 { data: 'tahun_mulai_bangunan' },
-                { data: 'kondisi_infrastruktur',
+                { data: 'kondisi',
                   render: function(data) {
                       if (data === 'Baik / Beroperasi') return `<span class="badge bg-success">${data}</span>`;
                       if (data === 'Rusak Ringan') return `<span class="badge bg-warning">${data}</span>`;

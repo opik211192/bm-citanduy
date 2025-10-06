@@ -51,13 +51,23 @@ class HomeController extends Controller
             ->groupBy('jenis_aset')
             ->pluck('total', 'jenis_aset');
 
+        $pathGeoJson = public_path('js/sungai.geojson');
+        $dataGeoJson = json_decode(file_get_contents($pathGeoJson), true);
+
+        $ordes =  collect($dataGeoJson['features'])
+            ->pluck('properties.ORDE')
+            ->unique()
+            ->sort()
+            ->values();
+        
         return view('home', compact(
             'jenisPekerjaanListBenchmark',
             'jenisPekerjaanAset',
             'jenisAirBaku',
             'asetCounts',
             'benchmarkCounts',
-            'airBakuCounts'
+            'airBakuCounts',
+            'ordes'
         ));
     }
 
