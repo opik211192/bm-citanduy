@@ -474,7 +474,7 @@ fetch("js/sungai.geojson")
     .then((res) => res.json())
     .then((data) => {
         allSungaiData = data;
-        console.log("Data sungai loaded:", allSungaiData);
+        //console.log("Data sungai loaded:", allSungaiData);
     });
 
 // 2️⃣ Fungsi untuk menggambar sungai berdasarkan orde terpilih
@@ -511,9 +511,10 @@ function updateSungaiLayer(selectedOrdes) {
                 const popupContent = `
                 <div class="table-responsive" style="font-size:13px;">
                     <table class="table table-sm table-bordered mb-0">
-                        <tr><th style="width:40%;">Nama Objek</th><td>${
-                            p.NAMOBJ || "-"
+                        <tr><th style="width:40%;">ORDE</th><td>${
+                            p.ORDE || "-"
                         }</td></tr>
+                        <tr><th>Nama Objek</th><td>${p.NAMOBJ || "-"}</td></tr>
                         <tr><th>Remark</th><td>${p.REMARK || "-"}</td></tr>
                         <tr><th>Layer</th><td>${p.layer || "-"}</td></tr>
                         <tr><th>Panjang</th><td>${p.Panjang || "-"} m</td></tr>

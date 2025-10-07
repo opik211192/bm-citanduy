@@ -10,6 +10,7 @@ use App\Http\Controllers\AsetPhotoController;
 use App\Http\Controllers\BenchmarkController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DependantDropdownController;
+use App\Http\Controllers\GeojsonController;
 use App\Http\Controllers\RoleandPermissionController;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 
@@ -120,6 +121,10 @@ Route::prefix('roles')->middleware(['auth', 'role:Admin'])->group(function(){
 
 });
 
+Route::prefix('das')->middleware(['auth', 'role:Admin'])->group(function () {
+    Route::get('/batas-das', [GeojsonController::class, 'dasIndex'])->name('das.index');
+    Route::get('/sungai', [GeojsonController::class, 'sungaiIndex'])->name('sungai.index');
+});
 
 Route::get('/provinces', [DependantDropdownController::class, 'provinces'])->name('provinces');
 Route::get('/cities', [DependantDropdownController::class, 'cities'])->name('cities');
