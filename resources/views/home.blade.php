@@ -514,13 +514,15 @@
                                     <div class="form-check mb-1 d-flex align-items-center gap-2">
                                         <input class="form-check-input sungai-filter" type="checkbox"
                                             id="sungai-{{ $orde }}" value="{{ $orde }}">
+                                        <span class="ms-auto"
+                                            style="display:inline-block;width:20px;height:10px;
+                                                                                           background-color:{{ $color }};
+                                                                                           border-radius:3px;border:1px solid #ccc;">
+                                        </span>
                                         <label class="form-check-label flex-grow-1" for="sungai-{{ $orde }}">
                                             Orde {{ $orde }}
                                         </label>
-                                        <span class="ms-auto" style="display:inline-block;width:20px;height:10px;
-                                               background-color:{{ $color }};
-                                               border-radius:3px;border:1px solid #ccc;">
-                                        </span>
+
                                     </div>
                                     @endforeach
                                 </div>
