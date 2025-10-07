@@ -490,16 +490,37 @@
                                     <div class="form-check mb-2 border-bottom pb-2">
                                         <input class="form-check-input sungai-filter" type="checkbox"
                                             id="sungai-all-inner" value="all">
-                                        <label class="form-check-label" for="sungai-all-inner">Semua Orde</label>
+                                        <label class="form-check-label" for="sungai-all-inner">
+                                            Semua Orde
+                                        </label>
                                     </div>
 
+                                    @php
+                                    // warna sama seperti di JS
+                                    $ordeColors = [
+                                    1 => '#1e88e5', // biru tua
+                                    2 => '#4caf50', // hijau
+                                    3 => '#fdd835', // kuning
+                                    4 => '#fb8c00', // oranye
+                                    5 => '#e53935', // merah
+                                    6 => '#9c27b0', // ungu
+                                    ];
+                                    @endphp
+
                                     @foreach ($ordes as $orde)
-                                    <div class="form-check mb-1">
+                                    @php
+                                    $color = $ordeColors[$orde] ?? '#9e9e9e';
+                                    @endphp
+                                    <div class="form-check mb-1 d-flex align-items-center gap-2">
                                         <input class="form-check-input sungai-filter" type="checkbox"
                                             id="sungai-{{ $orde }}" value="{{ $orde }}">
-                                        <label class="form-check-label" for="sungai-{{ $orde }}">
+                                        <label class="form-check-label flex-grow-1" for="sungai-{{ $orde }}">
                                             Orde {{ $orde }}
                                         </label>
+                                        <span class="ms-auto" style="display:inline-block;width:20px;height:10px;
+                                               background-color:{{ $color }};
+                                               border-radius:3px;border:1px solid #ccc;">
+                                        </span>
                                     </div>
                                     @endforeach
                                 </div>

@@ -466,6 +466,26 @@ document.querySelectorAll(".jenis-air-baku").forEach((cb) => {
 });
 
 // ini untuk geojson sungai
+// 🔹 Fungsi untuk menentukan warna berdasarkan ORDE
+function getSungaiColor(orde) {
+    switch (parseInt(orde)) {
+        case 1:
+            return "#1e88e5"; // biru tua
+        case 2:
+            return "#4caf50"; // hijau
+        case 3:
+            return "#fdd835"; // kuning
+        case 4:
+            return "#fb8c00"; // oranye
+        case 5:
+            return "#e53935"; // merah
+        case 6:
+            return "#9c27b0"; // ungu
+        default:
+            return "#9e9e9e"; // abu-abu jika tidak dikenal
+    }
+}
+
 let sungaiLayer; // untuk menyimpan layer sungai
 let allSungaiData = null;
 
@@ -500,11 +520,14 @@ function updateSungaiLayer(selectedOrdes) {
     sungaiLayer = L.geoJSON(
         { type: "FeatureCollection", features: filteredFeatures },
         {
-            style: (feature) => ({
-                color: "#007bff",
-                weight: feature.properties.orde === 1 ? 3 : 2,
-                opacity: 0.8,
-            }),
+            style: (feature) => {
+                const orde = feature.properties?.ORDE;
+                return {
+                    color: getSungaiColor(orde),
+                    weight: orde === 1 ? 4 : 2.5,
+                    opacity: 0.85,
+                };
+            },
             onEachFeature: (feature, layer) => {
                 const p = feature.properties;
 
