@@ -124,6 +124,19 @@
                                 </a>
                             </li>
                             @endif
+
+                            {{-- Data Das --}}
+                            @if($user->hasRole('Admin') || $user->hasRole('Data Das Manager'))
+                            <li class="nav-item">
+                                <a href="{{ route('batas-das.index') }}"
+                                    class="nav-link {{ request()->routeIs('batas-das.*') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-water"></i>
+                                    <p>Data Das</p>
+                                </a>
+                            </li>
+                            @endif
+
+
                             <!-- Benchmark -->
                             @if($user->hasRole('Admin') || $user->hasRole('Benchmark Manager'))
                             <li class="nav-item">

@@ -598,3 +598,84 @@ searchControl.on("search:locationfound", function (e) {
     e.layer.openPopup();
 });
 mymap.addControl(searchControl);
+
+// --- Efek highlight glowing pada sungai saat popup dibuka ---
+let highlightedLayer = null;
+let originalStyle = {}; // simpan warna & ketebalan aslinya
+
+function highlightFeature(layer) {
+    // Kalau ada sungai lain yang sedang menyala, reset dulu
+    if (highlightedLayer) {
+        highlightedLayer.setStyle(originalStyle);
+    }
+
+    // Simpan layer yang baru dipilih
+    highlightedLayer = layer;
+
+    // Simpan warna & ketebalan asli sebelum diubah
+    originalStyle = {
+        color: layer.options.color,
+        weight: layer.options.weight,
+        opacity: layer.options.opacity,
+    };
+
+    // Terapkan efek glowing
+    layer.setStyle({
+        weight: (layer.options.weight || 3) + 2,
+        opacity: 1,
+        className: "highlighted-sungai",
+    });
+}
+
+// 💡 CSS efek glow lembut berdenyut
+const style = document.createElement("style");
+style.innerHTML = `
+    .highlighted-sungai {
+        filter: drop-shadow(0 0 8px rgba(0, 200, 255, 1))
+                drop-shadow(0 0 16px rgba(0, 180, 255, 0.9))
+                drop-shadow(0 0 24px rgba(0, 150, 255, 0.8))
+                drop-shadow(0 0 32px rgba(0, 120, 255, 0.7));
+        transition: all 0.3s ease;
+        animation: sungai-glow-pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes sungai-glow-pulse {
+        0% {
+            filter: drop-shadow(0 0 8px rgba(0, 200, 255, 1))
+                    drop-shadow(0 0 16px rgba(0, 180, 255, 0.9))
+                    drop-shadow(0 0 24px rgba(0, 150, 255, 0.8))
+                    drop-shadow(0 0 32px rgba(0, 120, 255, 0.7));
+        }
+        50% {
+            filter: drop-shadow(0 0 12px rgba(0, 255, 255, 1))
+                    drop-shadow(0 0 24px rgba(0, 230, 255, 0.95))
+                    drop-shadow(0 0 36px rgba(0, 200, 255, 0.9))
+                    drop-shadow(0 0 48px rgba(0, 180, 255, 0.8));
+        }
+        100% {
+            filter: drop-shadow(0 0 8px rgba(0, 200, 255, 1))
+                    drop-shadow(0 0 16px rgba(0, 180, 255, 0.9))
+                    drop-shadow(0 0 24px rgba(0, 150, 255, 0.8))
+                    drop-shadow(0 0 32px rgba(0, 120, 255, 0.7));
+        }
+    }
+`;
+
+document.head.appendChild(style);
+
+// Saat popup dibuka → beri highlight
+mymap.on("popupopen", function (e) {
+    const layer = e.popup._source;
+    if (sungaiLayer && sungaiLayer.hasLayer(layer)) {
+        highlightFeature(layer);
+    }
+});
+
+// Saat popup ditutup → balikan ke warna & style semula
+mymap.on("popupclose", function () {
+    if (highlightedLayer && originalStyle) {
+        highlightedLayer.setStyle(originalStyle);
+        highlightedLayer = null;
+        originalStyle = {};
+    }
+});

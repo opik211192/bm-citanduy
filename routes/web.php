@@ -122,8 +122,16 @@ Route::prefix('roles')->middleware(['auth', 'role:Admin'])->group(function(){
 });
 
 Route::prefix('das')->middleware(['auth', 'role:Admin'])->group(function () {
-    Route::get('/batas-das', [GeojsonController::class, 'dasIndex'])->name('das.index');
-    Route::get('/sungai', [GeojsonController::class, 'sungaiIndex'])->name('sungai.index');
+
+    Route::get('/batas-das', [GeojsonController::class, 'index'])->name('batas-das.index');
+    Route::post('/batas-das/create', [GeojsonController::class, 'store'])->name('batas-das.store');
+    Route::put('/batas-das/edit/{id}', [GeojsonController::class, 'update'])->name('batas-das.update');
+    Route::delete('/batas-das/delete/{id}', [GeojsonController::class, 'destroy'])->name('batas-das.destroy');
+
+    // Route::post('/batas-das/upload', [GeojsonController::class, 'uploadDas'])->name('batas-das.upload');
+
+    // Route::get('/sungai', [GeojsonController::class, 'sungaiIndex'])->name('sungai.index');
+    // Route::post('/sungai/upload', [GeojsonController::class, 'uploadSungai'])->name('sungai.upload');
 });
 
 Route::get('/provinces', [DependantDropdownController::class, 'provinces'])->name('provinces');
