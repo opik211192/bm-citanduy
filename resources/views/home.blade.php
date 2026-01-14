@@ -1220,34 +1220,35 @@
     });
     </script>
     <script>
-        const toggleBtn   = document.getElementById("search-toggle");
-        const searchBox   = document.getElementById("search-box");
-        const inputSearch = document.getElementById("search-input");
+        const searchToggle = document.getElementById("search-toggle");
+const searchBox    = document.getElementById("search-box");
+const inputSearch  = document.getElementById("search-input");
 
-        function closeLeftSidebar() {
-            const sidebar = document.getElementById("sidebar");
-            const miniMenu = document.querySelector(".mini-menu");
-            
-            if (sidebar && sidebar.classList.contains("active")) {
+function closeSearchBox() {
+    searchBox.style.display = "none";
+}
+
+searchToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    const isOpen = searchBox.style.display === "block";
+
+    // toggle search (BERLAKU DI SEMUA UKURAN)
+    searchBox.style.display = isOpen ? "none" : "block";
+
+    if (!isOpen) inputSearch.focus();
+
+    // 🔥 JIKA MOBILE → TUTUP SIDEBAR KIRI
+    if (window.innerWidth <= 768) {
+        const sidebar  = document.getElementById("sidebar");
+        const miniMenu = document.querySelector(".mini-menu");
+
+        if (sidebar.classList.contains("active")) {
             sidebar.classList.remove("active");
-                miniMenu.style.display = "flex";
-            }
+            miniMenu.style.display = "flex";
         }
-
-        toggleBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-
-             closeLeftSidebar();
-
-            const isOpen = searchBox.style.display === "block";
-
-            if (isOpen) {
-                searchBox.style.display = "none";
-            } else {
-                searchBox.style.display = "block";
-                inputSearch.focus();
-            }
-        });
+    }
+});
     </script>
     <script>
         let userMarker = null;
@@ -1500,33 +1501,37 @@
 
     <script>
         document.addEventListener("click", function (e) {
-        const sidebar     = document.getElementById("sidebar");
-        const miniMenu    = document.querySelector(".mini-menu");
-        const toggleBtn   = document.getElementById("toggle-btn");     // tombol buka sidebar
-        const searchBtn   = document.getElementById("search-toggle");  // tombol search
-    
-        if (!sidebar || !sidebar.classList.contains("active")) return;
-    
-        // klik di dalam sidebar → jangan tutup
-        if (sidebar.contains(e.target)) return;
-    
-        // klik toggle sidebar → biarkan toggleSidebar() yang urus
-        if (toggleBtn && toggleBtn.contains(e.target)) return;
-    
-        // klik mini menu → biarkan toggleSidebar() yang urus
-        if (miniMenu && miniMenu.contains(e.target)) return;
-    
-        // 🔥 klik tombol SEARCH → TUTUP sidebar kiri
-        if (searchBtn && searchBtn.contains(e.target)) {
-            sidebar.classList.remove("active");
-            miniMenu.style.display = "flex";
-            return;
-        }
-    
-        // 🔥 klik area lain (map / kosong) → TUTUP
+
+    // 🔒 HANYA MOBILE
+    if (window.innerWidth > 768) return;
+
+    const sidebar     = document.getElementById("sidebar");
+    const miniMenu    = document.querySelector(".mini-menu");
+    const toggleBtn   = document.getElementById("toggle-btn");
+    const searchBtn   = document.getElementById("search-toggle");
+
+    if (!sidebar || !sidebar.classList.contains("active")) return;
+
+    // klik di dalam sidebar → jangan tutup
+    if (sidebar.contains(e.target)) return;
+
+    // klik toggle sidebar → biarkan toggleSidebar() yang urus
+    if (toggleBtn && toggleBtn.contains(e.target)) return;
+
+    // klik mini menu → biarkan toggleSidebar() yang urus
+    if (miniMenu && miniMenu.contains(e.target)) return;
+
+    // 🔥 klik SEARCH (mobile) → TUTUP sidebar kiri
+    if (searchBtn && searchBtn.contains(e.target)) {
         sidebar.classList.remove("active");
         miniMenu.style.display = "flex";
-    });
+        return;
+    }
+
+    // 🔥 klik map / area kosong → TUTUP sidebar kiri
+    sidebar.classList.remove("active");
+    miniMenu.style.display = "flex";
+});
     </script>
 </body>
 
