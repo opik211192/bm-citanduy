@@ -175,6 +175,31 @@
             z-index: 1000;
         }
 
+        .legend-dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+
+            .legend-dot {
+                width: 14px;
+                height: 14px;
+                border-width: 1px;
+                box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+            }
+
+            .form-check-label {
+                font-size: 12px;
+                line-height: 1.35;
+            }
+
+        }
+
         @media (max-width: 768px) {
 
             .toggle-btn,
@@ -224,6 +249,24 @@
             .sidebar.left.active .btn-close {
                 display: block;
             }
+        }
+
+        @media (max-width: 768px) {
+
+            /* kecilkan checkbox + icon di dalamnya */
+            .form-check-input {
+                transform: scale(0.75);
+                /* ⬅️ ini kuncinya */
+                transform-origin: top left;
+                margin-top: 3px;
+            }
+
+            /* kecilkan font label */
+            .form-check-label {
+                font-size: 12px;
+                line-height: 1.35;
+            }
+
         }
 
         .leaflet-popup-content-wrapper {
@@ -349,8 +392,9 @@
 
         #custom-search {
             position: absolute;
-            top: 90px;
-            right: 150px;
+            top: 220px;
+            /* ⬅️ turun di bawah Google Terrain */
+            right: 10px;
             z-index: 9995;
             display: flex;
             align-items: center;
@@ -488,6 +532,8 @@
             z-index: 9995;
             box-shadow: 0 4px 10px rgba(0, 0, 0, .3);
         }
+
+
 
         #coord-toggle:hover {
             transform: scale(1.05);
@@ -713,13 +759,9 @@
                                 value="{{ $jenis }}">
                             <label class="form-check-label d-flex align-items-center gap-2 fw-bold"
                                 for="aset-{{ $jenis }}">
-                                <div style="
+                                <div class="legend-dot" style="
                                     background: {{ $color }};
-                                    width: 24px;
-                                    height: 24px;
-                                    border-radius: 50%;
-                                    border: 2px solid white;
-                                    box-shadow: 0 0 3px rgba(0,0,0,0.5);
+                                    
                                 "></div>
                                 <span class="fw-bold">{{ ucfirst($jenis) }}</span>
                                 <span class="fw-normal">({{ $asetCounts[$jenis] ?? 0 }})</span>
@@ -824,13 +866,9 @@
                                 value="{{ $jenis }}">
                             <label class="form-check-label d-flex align-items-center gap-2 fw-bold"
                                 for="airbaku-{{ $jenis }}">
-                                <div style="
+                                <div class="legend-dot" style="
                                         background: {{ $color }};
-                                        width: 24px;
-                                        height: 24px;
-                                        border-radius: 50%;
-                                        border: 2px solid white;
-                                        box-shadow: 0 0 3px rgba(0,0,0,0.5);
+                                       
                                     "></div>
                                 <span class="fw-bold">{{ ucfirst($jenis) }}</span>
                                 <span class="fw-normal">({{ $airBakuCounts[$jenis] ?? 0 }})</span>
@@ -877,6 +915,7 @@
             </div>
         </div>
     </div>
+
 
     <div id="locate-me" title="Lihat lokasi saya">
         <i class="fa-solid fa-location-crosshairs"></i>
@@ -1072,6 +1111,18 @@
 
     {{-- FITUR AUTOCOMPLEATE SEARCH --}}
     <script>
+        function closeSearchBox() {
+            const searchBox = document.getElementById("search-box");
+            const input = document.getElementById("search-input");
+            const suggestionBox = document.getElementById("search-suggestions");
+            const clearBtn = document.getElementById("clear-search");
+            
+            searchBox.style.display = "none";
+            suggestionBox.style.display = "none";
+            clearBtn.style.display = "none";
+            input.blur();
+        }
+
         const input = document.getElementById("search-input");
             const suggestionBox = document.getElementById("search-suggestions");
             
@@ -1126,6 +1177,9 @@
                         if (item.layer.openPopup) item.layer.openPopup();
             
                         input.value = item.text;
+
+                        closeSearchBox();
+
                         suggestionBox.style.display = "none";
                     };
             
@@ -1170,8 +1224,20 @@
         const searchBox   = document.getElementById("search-box");
         const inputSearch = document.getElementById("search-input");
 
+        function closeLeftSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const miniMenu = document.querySelector(".mini-menu");
+            
+            if (sidebar && sidebar.classList.contains("active")) {
+            sidebar.classList.remove("active");
+                miniMenu.style.display = "flex";
+            }
+        }
+
         toggleBtn.addEventListener("click", (e) => {
             e.stopPropagation();
+
+             closeLeftSidebar();
 
             const isOpen = searchBox.style.display === "block";
 
@@ -1430,6 +1496,37 @@
     });
 
 });
+    </script>
+
+    <script>
+        document.addEventListener("click", function (e) {
+        const sidebar     = document.getElementById("sidebar");
+        const miniMenu    = document.querySelector(".mini-menu");
+        const toggleBtn   = document.getElementById("toggle-btn");     // tombol buka sidebar
+        const searchBtn   = document.getElementById("search-toggle");  // tombol search
+    
+        if (!sidebar || !sidebar.classList.contains("active")) return;
+    
+        // klik di dalam sidebar → jangan tutup
+        if (sidebar.contains(e.target)) return;
+    
+        // klik toggle sidebar → biarkan toggleSidebar() yang urus
+        if (toggleBtn && toggleBtn.contains(e.target)) return;
+    
+        // klik mini menu → biarkan toggleSidebar() yang urus
+        if (miniMenu && miniMenu.contains(e.target)) return;
+    
+        // 🔥 klik tombol SEARCH → TUTUP sidebar kiri
+        if (searchBtn && searchBtn.contains(e.target)) {
+            sidebar.classList.remove("active");
+            miniMenu.style.display = "flex";
+            return;
+        }
+    
+        // 🔥 klik area lain (map / kosong) → TUTUP
+        sidebar.classList.remove("active");
+        miniMenu.style.display = "flex";
+    });
     </script>
 </body>
 
