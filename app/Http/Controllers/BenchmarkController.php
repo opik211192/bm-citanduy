@@ -134,78 +134,96 @@ public function index(Request $request)
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-  public function store(Request $request)
-{
-    // Validasi data yang diterima dari request
-    $validatedData = $request->validate([
-        'kode_bm' => 'required',
-        'no_registrasi' => 'required',
-        'nama_pekerjaan' => 'required',
-        'jenis_pekerjaan' => 'required',
-        'province_id' => 'required',
-        'city_id' => 'required',
-        'district_id' => 'required',
-        'village_id' => 'required',
-        'utm_x' => 'required',
-        'utm_y' => 'required',
-        'zone' => 'required',
-        'lat' => 'required',
-        'long' => 'required',
-        'tinggi_orthometrik' => 'nullable',
-        'tinggi_elipsoid' => 'nullable',
-        'keterangan' => 'nullable|string',
-        'sketsa' => 'nullable',
-        'foto' => 'nullable',
-    ]);
+    public function store(Request $request)
+    {
+        // Validasi data yang diterima dari request
+        $validatedData = $request->validate([
+            'kode_bm' => 'required',
+            'no_registrasi' => 'required',
+            'nama_pekerjaan' => 'required',
+            'jenis_pekerjaan' => 'required',
+            'province_id' => 'required',
+            'city_id' => 'required',
+            'district_id' => 'required',
+            'village_id' => 'required',
+            'utm_x' => 'required',
+            'utm_y' => 'required',
+            'zone' => 'required',
+            'lat' => 'required',
+            'long' => 'required',
+            'tinggi_orthometrik' => 'nullable',
+            'tinggi_elipsoid' => 'nullable',
+            'keterangan' => 'nullable|string',
+            'konsultan' => 'nullable|string',
 
-    // Mengupload sketsa
-    if ($request->hasFile('sketsa')) {
-        $sketsaName = $validatedData['kode_bm'].'_'.uniqid().'_'.$request->file('sketsa')->getClientOriginalName();
-        $sketsaPath = $request->file('sketsa')->storeAs('img/sketsa', $sketsaName, 'public');
-        $validatedData['sketsa'] = $sketsaName;
-    }else{
-        $validatedData['sketsa'] = 'no_image.png';
+            'sketsa' => 'nullable',
+            'foto' => 'nullable',
+            'gambar_1' => 'nullable',
+            'gambar_2' => 'nullable',
+        ]);
+
+        // // Mengupload sketsa
+        // if ($request->hasFile('sketsa')) {
+        //     $sketsaName = $validatedData['kode_bm'].'_'.uniqid().'_'.$request->file('sketsa')->getClientOriginalName();
+        //     $sketsaPath = $request->file('sketsa')->storeAs('img/sketsa', $sketsaName, 'public');
+        //     $validatedData['sketsa'] = $sketsaName;
+        // }else{
+        //     $validatedData['sketsa'] = 'no_image.png';
+        // }
+
+        // // Mengupload foto
+        // if ($request->hasFile('foto')) {
+        //     $fotoName = $validatedData['kode_bm'].'_'.uniqid().'_'.$request->file('foto')->getClientOriginalName();
+        //     $fotoPath = $request->file('foto')->storeAs('img/foto', $fotoName, 'public');
+        //     $validatedData['foto'] = $fotoName;
+        // }else{
+        //     $validatedData['foto'] = 'no_image.png';
+        // }
+        $fileFields = ['sketsa', 'foto', 'gambar_1', 'gambar_2'];
+
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field)) {
+                $fileName = $validatedData['kode_bm'] . '_' . uniqid() . '_' . $request->file($field)->getClientOriginalName();
+                $request->file($field)->storeAs("img/{$field}", $fileName, 'public');
+                $validatedData[$field] = $fileName;
+            } else {
+                $validatedData[$field] = 'no_image.png';
+            }
+        }
+    
+
+        // Membuat benchmark baru
+        $benchmark = Benchmark::create([
+            'kode_bm' => $validatedData['kode_bm'],
+            'no_registrasi' => $validatedData['no_registrasi'],
+            'nama_pekerjaan' => $validatedData['nama_pekerjaan'],
+            'jenis_pekerjaan' => $validatedData['jenis_pekerjaan'],   
+            'province_id' => $validatedData['province_id'],
+            'city_id' => $validatedData['city_id'],
+            'district_id' => $validatedData['district_id'],
+            'village_id' => $validatedData['village_id'],
+            'utm_x' => $validatedData['utm_x'],
+            'utm_y' => $validatedData['utm_y'],
+            'zone' => $validatedData['zone'],
+            'lat' => $validatedData['lat'],
+            'long' => $validatedData['long'],
+            'tinggi_orthometrik' => $validatedData['tinggi_orthometrik'],
+            'tinggi_elipsoid' => $validatedData['tinggi_elipsoid'],
+            'keterangan' => $validatedData['keterangan'],
+            'konsultan' => $validatedData['konsultan'],
+        ]);
+
+        // Membuat upload
+        Upload::create([
+            'benchmark_id' => $benchmark->id,
+            'sketsa' => $validatedData['sketsa'],
+            'foto' => $validatedData['foto'],
+            'gambar_1' => $validatedData['gambar_1'],
+            'gambar_2' => $validatedData['gambar_2'],
+        ]);
+
+        return redirect()->route('benchmark.index')->with('success', 'Data benchmark berhasil ditambahkan');
     }
-
-    // Mengupload foto
-    if ($request->hasFile('foto')) {
-        $fotoName = $validatedData['kode_bm'].'_'.uniqid().'_'.$request->file('foto')->getClientOriginalName();
-        $fotoPath = $request->file('foto')->storeAs('img/foto', $fotoName, 'public');
-        $validatedData['foto'] = $fotoName;
-    }else{
-        $validatedData['foto'] = 'no_image.png';
-    }
- 
-
-    // Membuat benchmark baru
-    $benchmark = Benchmark::create([
-        'kode_bm' => $validatedData['kode_bm'],
-        'no_registrasi' => $validatedData['no_registrasi'],
-        'nama_pekerjaan' => $validatedData['nama_pekerjaan'],
-        'jenis_pekerjaan' => $validatedData['jenis_pekerjaan'],   
-        'province_id' => $validatedData['province_id'],
-        'city_id' => $validatedData['city_id'],
-        'district_id' => $validatedData['district_id'],
-        'village_id' => $validatedData['village_id'],
-        'utm_x' => $validatedData['utm_x'],
-        'utm_y' => $validatedData['utm_y'],
-        'zone' => $validatedData['zone'],
-        'lat' => $validatedData['lat'],
-        'long' => $validatedData['long'],
-        'tinggi_orthometrik' => $validatedData['tinggi_orthometrik'],
-        'tinggi_elipsoid' => $validatedData['tinggi_elipsoid'],
-        'keterangan' => $validatedData['keterangan'],
-    ]);
-
-    // Membuat upload
-    Upload::create([
-        'benchmark_id' => $benchmark->id,
-        'sketsa' => $validatedData['sketsa'],
-        'foto' => $validatedData['foto'],
-    ]);
-
-    return redirect()->route('benchmark.index')->with('success', 'Data benchmark berhasil ditambahkan');
-}
 
     
     /**
@@ -243,8 +261,21 @@ public function index(Request $request)
         $desa1 = \Indonesia::findVillage($benchmark->village_id, $with = null);
         $villages = Village::where('district_code', '=', $desa1->district->code)->get();
 
-        $sketsaUrl = $upload && $upload->sketsa ? asset('storage/img/sketsa/' . $upload->sketsa) : null;
-        $fotoUrl = $upload && $upload->foto ? asset('storage/img/foto/' . $upload->foto) : null;
+        $sketsaUrl   = ($upload && $upload->sketsa && $upload->sketsa !== 'no_image.png')
+            ? asset('storage/img/sketsa/' . $upload->sketsa)
+            : null;
+
+        $fotoUrl     = ($upload && $upload->foto && $upload->foto !== 'no_image.png')
+            ? asset('storage/img/foto/' . $upload->foto)
+            : null;
+
+        $gambar1Url  = ($upload && $upload->gambar_1 && $upload->gambar_1 !== 'no_image.png')
+            ? asset('storage/img/gambar_1/' . $upload->gambar_1)
+            : null;
+
+        $gambar2Url  = ($upload && $upload->gambar_2 && $upload->gambar_2 !== 'no_image.png')
+            ? asset('storage/img/gambar_2/' . $upload->gambar_2)
+            : null;
 
         //dd($sketsaUrl, $fotoUrl);
        
@@ -255,7 +286,9 @@ public function index(Request $request)
             'districts' => $districts,
             'villages' => $villages,
             'sketsaUrl' => $sketsaUrl,
-            'fotoUrl' => $fotoUrl
+            'fotoUrl' => $fotoUrl,
+            'gambar1Url' => $gambar1Url,
+            'gambar2Url' => $gambar2Url
         ]);
     }
 
@@ -459,5 +492,10 @@ public function index(Request $request)
         $benchmark = Benchmark::find($id);
         $pdf = PDF::loadView('backend.benchmark.print', ['benchmark' => $benchmark]);
         return $pdf->stream();
+    }
+
+    public function konsultan()
+    {
+        
     }
 }

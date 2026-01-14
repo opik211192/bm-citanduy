@@ -83,7 +83,9 @@
                 <div class="sidebar">
                     <!-- Sidebar Menu -->
                     <nav class="mt-2">
-                        <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                            data-accordion="false">
+
                             <!-- Home -->
                             <li class="nav-item">
                                 <a href="{{ route('home') }}"
@@ -101,10 +103,13 @@
                                     <p>Dashboard</p>
                                 </a>
                             </li>
+
                             @php $user = Auth::user(); @endphp
-                            <!-- Aset -->
+
+                            <!-- Infrastruktur -->
                             @if($user->hasRole('Admin') || $user->hasRole('Infrastruktur Manager') ||
-                            $user->hasRole('Infrastruktur Viewer'))
+                            $user->hasRole('Infrastruktur
+                            Viewer'))
                             <li class="nav-item">
                                 <a href="{{ route('aset.index') }}"
                                     class="nav-link {{ request()->routeIs('infrastruktur.*') ? 'active' : '' }}">
@@ -114,7 +119,7 @@
                             </li>
                             @endif
 
-                            <!-- Air Baku  -->
+                            <!-- Air Baku -->
                             @if($user->hasRole('Admin') || $user->hasRole('Air Baku Manager'))
                             <li class="nav-item">
                                 <a href="{{ route('airbaku.index') }}"
@@ -125,7 +130,7 @@
                             </li>
                             @endif
 
-                            {{-- Data Das --}}
+                            <!-- Data DAS -->
                             @if($user->hasRole('Admin') || $user->hasRole('Data Das Manager'))
                             <li class="nav-item">
                                 <a href="{{ route('batas-das.index') }}"
@@ -136,51 +141,70 @@
                             </li>
                             @endif
 
-
-                            <!-- Benchmark -->
+                            <!-- ✅ BENCHMARK (FIXED) -->
                             @if($user->hasRole('Admin') || $user->hasRole('Benchmark Manager'))
-                            <li class="nav-item">
-                                <a href="{{ route('benchmark.index') }}"
-                                    class="nav-link {{ request()->routeIs('benchmark.*') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-map"></i>
-                                    <p>Benchmark</p>
+                            <li class="nav-item {{ request()->routeIs('benchmark.*') ? 'menu-open' : '' }}">
+                                <a href="#" class="nav-link {{ request()->routeIs('benchmark.*') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-map-marked-alt"></i>
+                                    <p>
+                                        Benchmark
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
                                 </a>
+
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{{ route('benchmark.index') }}"
+                                            class="nav-link {{ request()->routeIs('benchmark.index') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Data BM</p>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a href="{{ route('benchmark.data.konsultan') }}"
+                                            class="nav-link {{ request()->routeIs('benchmark.data.konsultan') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Data Konsultan</p>
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                             @endif
 
-                            <!-- Manajemen User -->
-                            @if(Auth::user()->hasRole('Admin'))
-                            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                                data-accordion="false">
-                                <li
-                                    class="nav-item {{ request()->is('users*') || request()->is('roles*') || request()->is('permissions*') ? 'menu-open' : '' }}">
-                                    <a href="#"
-                                        class="nav-link {{ request()->is('users*') || request()->is('roles*') || request()->is('permissions*') ? 'active' : '' }}">
-                                        <i class="nav-icon fas fa-users-cog"></i>
-                                        <p>
-                                            Manajemen User
-                                            <i class="right fas fa-angle-left"></i>
-                                        </p>
-                                    </a>
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('users.index') }}"
-                                                class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
-                                                <i class="fas fa-user nav-icon"></i>
-                                                <p>Data User</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="{{ route('roles.index') }}"
-                                                class="nav-link {{ request()->routeIs('roles.*') ? 'active' : '' }}">
-                                                <i class="fas fa-user-shield nav-icon"></i>
-                                                <p>Role & Permission</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
+                            <!-- ✅ MANAJEMEN USER (DIGABUNG, BUKAN UL BARU) -->
+                            @if($user->hasRole('Admin'))
+                            <li
+                                class="nav-item {{ request()->is('users*') || request()->is('roles*') ? 'menu-open' : '' }}">
+                                <a href="#"
+                                    class="nav-link {{ request()->is('users*') || request()->is('roles*') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-users-cog"></i>
+                                    <p>
+                                        Manajemen User
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{{ route('users.index') }}"
+                                            class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                                            <i class="fas fa-user nav-icon"></i>
+                                            <p>Data User</p>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a href="{{ route('roles.index') }}"
+                                            class="nav-link {{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                                            <i class="fas fa-user-shield nav-icon"></i>
+                                            <p>Role & Permission</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                             @endif
+
                         </ul>
                     </nav>
                     <div class="user-footer position-absolute rounded-top d-flex justify-content-center align-items-center shadow"

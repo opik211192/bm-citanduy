@@ -238,7 +238,17 @@ function renderAset(jenis, data) {
         `);
 
         markersAset[jenis].push(marker);
-        marker.feature = { properties: { name: item.nama_aset } };
+        marker.feature = {
+            properties: {
+                name: item.nama_aset,
+                jenis_aset: item.jenis_aset,
+                lat: item.lat,
+                lng: item.long,
+                searchText: `${item.nama_aset} ${item.lat} ${item.long}`,
+            },
+        };
+        searchLayer.addLayer(marker);
+
         searchLayer.addLayer(marker);
     });
 }
@@ -353,7 +363,17 @@ function renderAirbaku(jenis, data) {
         `);
 
         markerAirbaku[jenis].push(marker);
-        marker.feature = { properties: { name: item.nama_aset } };
+        marker.feature = {
+            properties: {
+                name: item.nama_aset,
+                jenis_aset: item.jenis_aset,
+                lat: item.lat,
+                lng: item.long,
+                searchText: `${item.nama_aset} ${item.lat} ${item.long}`,
+            },
+        };
+        searchLayer.addLayer(marker);
+
         searchLayer.addLayer(marker);
     });
 }
@@ -585,19 +605,19 @@ document.querySelectorAll(".sungai-filter").forEach((cb) => {
 });
 
 // --- Control Search ---
-var searchControl = new L.Control.Search({
-    layer: searchLayer,
-    propertyName: "name",
-    marker: false,
-    moveToLocation: function (latlng, title, map) {
-        map.setView(latlng, 15);
-    },
-    position: "topright",
-});
-searchControl.on("search:locationfound", function (e) {
-    e.layer.openPopup();
-});
-mymap.addControl(searchControl);
+// var searchControl = new L.Control.Search({
+//     layer: searchLayer,
+//     propertyName: "name",
+//     marker: false,
+//     moveToLocation: function (latlng, title, map) {
+//         map.setView(latlng, 15);
+//     },
+//     position: "topright",
+// });
+// searchControl.on("search:locationfound", function (e) {
+//     e.layer.openPopup();
+// });
+// mymap.addControl(searchControl);
 
 // --- Efek highlight glowing pada sungai saat popup dibuka ---
 let highlightedLayer = null;
@@ -631,36 +651,31 @@ function highlightFeature(layer) {
 const style = document.createElement("style");
 style.innerHTML = `
     .highlighted-sungai {
-        filter: drop-shadow(0 0 8px rgba(0, 200, 255, 1))
-                drop-shadow(0 0 16px rgba(0, 180, 255, 0.9))
-                drop-shadow(0 0 24px rgba(0, 150, 255, 0.8))
-                drop-shadow(0 0 32px rgba(0, 120, 255, 0.7));
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9))
+                drop-shadow(0 0 12px rgba(255, 255, 255, 0.8))
+                drop-shadow(0 0 18px rgba(255, 255, 255, 0.7));
         transition: all 0.3s ease;
         animation: sungai-glow-pulse 1.5s ease-in-out infinite;
     }
 
     @keyframes sungai-glow-pulse {
         0% {
-            filter: drop-shadow(0 0 8px rgba(0, 200, 255, 1))
-                    drop-shadow(0 0 16px rgba(0, 180, 255, 0.9))
-                    drop-shadow(0 0 24px rgba(0, 150, 255, 0.8))
-                    drop-shadow(0 0 32px rgba(0, 120, 255, 0.7));
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9))
+                    drop-shadow(0 0 12px rgba(255, 255, 255, 0.8))
+                    drop-shadow(0 0 18px rgba(255, 255, 255, 0.7));
         }
         50% {
-            filter: drop-shadow(0 0 12px rgba(0, 255, 255, 1))
-                    drop-shadow(0 0 24px rgba(0, 230, 255, 0.95))
-                    drop-shadow(0 0 36px rgba(0, 200, 255, 0.9))
-                    drop-shadow(0 0 48px rgba(0, 180, 255, 0.8));
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 1))
+                    drop-shadow(0 0 20px rgba(255, 255, 255, 0.9))
+                    drop-shadow(0 0 30px rgba(255, 255, 255, 0.8));
         }
         100% {
-            filter: drop-shadow(0 0 8px rgba(0, 200, 255, 1))
-                    drop-shadow(0 0 16px rgba(0, 180, 255, 0.9))
-                    drop-shadow(0 0 24px rgba(0, 150, 255, 0.8))
-                    drop-shadow(0 0 32px rgba(0, 120, 255, 0.7));
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9))
+                    drop-shadow(0 0 12px rgba(255, 255, 255, 0.8))
+                    drop-shadow(0 0 18px rgba(255, 255, 255, 0.7));
         }
     }
 `;
-
 document.head.appendChild(style);
 
 // Saat popup dibuka → beri highlight

@@ -11,6 +11,7 @@ use App\Http\Controllers\BenchmarkController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DependantDropdownController;
 use App\Http\Controllers\GeojsonController;
+use App\Http\Controllers\KonsultanController;
 use App\Http\Controllers\RoleandPermissionController;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 
@@ -48,6 +49,17 @@ Route::prefix('benchmark')->middleware(['auth', 'role:Admin|Benchmark Manager'])
     Route::put('/edit/{benchmark}', [BenchmarkController::class, 'update'])->name('benchmark.update');
     Route::delete('/delete/{benchmark}', [BenchmarkController::class, 'destroy'])->name('benchmark.destroy');
 
+    Route::get('/data/konsultan', [KonsultanController::class, 'index'])
+        ->name('benchmark.data.konsultan');
+
+    Route::post('/data/konsultan/store', [KonsultanController::class, 'store'])
+        ->name('benchmark.data.konsultan.store');
+
+    Route::get('/data/konsultan/{id}', [KonsultanController::class, 'show'])
+        ->name('benchmark.data.konsultan.show');
+
+    Route::delete('/data/konsultan/{id}', [KonsultanController::class, 'destroy'])
+        ->name('benchmark.data.konsultan.destroy');
 });
 
 // Route untuk aset (Infrastruktur)

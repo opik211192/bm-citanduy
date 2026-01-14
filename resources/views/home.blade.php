@@ -264,42 +264,7 @@
             /* tetap bisa geser turun biar ga ketabrak navbar */
         }
 
-        /* Reset margin biar rapih */
-        .leaflet-control-search,
-        .leaflet-control-layers {
-            margin: 0 0 5px 0 !important;
-            /* kasih jarak bawah antar control */
-        }
 
-        /* Search control default: ikon mentok kanan */
-        .leaflet-control-search {
-            float: right !important;
-        }
-
-        /* Input search posisinya expand ke kiri */
-        .leaflet-control-search .search-input {
-            text-align: left;
-            padding-right: 30px;
-            width: 260px;
-            transition: width 0.3s ease;
-        }
-
-        .leaflet-control-search.active .search-input {
-            width: 260px;
-        }
-
-        .leaflet-control-search .search-input:focus {
-            width: 260px;
-            /* ukuran pas diklik/focus */
-        }
-
-        /* Posisikan tombol search (ikon lupanya) di kanan */
-        .leaflet-control-search .search-button {
-            right: 0 !important;
-            left: auto !important;
-            border-radius: 0 4px 4px 0;
-            /* sudut kanan membulat */
-        }
 
         #coordinate-box {
             position: absolute;
@@ -381,6 +346,185 @@
                 right: 0;
             }
         }
+
+        #custom-search {
+            position: absolute;
+            top: 90px;
+            right: 150px;
+            z-index: 9995;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #search-box {
+            display: none;
+            /* default TERTUTUP */
+            position: relative;
+        }
+
+        #search-box input {
+            width: 240px;
+            padding: 6px 28px 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        #search-toggle {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            border: none;
+            background: #fff;
+            color: #210be0;
+            cursor: pointer;
+        }
+
+        #search-suggestions {
+            position: absolute;
+            top: 44px;
+            left: 0;
+            width: 100%;
+            max-height: 260px;
+            overflow-y: auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+            z-index: 10002;
+            display: none;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* item */
+        .search-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1.4;
+            border-bottom: 1px solid #f1f1f1;
+            transition: background 0.15s ease;
+        }
+
+        /* hover */
+        .search-item:hover {
+            background: #f1f5ff;
+        }
+
+        /* nama aset */
+        .search-item .name {
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        /* jenis aset */
+        .search-item .type {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* item terakhir */
+        .search-item:last-child {
+            border-bottom: none;
+        }
+
+        #clear-search {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+            display: none;
+        }
+
+        #clear-search:hover {
+            color: red;
+        }
+
+        #locate-me {
+            position: absolute;
+            bottom: 95px;
+            right: 5px;
+            width: 44px;
+            height: 44px;
+            background: #fff;
+            color: black;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9995;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        #locate-me:hover {
+            background: #fff;
+            transform: scale(1.05);
+        }
+
+        #locate-me.active {
+            background: #0d6efd;
+            color: #fff;
+            /* hijau saat aktif */
+        }
+
+        #coord-toggle {
+            position: absolute;
+            bottom: 145px;
+            right: 5px;
+            width: 44px;
+            height: 44px;
+            background: #fff;
+            color: #dc3545;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9995;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, .3);
+        }
+
+        #coord-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        #coord-input-box {
+            position: absolute;
+            bottom: 145px;
+            right: 55px;
+            background: #fff;
+            padding: 6px 32px 6px 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
+            z-index: 9996;
+            display: none;
+        }
+
+        #coord-input-box input {
+            width: 230px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        #coord-close {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-weight: bold;
+            color: #999;
+        }
+
+        #coord-close:hover {
+            color: red;
+        }
     </style>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -439,7 +583,16 @@
     </div>
 
     <!-- Left Sidebar -->
+
+
+
     <div class="sidebar left" id="sidebar">
+        <div class="mb-3 px-2">
+            <input type="text" id="search-input-left" class="form-control" placeholder="Cari Data / input koordinat"
+                autocomplete="off">
+            <div id="search-suggestions-left" class="mt-1"></div>
+        </div>
+
         <div class="sidebar-header border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
             <span class="fw-semibold text-uppercase" style="font-size: 1rem; letter-spacing: .5px;">
                 Data Peta
@@ -703,6 +856,19 @@
         <div id="detail-content" class="p-2"></div>
     </div>
 
+    <!-- Custom Search Box -->
+    <div id="custom-search">
+        <div class="search-input-wrapper" id="search-box">
+            <input type="text" id="search-input" placeholder="cari nama..." autocomplete="off">
+            <span id="clear-search">×</span>
+            <div id="search-suggestions"></div>
+        </div>
+
+        <button id="search-toggle" title="Cari" tooltip="Cari">
+            <i class="fa fa-search"></i>
+        </button>
+    </div>
+
     <!-- Map -->
     <div id="map">
         <div id="spinner" style="display: none;">
@@ -710,6 +876,21 @@
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
+    </div>
+
+    <div id="locate-me" title="Lihat lokasi saya">
+        <i class="fa-solid fa-location-crosshairs"></i>
+    </div>
+
+    <!-- Toggle Input Koordinat -->
+    <div id="coord-toggle" title="Input Koordinat">
+        <i class="fa-solid fa-location-dot"></i>
+    </div>
+
+    <!-- Input Koordinat Floating -->
+    <div id="coord-input-box">
+        <input type="text" id="coord-input" placeholder="Lat, Lng (contoh: -7.12345,108.12345)" autocomplete="off">
+        <span id="coord-close">×</span>
     </div>
 
     <!-- Tombol toggle koordinat -->
@@ -837,6 +1018,418 @@
             });
         });
     });
+    </script>
+
+    {{-- FITUR SEARCH CUSTOM --}}
+    <script>
+        function handleSearch() {
+            const q = document.getElementById("search-input").value.trim();
+            if (!q) return;
+
+            // === 1. CEK KOORDINAT (lat,lng) ===
+            if (q.includes(",")) {
+                const parts = q.split(",");
+                const lat = parseFloat(parts[0]);
+                const lng = parseFloat(parts[1]);
+
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    mymap.setView([lat, lng], 16);
+
+                    if (window.coordMarker) mymap.removeLayer(window.coordMarker);
+                    window.coordMarker = L.marker([lat, lng])
+                        .addTo(mymap)
+                        .bindPopup(`Koordinat<br><b>${lat}, ${lng}</b>`)
+                        .openPopup();
+                    return;
+                }
+            }
+
+            // === 2. SEARCH DI SEMUA LAYER (aset, bm, sungai) ===
+            let found = false;
+
+            searchLayer.eachLayer(layer => {
+                const props = layer.feature?.properties;
+                if (!props) return;
+
+                const text = (props.searchText || props.name || "").toLowerCase();
+
+                if (text.includes(q.toLowerCase())) {
+                    const latlng = layer.getLatLng
+                        ? layer.getLatLng()
+                        : layer.getBounds().getCenter();
+
+                    mymap.setView(latlng, 15);
+                    if (layer.openPopup) layer.openPopup();
+                    found = true;
+                }
+            });
+
+            if (!found) {
+                alert("Data tidak ditemukan");
+            }
+        }
+    </script>
+
+    {{-- FITUR AUTOCOMPLEATE SEARCH --}}
+    <script>
+        const input = document.getElementById("search-input");
+            const suggestionBox = document.getElementById("search-suggestions");
+            
+            input.addEventListener("input", function () {
+                const keyword = this.value.trim().toLowerCase();
+                suggestionBox.innerHTML = "";
+            
+                if (keyword.length < 1) {
+                    suggestionBox.style.display = "none";
+                    return;
+                }
+            
+                let results = [];
+            
+                searchLayer.eachLayer(layer => {
+                    const props = layer.feature?.properties;
+                    if (!props) return;
+            
+                    const text = (props.searchText || props.name || "").toLowerCase();
+                    if (text.includes(keyword)) {
+                    
+                        const label = props.jenis_aset
+                            ? `${props.name} (${props.jenis_aset})`
+                            : props.name;
+                        
+                        results.push({
+                            text: label,
+                            layer: layer
+                        });
+                    }
+                });
+            
+                // batasi hasil (biar tidak berat)
+                results = results.slice(0, 10);
+            
+                if (results.length === 0) {
+                    suggestionBox.style.display = "none";
+                    return;
+                }
+            
+                results.forEach(item => {
+                    const div = document.createElement("div");
+                    div.className = "search-item";
+                    div.textContent = item.text;
+            
+                    div.onclick = () => {
+                        const latlng = item.layer.getLatLng
+                            ? item.layer.getLatLng()
+                            : item.layer.getBounds().getCenter();
+            
+                        mymap.setView(latlng, 15);
+                        if (item.layer.openPopup) item.layer.openPopup();
+            
+                        input.value = item.text;
+                        suggestionBox.style.display = "none";
+                    };
+            
+                    suggestionBox.appendChild(div);
+                });
+            
+                suggestionBox.style.display = "block";
+            });
+            
+            // sembunyikan saat klik map
+            mymap.on("click", () => {
+                suggestionBox.style.display = "none";
+            });
+    </script>
+    <script>
+        const clearBtn = document.getElementById("clear-search");
+    
+    // tampilkan X hanya jika ada teks
+    input.addEventListener("input", () => {
+        clearBtn.style.display = input.value ? "block" : "none";
+    });
+    
+    // klik X → clear
+    clearBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+    
+        input.value = "";
+        clearBtn.style.display = "none";
+        suggestionBox.style.display = "none";
+    
+        // OPTIONAL: hapus marker koordinat hasil search
+        if (window.coordMarker) {
+            mymap.removeLayer(window.coordMarker);
+            window.coordMarker = null;
+        }
+    
+        input.focus();
+    });
+    </script>
+    <script>
+        const toggleBtn   = document.getElementById("search-toggle");
+        const searchBox   = document.getElementById("search-box");
+        const inputSearch = document.getElementById("search-input");
+
+        toggleBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+
+            const isOpen = searchBox.style.display === "block";
+
+            if (isOpen) {
+                searchBox.style.display = "none";
+            } else {
+                searchBox.style.display = "block";
+                inputSearch.focus();
+            }
+        });
+    </script>
+    <script>
+        let userMarker = null;
+        let userCircle = null;
+        let locating = false;
+
+        document.getElementById("locate-me").addEventListener("click", function () {
+
+            // toggle OFF
+            if (locating) {
+                if (userMarker) mymap.removeLayer(userMarker);
+                if (userCircle) mymap.removeLayer(userCircle);
+
+                userMarker = null;
+                userCircle = null;
+                locating = false;
+                this.classList.remove("active");
+                return;
+            }
+
+            // toggle ON
+            mymap.locate({
+                setView: true,
+                maxZoom: 16,
+                enableHighAccuracy: true
+            });
+
+            locating = true;
+            this.classList.add("active");
+        });
+
+        // berhasil dapat lokasi
+        mymap.on("locationfound", function (e) {
+            const radius = e.accuracy;
+
+            if (userMarker) mymap.removeLayer(userMarker);
+            if (userCircle) mymap.removeLayer(userCircle);
+
+            userMarker = L.marker(e.latlng)
+                .addTo(mymap)
+                .setIcon(L.icon({
+                    iconUrl: "{{ asset('img/walking.png') }}",
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 16]
+                }))
+                .bindPopup(`
+                <div style="padding:10px; text-align:center;">
+                    <strong style="color:#0d6efd;">📍 Lokasi Anda</strong>
+                </div>
+                `)
+                .openPopup();
+
+            userCircle = L.circle(e.latlng, {
+                // radius: radius,
+                color: "#0d6efd",
+                fillColor: "#0d6efd",
+                fillOpacity: 0.15
+            }).addTo(mymap);
+        });
+
+        // gagal
+        mymap.on("locationerror", function () {
+            alert("Tidak bisa mengakses lokasi. Pastikan izin lokasi diaktifkan.");
+            locating = false;
+            document.getElementById("locate-me").classList.remove("active");
+        });
+    </script>
+    <script>
+        let leftCoordMarker = null;
+    
+        const inputLeft = document.getElementById("search-input-left");
+        const suggestionLeft = document.getElementById("search-suggestions-left");
+        
+        inputLeft.addEventListener("input", function () {
+            const q = this.value.trim();
+            suggestionLeft.innerHTML = "";
+        
+            // kosong → hapus marker
+            if (!q) {
+                suggestionLeft.style.display = "none";
+                if (leftCoordMarker) {
+                    mymap.removeLayer(leftCoordMarker);
+                    leftCoordMarker = null;
+                }
+                return;
+            }
+        
+            /* ===== 1. CEK KOORDINAT ===== */
+            const parts = q.includes(",") ? q.split(",") : q.split(" ");
+        
+            if (parts.length === 2) {
+                const lat = parseFloat(parts[0]);
+                const lng = parseFloat(parts[1]);
+        
+                if (!isNaN(lat) && !isNaN(lng)
+                    && lat >= -90 && lat <= 90
+                    && lng >= -180 && lng <= 180) {
+        
+                    if (leftCoordMarker) mymap.removeLayer(leftCoordMarker);
+        
+                    leftCoordMarker = L.marker([lat, lng], { draggable: true })
+                        .addTo(mymap)
+                        .bindPopup(`
+                            <div style="text-align:center;padding:8px">
+                                <strong>📍 Koordinat</strong><br>
+                                ${lat.toFixed(6)}, ${lng.toFixed(6)}
+                            </div>
+                        `)
+                        .openPopup();
+        
+                    mymap.setView([lat, lng], 16);
+        
+                    leftCoordMarker.on("dragend", e => {
+                        const p = e.target.getLatLng();
+                        inputLeft.value = `${p.lat.toFixed(6)},${p.lng.toFixed(6)}`;
+                    });
+        
+                    suggestionLeft.style.display = "none";
+                    return;
+                }
+            }
+        
+            /* ===== 2. SEARCH DATA ASET ===== */
+            let results = [];
+        
+            searchLayer.eachLayer(layer => {
+                const props = layer.feature?.properties;
+                if (!props) return;
+        
+                const name = (props.searchText || props.name || "").toLowerCase();
+                if (name.includes(q.toLowerCase())) {
+                    results.push({
+                    layer,
+                    name: props.name,
+                    jenis: props.jenis || props.jenis_aset || props.type || ""
+                    });
+                }
+            });
+        
+            if (!results.length) {
+                suggestionLeft.style.display = "none";
+                return;
+            }
+        
+            results.slice(0, 8).forEach(item => {
+                const div = document.createElement("div");
+                div.className = "search-item";
+                div.textContent = item.jenis
+                ? `${item.name} (${item.jenis})`
+                : item.name;
+        
+                div.onclick = () => {
+                    const latlng = item.layer.getLatLng
+                        ? item.layer.getLatLng()
+                        : item.layer.getBounds().getCenter();
+        
+                    mymap.setView(latlng, 15);
+                    if (item.layer.openPopup) item.layer.openPopup();
+        
+                    inputLeft.value = item.name;
+                    suggestionLeft.style.display = "none";
+                };
+        
+                suggestionLeft.appendChild(div);
+            });
+        
+            suggestionLeft.style.display = "block";
+        });
+        
+        mymap.on("click", () => {
+            suggestionLeft.style.display = "none";
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+    let coordInputMarker = null;
+
+    const coordToggleBtn = document.getElementById("coord-toggle");
+    const inputBox  = document.getElementById("coord-input-box");
+    const input     = document.getElementById("coord-input");
+    const closeBtn  = document.getElementById("coord-close");
+
+    coordToggleBtn.addEventListener("click", () => {
+        inputBox.style.display = "block";
+        input.focus();
+    });
+
+    closeBtn.addEventListener("click", () => {
+        inputBox.style.display = "none";
+        input.value = "";
+        
+        if (coordInputMarker) {
+        mymap.removeLayer(coordInputMarker);
+        coordInputMarker = null;
+        }
+    });
+
+    /* 🔥 AUTO DETECT KOORDINAT */
+    input.addEventListener("input", () => {
+
+        const q = input.value.trim();
+
+        // kosong → hapus marker
+        if (!q) {
+            if (coordInputMarker) {
+                mymap.removeLayer(coordInputMarker);
+                coordInputMarker = null;
+            }
+            return;
+        }
+
+        const parts = q.includes(",") ? q.split(",") : q.split(" ");
+        if (parts.length !== 2) return;
+
+        const lat = parseFloat(parts[0]);
+        const lng = parseFloat(parts[1]);
+
+        if (
+            isNaN(lat) || isNaN(lng) ||
+            lat < -90 || lat > 90 ||
+            lng < -180 || lng > 180
+        ) return;
+
+        // marker sudah ada → update posisi saja
+        if (coordInputMarker) {
+            coordInputMarker.setLatLng([lat, lng]);
+        } else {
+            coordInputMarker = L.marker([lat, lng], { draggable: true })
+                .addTo(mymap)
+                .bindPopup(`
+                    <div style="text-align:center;padding:8px">
+                        <strong>📍 Koordinat</strong><br>
+                        ${lat.toFixed(6)}, ${lng.toFixed(6)}
+                    </div>
+                `)
+                .openPopup();
+        }
+
+        mymap.setView([lat, lng], 16);
+
+        coordInputMarker.on("dragend", e => {
+            const p = e.target.getLatLng();
+            input.value = `${p.lat.toFixed(6)},${p.lng.toFixed(6)}`;
+        });
+    });
+
+});
     </script>
 </body>
 
