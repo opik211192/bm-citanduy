@@ -276,7 +276,7 @@
 
             /* teks */
             .form-check-label {
-                font-size: 12px;
+                font-size: 10px;
                 line-height: 1.3;
                 margin: 0;
             }
