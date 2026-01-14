@@ -184,6 +184,8 @@
             flex-shrink: 0;
         }
 
+
+
         @media (max-width: 768px) {
 
             .legend-dot {
@@ -391,15 +393,18 @@
         }
 
         #custom-search {
-            position: absolute;
-            top: 220px;
-            /* ⬅️ turun di bawah Google Terrain */
+            position: fixed;
+            /* ⬅️ PENTING */
+            top: 0;
             right: 10px;
+            transform: translateY(220px);
+            /* ⬅️ ini yang ngatur turun */
             z-index: 9995;
             display: flex;
             align-items: center;
             gap: 6px;
         }
+
 
         #search-box {
             display: none;
@@ -570,6 +575,12 @@
 
         #coord-close:hover {
             color: red;
+        }
+
+        @media (max-width: 768px) {
+            #custom-search {
+                transform: translateY(220px);
+            }
         }
     </style>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
