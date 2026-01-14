@@ -255,20 +255,39 @@
 
         @media (max-width: 768px) {
 
-            /* kecilkan checkbox + icon di dalamnya */
-            .form-check-input {
-                transform: scale(0.75);
-                /* ⬅️ ini kuncinya */
-                transform-origin: top left;
-                margin-top: 3px;
+            /* wrapper checkbox + label */
+            .form-check {
+                display: flex;
+                align-items: center;
+                /* 🔑 kunci utama */
+                gap: 6px;
+                margin-bottom: 6px;
             }
 
-            /* kecilkan font label */
+            /* checkbox */
+            .form-check-input {
+                width: 16px;
+                /* ukuran real */
+                height: 16px;
+                margin: 0;
+                /* ❗ jangan pakai margin-top */
+                flex-shrink: 0;
+            }
+
+            /* teks */
             .form-check-label {
                 font-size: 12px;
-                line-height: 1.35;
+                line-height: 1.3;
+                margin: 0;
             }
 
+            /* BULAT WARNA / ICON LEGEND */
+            .legend-dot {
+                width: 14px;
+                height: 14px;
+                border-width: 1px;
+                flex-shrink: 0;
+            }
         }
 
         .leaflet-popup-content-wrapper {
