@@ -288,6 +288,7 @@
                 border-width: 1px;
                 flex-shrink: 0;
             }
+
         }
 
         .leaflet-popup-content-wrapper {

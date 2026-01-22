@@ -228,11 +228,15 @@ function renderAset(jenis, data) {
                     </table>
                 </div>
                 <div class="card-footer bg-light p-2">
-                    <button class="btn btn-sm btn-primary w-100" onclick="detailAset(${
+                    <button class="btn btn-sm btn-primary" onclick="detailAset(${
                         item.id
                     })">
                         <i class="fa fa-info-circle me-1"></i> Detail
                     </button>
+
+                    <a class="btn btn-sm btn-dark text-white" href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.long}" target="_blank">
+                        <i class="fa fa-location-arrow me-1"></i> Petunjuk Arah
+                    </a>
                 </div>
             </div>
         `);
@@ -353,11 +357,15 @@ function renderAirbaku(jenis, data) {
                     </table>
                 </div>
                 <div class="card-footer bg-light p-2">
-                    <button class="btn btn-sm btn-info w-100" onclick="detailAirbaku(${
+                    <button class="btn btn-sm btn-info " onclick="detailAirbaku(${
                         item.id
                     })">
                         <i class="fa fa-info-circle me-1"></i> Detail
                     </button>
+
+                    <a class="btn btn-sm btn-dark text-white" href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.long}" target="_blank">
+                        <i class="fa fa-location-arrow me-1"></i> Petunjuk Arah
+                    </a>
                 </div>
             </div>
         `);
