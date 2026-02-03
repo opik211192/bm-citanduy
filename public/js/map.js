@@ -7,23 +7,23 @@ var mymap = L.map("map", {
 const baseMaps = {
     "Esri Satellite": L.tileLayer(
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        { attribution: "&copy; Esri &mdash; Source: Esri, USGS, etc." }
+        { attribution: "&copy; Esri &mdash; Source: Esri, USGS, etc." },
     ),
     "Google Streets": L.tileLayer(
         "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-        { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
+        { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] },
     ),
     "Google Hybrid": L.tileLayer(
         "http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}",
-        { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
+        { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] },
     ),
     "Google Satellite": L.tileLayer(
         "http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
+        { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] },
     ),
     "Google Terrain": L.tileLayer(
         "http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",
-        { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] }
+        { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] },
     ),
 };
 baseMaps["Google Satellite"].addTo(mymap);
@@ -108,6 +108,25 @@ function getBorderColorByStatusOperasi(status) {
     }
 }
 
+//icon seigita
+function createTriangleIcon(color, size = 14) {
+    return L.divIcon({
+        className: "",
+        html: `
+            <div style="
+                width:0;height:0;
+                border-left:${size}px solid transparent;
+                border-right:${size}px solid transparent;
+                border-bottom:${size * 1.8}px solid ${color};
+                filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+            "></div>
+        `,
+        iconSize: [size * 2, size * 2],
+        iconAnchor: [size, size * 1.8],
+        popupAnchor: [0, -size * 1.8],
+    });
+}
+
 // mapping icon
 const iconMap = {
     embung: createColoredIcon(getColorByJenis("embung"), "E"),
@@ -115,15 +134,15 @@ const iconMap = {
     bendungan: createColoredIcon(getColorByJenis("bendungan"), "BD"),
     "pengendali banjir": createColoredIcon(
         getColorByJenis("pengendali banjir"),
-        "PB"
+        "PB",
     ),
     "pengaman pantai": createColoredIcon(
         getColorByJenis("pengaman pantai"),
-        "PP"
+        "PP",
     ),
     "pengendali sedimen": createColoredIcon(
         getColorByJenis("pengendali sedimen"),
-        "PS"
+        "PS",
     ),
 };
 
@@ -184,7 +203,7 @@ function renderAset(jenis, data) {
             icon: createColoredIcon(
                 getColorByJenis(iconKey),
                 iconKey.substring(0, 2).toUpperCase(), // label 2 huruf
-                borderColor
+                borderColor,
             ),
         }).addTo(mymap);
 
@@ -217,13 +236,13 @@ function renderAset(jenis, data) {
                         }</td></tr>
                         <tr><th>DAS</th><td>${item.das}</td></tr>
                         <tr><th>Koordinat</th><td>${item.lat}, ${
-            item.long
-        }</td></tr>
+                            item.long
+                        }</td></tr>
                         <tr><th>Lokasi</th><td>${item.village}, ${
-            item.district
-        }, ${item.city}</td></tr>
+                            item.district
+                        }, ${item.city}</td></tr>
                         <tr><th>Kondisi</th><td>${getKondisiBadge(
-                            kondisiFinal
+                            kondisiFinal,
                         )}</td></tr>
                     </table>
                 </div>
@@ -339,17 +358,17 @@ function renderAirbaku(jenis, data) {
                         }</td></tr>
                         <tr><th>DAS</th><td>${item.das ?? "-"}</td></tr>
                         <tr><th>Koordinat</th><td>${item.lat}, ${
-            item.long
-        }</td></tr>
+                            item.long
+                        }</td></tr>
                         <tr><th>Lokasi</th><td>${item.village ?? "-"}, ${
-            item.district ?? "-"
-        }, ${item.city ?? "-"}</td></tr>
+                            item.district ?? "-"
+                        }, ${item.city ?? "-"}</td></tr>
                         <tr><th>Tahun</th><td>${
                             item.tahun_pembangunan ?? "-"
                         }</td></tr>
                         <tr><th>Status Operasi</th><td>
                             ${getStatusOperasiBadge(
-                                item.status_operasi ?? "-"
+                                item.status_operasi ?? "-",
                             )}</td></tr>
                         <tr><th>Status Pekerjaan</th><td>${
                             item.status_pekerjaan ?? "-"
@@ -525,6 +544,8 @@ fetch("js/sungai.geojson")
         //console.log("Data sungai loaded:", allSungaiData);
     });
 
+var searchLayerSungai = L.layerGroup().addTo(mymap);
+
 // 2️⃣ Fungsi untuk menggambar sungai berdasarkan orde terpilih
 function updateSungaiLayer(selectedOrdes) {
     if (!allSungaiData) return;
@@ -533,7 +554,8 @@ function updateSungaiLayer(selectedOrdes) {
     if (sungaiLayer) mymap.removeLayer(sungaiLayer);
 
     // hapus semua layer dari searchLayer
-    searchLayer.clearLayers();
+    //searchLayer.clearLayers();
+    searchLayerSungai.clearLayers();
 
     // filter fitur berdasarkan orde yang dipilih
     const filteredFeatures = allSungaiData.features.filter((f) => {
@@ -582,9 +604,10 @@ function updateSungaiLayer(selectedOrdes) {
                 };
 
                 // 💡 Masukkan ke search layer
-                searchLayer.addLayer(layer);
+                //searchLayer.addLayer(layer);
+                searchLayerSungai.addLayer(layer);
             },
-        }
+        },
     ).addTo(mymap);
 }
 
@@ -605,12 +628,540 @@ document.querySelectorAll(".sungai-filter").forEach((cb) => {
 
         // Ambil semua yang dicentang untuk update peta
         const checked = Array.from(
-            document.querySelectorAll(".sungai-filter:checked")
+            document.querySelectorAll(".sungai-filter:checked"),
         ).map((el) => el.value);
 
         updateSungaiLayer(checked.length ? checked : []);
     });
 });
+
+//irigasi layer
+let irigasiLayers = {};
+let irigasiDataCache = {};
+
+async function loadIrigasiArea(key, file, color = "#0d6efd") {
+    // kalau sudah pernah diload → langsung render
+    if (irigasiDataCache[key]) {
+        drawIrigasiLayer(key, irigasiDataCache[key], color);
+        return;
+    }
+
+    try {
+        const res = await fetch(file);
+        const geojson = await res.json();
+        irigasiDataCache[key] = geojson;
+        drawIrigasiLayer(key, geojson, color);
+    } catch (err) {
+        console.error("Gagal load irigasi:", key, err);
+    }
+}
+
+function drawIrigasiLayer(key, geojson, color) {
+    // hapus dulu kalau ada
+    if (irigasiLayers[key]) {
+        mymap.removeLayer(irigasiLayers[key]);
+    }
+
+    irigasiLayers[key] = L.geoJSON(geojson, {
+        style: {
+            color: color,
+            weight: 2,
+            fillOpacity: 0.15,
+        },
+        onEachFeature: (feature, layer) => {
+            const p = feature.properties || {};
+
+            const luas = p.L_Baku
+                ? Number(p.L_Baku).toLocaleString("id-ID", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                  }) + " Ha"
+                : "-";
+
+            layer.bindPopup(`
+        <div style="font-size:13px; line-height:1.4">
+            <div class="fw-bold mb-1 text-primary">
+                ${p.Nm_Inf ?? "Daerah Irigasi"}
+            </div>
+
+            <table class="table table-sm table-borderless mb-0">
+                <tr>
+                    <td>Jenis</td>
+                    <td>: ${p.Jenis_DI ?? "-"}</td>
+                </tr>
+                <tr>
+                    <td>Luas Baku</td>
+                    <td>: ${luas}</td>
+                </tr>
+                <tr>
+                    <td>Kewenangan</td>
+                    <td>: ${p.Kewenangan ?? "-"}</td>
+                </tr>
+                <tr>
+                    <td>Provinsi</td>
+                    <td>: ${p.Provinsi ?? "-"}</td>
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td>: ${p.Status ?? "-"}</td>
+                </tr>
+                <tr>
+                    <td>Tahun Data</td>
+                    <td>: ${p.Thn_Dat ?? "-"}</td>
+                </tr>
+            </table>
+        </div>
+    `);
+
+            // optional: masuk ke search control
+            layer.feature = {
+                properties: {
+                    name: p.Nm_Inf ?? "Daerah Irigasi",
+                },
+            };
+            searchLayer.addLayer(layer);
+        },
+    }).addTo(mymap);
+
+    // zoom ke area (opsional, hanya saat pertama ON)
+    mymap.fitBounds(irigasiLayers[key].getBounds());
+}
+
+document
+    .getElementById("irigasi-cikunten-1")
+    .addEventListener("change", function () {
+        if (this.checked) {
+            loadIrigasiArea(
+                "area_cikunten_1",
+                "js/area_cikunten_1.geojson",
+                "#ff6f00",
+            );
+        } else if (irigasiLayers["area_cikunten_1"]) {
+            mymap.removeLayer(irigasiLayers["area_cikunten_1"]);
+        }
+    });
+
+document
+    .getElementById("irigasi-cikunten-2")
+    .addEventListener("change", function () {
+        if (this.checked) {
+            loadIrigasiArea(
+                "area_cikunten_2",
+                "js/area_cikunten_2.geojson",
+                "#00c853",
+            );
+        } else if (irigasiLayers["area_cikunten_2"]) {
+            mymap.removeLayer(irigasiLayers["area_cikunten_2"]);
+        }
+    });
+
+document.getElementById("irigasi-all").addEventListener("change", function () {
+    const checked = this.checked;
+
+    document.querySelectorAll(".irigasi-filter").forEach((cb) => {
+        cb.checked = checked;
+        cb.dispatchEvent(new Event("change"));
+    });
+});
+
+//Bangunan CIkunten dan convert utm
+proj4.defs(
+    "EPSG:32749",
+    "+proj=utm +zone=49 +south +datum=WGS84 +units=m +no_defs",
+);
+
+function convertGeoJSON_UTM49_to_LatLng(geojson) {
+    geojson.features.forEach((f) => {
+        if (!f.geometry) return;
+
+        const g = f.geometry;
+        const convert = (c) => proj4("EPSG:32749", "EPSG:4326", c);
+
+        if (g.type === "Point") {
+            g.coordinates = convert(g.coordinates);
+        }
+
+        if (g.type === "LineString") {
+            g.coordinates = g.coordinates.map(convert);
+        }
+
+        if (g.type === "MultiLineString") {
+            g.coordinates = g.coordinates.map((line) => line.map(convert));
+        }
+
+        if (g.type === "Polygon") {
+            g.coordinates = g.coordinates.map((ring) => ring.map(convert));
+        }
+
+        if (g.type === "MultiPolygon") {
+            g.coordinates = g.coordinates.map((poly) =>
+                poly.map((ring) => ring.map(convert)),
+            );
+        }
+    });
+
+    return geojson;
+}
+
+let bangunanIrigasiLayer = null;
+let bangunanIrigasiCache = null;
+
+/* ===============================
+   BAGUNGAN CIKUNTEN 1
+================================ */
+
+async function loadBangunanCikuntenI() {
+    if (bangunanIrigasiLayer) {
+        mymap.addLayer(bangunanIrigasiLayer);
+        return;
+    }
+
+    const res = await fetch("js/bangunan_cikunten_1.geojson");
+    let geojson = await res.json();
+
+    geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
+
+    bangunanIrigasiLayer = L.geoJSON(geojson, {
+        pointToLayer: (f, latlng) =>
+            L.marker(latlng, {
+                icon: createTriangleIcon("#e53935"), // 🔴 sesuai legend
+            }),
+
+        onEachFeature: (feature, layer) => {
+            const p = feature.properties || {};
+
+            // helper buat cek value valid
+            const show = (label, value) => {
+                if (
+                    value === null ||
+                    value === undefined ||
+                    value === "" ||
+                    value === 0 ||
+                    value === "0"
+                )
+                    return "";
+                return `<tr>
+                    <td style="padding-right:6px;"><b>${label}</b></td>
+                    <td>: ${value}</td>
+                </tr>`;
+            };
+
+            const popupContent = `
+                <div style="font-size:13px padding:4px;">
+                    <div style="font-weight:bold;font-size:14px;margin-bottom:4px;">
+                        ${p.NAMA ?? "Bangunan Irigasi"}
+                    </div>
+
+                    <table>
+                        ${show("Nomenklatur", p.NOMENKLATU)}
+                        ${show("Kode Bangunan", p.K_BANGUNAN)}
+                        ${show("Urut", p.URUT)}
+                        ${show("Jenis", p.JENIS)}
+                        ${show("Kondisi", p.KONDISI)}
+                        ${show("Fungsi", p.FUNGSI)}
+                        ${show("Rotasi", p.ROTASI)}
+                        ${show("Tahun", p.TAHUN)}
+                    </table>
+                </div>
+            `;
+
+            layer.bindPopup(popupContent);
+
+            layer.feature = {
+                properties: {
+                    name: `${p.NAMA} ${p.NOMENKLATU}` ?? "",
+                    searchText: `
+                ${p.NAMA ?? ""}
+                ${p.NOMENKLATU ?? ""}
+                ${p.K_BANGUNAN ?? ""}
+            `,
+                },
+            };
+
+            // 🔍 WAJIB: masukin ke searchLayer
+            searchLayer.addLayer(layer);
+        },
+    }).addTo(mymap);
+}
+
+document
+    .getElementById("bangunan-cikunten-1")
+    .addEventListener("change", function () {
+        this.checked
+            ? loadBangunanCikuntenI()
+            : mymap.removeLayer(bangunanIrigasiLayer);
+    });
+
+/* ===============================
+   BANGUNAN CIKUNTEN 2
+================================ */
+
+let bangunanIrigasiLayerCikunten2 = null;
+async function loadBangunanCikuntenII() {
+    if (bangunanIrigasiLayerCikunten2) {
+        mymap.addLayer(bangunanIrigasiLayerCikunten2);
+        return;
+    }
+
+    const res = await fetch("js/bangunan_cikunten_2.geojson");
+    let geojson = await res.json();
+
+    geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
+
+    bangunanIrigasiLayerCikunten2 = L.geoJSON(geojson, {
+        pointToLayer: (f, latlng) =>
+            L.marker(latlng, {
+                icon: createTriangleIcon("#00acc1"), // 🟦 sesuai legend
+            }),
+
+        onEachFeature: (feature, layer) => {
+            const p = feature.properties || {};
+
+            // helper buat cek value valid
+            const show = (label, value) => {
+                if (
+                    value === null ||
+                    value === undefined ||
+                    value === "" ||
+                    value === 0 ||
+                    value === "0"
+                )
+                    return "";
+                return `<tr>
+                    <td style="padding-right:6px;"><b>${label}</b></td>
+                    <td>: ${value}</td>
+                </tr>`;
+            };
+
+            const popupContent = `
+                <div style="font-size:13px">
+                    <div style="font-weight:bold;font-size:14px;margin-bottom:4px;">
+                        ${p.NAMA ?? "Bangunan Irigasi"}
+                    </div>
+
+                    <table>
+                        ${show("Nomenklatur", p.NOMENKLATU)}
+                        ${show("Kode Bangunan", p.K_BANGUNAN)}
+                        ${show("Urut", p.URUT)}
+                        ${show("Jenis", p.JENIS)}
+                        ${show("Kondisi", p.KONDISI)}
+                        ${show("Fungsi", p.FUNGSI)}
+                        ${show("Rotasi", p.ROTASI)}
+                        ${show("Tahun", p.TAHUN)}
+                    </table>
+                </div>
+            `;
+
+            layer.bindPopup(popupContent);
+
+            layer.feature = {
+                properties: {
+                    name: `${p.NAMA} ${p.NOMENKLATU}` ?? "",
+                    searchText: `
+                ${p.NAMA ?? ""}
+                ${p.NOMENKLATU ?? ""}
+                ${p.K_BANGUNAN ?? ""}
+            `,
+                },
+            };
+
+            // 🔍 WAJIB: masukin ke searchLayer
+            searchLayer.addLayer(layer);
+        },
+    }).addTo(mymap);
+}
+
+document
+    .getElementById("bangunan-cikunten-2")
+    .addEventListener("change", function () {
+        this.checked
+            ? loadBangunanCikuntenII()
+            : mymap.removeLayer(bangunanIrigasiLayerCikunten2);
+    });
+
+let jaringanCikunten1Layer = null;
+let jaringanCikunten2Layer = null;
+
+/* ===============================
+   JARINGAN CIKUNTEN I
+================================ */
+async function loadJaringanCikuntenI() {
+    if (jaringanCikunten1Layer) {
+        mymap.addLayer(jaringanCikunten1Layer);
+        return;
+    }
+
+    const res = await fetch("js/jaringan_cikunten_1.geojson");
+    let geojson = await res.json();
+
+    geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
+
+    jaringanCikunten1Layer = L.geoJSON(geojson, {
+        style: {
+            color: "#ffca28",
+            weight: 3,
+            opacity: 0.9,
+        },
+        onEachFeature: (feature, layer) => {
+            const p = feature.properties || {};
+
+            const show = (label, value) => {
+                if (
+                    value === null ||
+                    value === undefined ||
+                    value === "" ||
+                    value === 0 ||
+                    value === 0.0
+                )
+                    return "";
+                return `
+            <tr>
+                <td style="padding-right:6px;"><b>${label}</b></td>
+                <td>: ${value}</td>
+            </tr>
+        `;
+            };
+
+            const lengthMeter = p.length ? `${p.length.toFixed(2)} m` : null;
+
+            const popupContent = `
+                <div style="font-size:13px">
+                    <div style="font-weight:bold;font-size:14px;margin-bottom:4px;">
+                        ${p.NAMA ?? "Jaringan Irigasi"}
+                    </div>
+
+                    <table>
+                        ${show("Nomenklatur", p.NOMENKLATU)}
+                        ${show("Kode Saluran", p.K_SALURAN)}
+                        ${show("Urut", p.URUT)}
+                        ${show("Debit (Q)", p.Q)}
+                        ${show("Luas (A)", p.A)}
+                        ${show("Panjang", lengthMeter)}
+                        ${show("Kondisi", p.KONDISI)}
+                        ${show("Fungsi", p.FUNGSI)}
+                        ${show("Tahun", p.TAHUN)}
+                    </table>
+                </div>
+            `;
+
+            layer.bindPopup(popupContent);
+
+            layer.feature = {
+                properties: {
+                    name: `${p.NAMA} ${p.NOMENKLATU}` ?? "",
+                    searchText: `
+                ${p.NAMA ?? ""}
+                ${p.NOMENKLATU ?? ""}
+                ${p.K_BANGUNAN ?? ""}
+            `,
+                },
+            };
+
+            // 🔍 WAJIB: masukin ke searchLayer
+            searchLayer.addLayer(layer);
+        },
+    }).addTo(mymap);
+}
+
+/* ===============================
+   JARINGAN CIKUNTEN II
+================================ */
+async function loadJaringanCikuntenII() {
+    if (jaringanCikunten2Layer) {
+        mymap.addLayer(jaringanCikunten2Layer);
+        return;
+    }
+
+    const res = await fetch("js/jaringan_cikunten_2.geojson");
+    let geojson = await res.json();
+
+    geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
+
+    jaringanCikunten2Layer = L.geoJSON(geojson, {
+        style: {
+            color: "#76ff03",
+            weight: 3,
+            opacity: 0.9,
+        },
+        onEachFeature: (feature, layer) => {
+            const p = feature.properties || {};
+
+            const show = (label, value) => {
+                if (
+                    value === null ||
+                    value === undefined ||
+                    value === "" ||
+                    value === 0 ||
+                    value === 0.0
+                )
+                    return "";
+                return `
+            <tr>
+                <td style="padding-right:6px;"><b>${label}</b></td>
+                <td>: ${value}</td>
+            </tr>
+        `;
+            };
+
+            const lengthMeter = p.length ? `${p.length.toFixed(2)} m` : null;
+
+            const popupContent = `
+                <div style="font-size:13px">
+                    <div style="font-weight:bold;font-size:14px;margin-bottom:4px;">
+                        ${p.NAMA ?? "Jaringan Irigasi"}
+                    </div>
+
+                    <table>
+                        ${show("Nomenklatur", p.NOMENKLATU)}
+                        ${show("Kode Saluran", p.K_SALURAN)}
+                        ${show("Urut", p.URUT)}
+                        ${show("Debit (Q)", p.Q)}
+                        ${show("Luas (A)", p.A)}
+                        ${show("Panjang", lengthMeter)}
+                        ${show("Kondisi", p.KONDISI)}
+                        ${show("Fungsi", p.FUNGSI)}
+                        ${show("Tahun", p.TAHUN)}
+                    </table>
+                </div>
+            `;
+
+            layer.bindPopup(popupContent);
+
+            layer.feature = {
+                properties: {
+                    name: `${p.NAMA} ${p.NOMENKLATU}` ?? "",
+                    searchText: `
+                ${p.NAMA ?? ""}
+                ${p.NOMENKLATU ?? ""}
+                ${p.K_BANGUNAN ?? ""}
+            `,
+                },
+            };
+
+            // 🔍 WAJIB: masukin ke searchLayer
+            searchLayer.addLayer(layer);
+        },
+    }).addTo(mymap);
+}
+
+/* ===============================
+   EVENT CHECKBOX
+================================ */
+document
+    .getElementById("jaringan-cikunten-1")
+    .addEventListener("change", function () {
+        this.checked
+            ? loadJaringanCikuntenI()
+            : mymap.removeLayer(jaringanCikunten1Layer);
+    });
+
+document
+    .getElementById("jaringan-cikunten-2")
+    .addEventListener("change", function () {
+        this.checked
+            ? loadJaringanCikuntenII()
+            : mymap.removeLayer(jaringanCikunten2Layer);
+    });
 
 // --- Control Search ---
 // var searchControl = new L.Control.Search({

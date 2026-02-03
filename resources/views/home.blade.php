@@ -799,8 +799,139 @@
                             </label>
                         </div>
                         @endforeach
+                        <hr class="my-2">
+
+                        <!-- Dropdown Irigasi -->
+                        <div class="mb-2">
+                            <div class="d-flex align-items-center justify-content-between irigasi-header"
+                                data-bs-toggle="collapse" data-bs-target="#collapseIrigasi" aria-expanded="false"
+                                aria-controls="collapseIrigasi" style="cursor: pointer;">
+
+                                <div class="d-flex align-items-center">
+                                    <input class="form-check-input" type="checkbox" id="irigasi-all">
+                                    <label class="form-check-label fw-bold d-flex align-items-center mb-0 ms-2"
+                                        for="irigasi-all">
+                                        <i class="fa-solid fa-water me-2 text-info"></i>
+                                        Irigasi
+                                    </label>
+                                </div>
+
+                                <i class="bi bi-caret-down-fill toggle-icon"></i>
+                            </div>
+
+                            <div class="collapse" id="collapseIrigasi">
+                                <div class="pt-3 px-3">
+                                    <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                        <input class="form-check-input irigasi-filter" type="checkbox"
+                                            id="irigasi-cikunten-1" value="area_cikunten_1">
+
+                                        <span style="
+                                    display:inline-block;
+                                    width:20px;
+                                    height:10px;
+                                    background:#ff6f00;
+                                    border-radius:3px;
+                                    border:1px solid #333;">
+                                        </span>
+
+                                        <label class="form-check-label fw-semibold" for="irigasi-cikunten-1">
+                                            Area Cikunten I
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                        <input class="form-check-input irigasi-filter" type="checkbox"
+                                            id="irigasi-cikunten-2" value="area_cikunten_2">
+
+                                        <span style="
+                                    display:inline-block;
+                                    width:20px;
+                                    height:10px;
+                                    background:#00c853;
+                                    border-radius:3px;
+                                    border:1px solid #333;">
+                                        </span>
+
+                                        <label class="form-check-label fw-semibold" for="irigasi-cikunten-2">
+                                            Area Cikunten II
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                        <input class="form-check-input irigasi-filter" type="checkbox"
+                                            id="bangunan-cikunten-1" value="bangunan_cikunten_1">
+
+                                        <span style="
+                                    display:inline-block;
+                                    width:0;height:0;
+                                    border-left:7px solid transparent;
+                                    border-right:7px solid transparent;
+                                    border-bottom:12px solid #e53935;
+                                    "></span>
+
+                                        <label class="form-check-label fw-semibold" for="bangunan-cikunten-1">
+                                            Bangunan Cikunten I
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                        <input class="form-check-input irigasi-filter" type="checkbox"
+                                            id="bangunan-cikunten-2" value="bangunan_cikunten_2">
+
+                                        <span style="
+                                            display:inline-block;
+                                            width:0;height:0;
+                                            border-left:7px solid transparent;
+                                            border-right:7px solid transparent;
+                                            border-bottom:12px solid #00acc1;">
+                                        </span>
+
+
+
+                                        <label class="form-check-label fw-semibold" for="bangunan-cikunten-2">
+                                            Bangunan Cikunten II
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                        <input class="form-check-input irigasi-filter" type="checkbox"
+                                            id="jaringan-cikunten-1" value="jaringan_cikunten_1">
+
+                                        <span style="
+                                    display:inline-block;
+                                    width:26px;
+                                    height:6px;
+                                    background:#ffca28;
+                                    border-radius:2px;
+                                    border:1px solid #333;
+                                    "></span>
+
+                                        <label class="form-check-label fw-semibold" for="jaringan-cikunten-1">
+                                            Jaringan Cikunten I
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                        <input class="form-check-input irigasi-filter" type="checkbox"
+                                            id="jaringan-cikunten-2" value="jaringan_cikunten_2">
+
+                                        <span style="
+                                    display:inline-block;
+                                    width:26px;
+                                    height:6px;
+                                    background:#76ff03;
+                                    border-radius:2px;
+                                    border:1px solid #333;
+                                    "></span>
+
+                                        <label class="form-check-label fw-semibold" for="jaringan-cikunten-2">
+                                            Jaringan Cikunten II
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
 
@@ -977,6 +1108,7 @@
 
     <!-- JS -->
     <script src="https://unpkg.com/leaflet-search@3.0.0/dist/leaflet-search.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"></script>
 
     <script>
         const APP_URL = "{{ url('') }}";
