@@ -799,6 +799,7 @@
                             </label>
                         </div>
                         @endforeach
+                        {{--
                         <hr class="my-2">
 
                         <!-- Dropdown Irigasi -->
@@ -928,12 +929,112 @@
                                 </div>
 
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
 
             </div>
 
+            <!-- Irigasi Section -->
+            <div class="accordion-item border rounded shadow-sm mb-3">
+                <h2 class="accordion-header" id="headingIrigasi">
+                    <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseIrigasi">
+                        <i class="fa-solid fa-water me-2 text-info"></i>
+                        Data Irigasi
+                    </button>
+                </h2>
+
+                <div id="collapseIrigasi" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+
+                        <!-- IRIGASI ALL -->
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="irigasi-all">
+                            <label class="form-check-label fw-bold" for="irigasi-all">
+                                Tampilkan Semua Irigasi
+                            </label>
+                        </div>
+
+                        <hr class="my-2">
+
+                        <!-- ================= CIKUNTEN I ================= -->
+                        <div class="form-check-label fw-bold d-flex justify-content-between align-items-center mb-2"
+                            data-bs-toggle="collapse" data-bs-target="#cikunten1" style="cursor:pointer;">
+                            Cikunten I
+                            <i class="bi bi-caret-down-fill"></i>
+                        </div>
+
+                        <div class="collapse show ps-3 mb-3" id="cikunten1">
+
+                            <!-- Area -->
+                            <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                <input class="form-check-input irigasi-filter" type="checkbox" id="irigasi-cikunten-1"
+                                    value="area_cikunten_1">
+                                <span
+                                    style="width:20px;height:10px;background:#ff6f00;border-radius:3px;border:1px solid #333;"></span>
+                                <label class="form-check-label fw-semibold">Area</label>
+                            </div>
+
+                            <!-- Bangunan -->
+                            <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                <input class="form-check-input irigasi-filter" type="checkbox" id="bangunan-cikunten-1"
+                                    value="bangunan_cikunten_1">
+                                <span
+                                    style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #e53935;"></span>
+                                <label class="form-check-label fw-semibold">Bangunan</label>
+                            </div>
+
+                            <!-- Jaringan -->
+                            <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                <input class="form-check-input irigasi-filter" type="checkbox" id="jaringan-cikunten-1"
+                                    value="jaringan_cikunten_1">
+                                <span
+                                    style="width:26px;height:6px;background:#ffca28;border-radius:2px;border:1px solid #333;"></span>
+                                <label class="form-check-label fw-semibold">Jaringan</label>
+                            </div>
+                        </div>
+
+                        <!-- ================= CIKUNTEN II ================= -->
+                        <div class="form-check-label fw-bold d-flex justify-content-between align-items-center mb-2"
+                            data-bs-toggle="collapse" data-bs-target="#cikunten2" style="cursor:pointer;">
+                            Cikunten II
+                            <i class="bi bi-caret-down-fill"></i>
+                        </div>
+
+                        <div class="collapse show ps-3" id="cikunten2">
+
+                            <!-- Area -->
+                            <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                <input class="form-check-input irigasi-filter" type="checkbox" id="irigasi-cikunten-2"
+                                    value="area_cikunten_2">
+                                <span
+                                    style="width:20px;height:10px;background:#00c853;border-radius:3px;border:1px solid #333;"></span>
+                                <label class="form-check-label fw-semibold">Area</label>
+                            </div>
+
+                            <!-- Bangunan -->
+                            <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                <input class="form-check-input irigasi-filter" type="checkbox" id="bangunan-cikunten-2"
+                                    value="bangunan_cikunten_2">
+                                <span
+                                    style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #00acc1;"></span>
+                                <label class="form-check-label fw-semibold">Bangunan</label>
+                            </div>
+
+                            <!-- Jaringan -->
+                            <div class="form-check mb-2 d-flex align-items-center gap-2">
+                                <input class="form-check-input irigasi-filter" type="checkbox" id="jaringan-cikunten-2"
+                                    value="jaringan_cikunten_2">
+                                <span
+                                    style="width:26px;height:6px;background:#76ff03;border-radius:2px;border:1px solid #333;"></span>
+                                <label class="form-check-label fw-semibold">Jaringan</label>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
 
 
             {{--
