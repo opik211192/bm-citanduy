@@ -10,19 +10,19 @@ const baseMaps = {
         { attribution: "&copy; Esri &mdash; Source: Esri, USGS, etc." },
     ),
     "Google Streets": L.tileLayer(
-        "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+        "https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
         { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] },
     ),
     "Google Hybrid": L.tileLayer(
-        "http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}",
+        "https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}",
         { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] },
     ),
     "Google Satellite": L.tileLayer(
-        "http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+        "https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
         { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] },
     ),
     "Google Terrain": L.tileLayer(
-        "http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",
+        "https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",
         { maxZoom: 20, subdomains: ["mt0", "mt1", "mt2", "mt3"] },
     ),
 };
@@ -640,7 +640,6 @@ let irigasiLayers = {};
 let irigasiDataCache = {};
 
 async function loadIrigasiArea(key, file, color = "#0d6efd") {
-    // kalau sudah pernah diload → langsung render
     if (irigasiDataCache[key]) {
         drawIrigasiLayer(key, irigasiDataCache[key], color);
         return;
@@ -648,7 +647,13 @@ async function loadIrigasiArea(key, file, color = "#0d6efd") {
 
     try {
         const res = await fetch(file);
-        const geojson = await res.json();
+        let geojson = await res.json();
+
+        // ❗ convert SEMUA kecuali area_cikunten_1 & 2
+        if (key !== "area_cikunten_1" && key !== "area_cikunten_2") {
+            geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
+        }
+
         irigasiDataCache[key] = geojson;
         drawIrigasiLayer(key, geojson, color);
     } catch (err) {
