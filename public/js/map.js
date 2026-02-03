@@ -733,7 +733,7 @@ document
         if (this.checked) {
             loadIrigasiArea(
                 "area_cikunten_1",
-                "js/area_cikunten_1.geojson",
+                "/js/area_cikunten_1.geojson",
                 "#ff6f00",
             );
         } else if (irigasiLayers["area_cikunten_1"]) {
@@ -747,7 +747,7 @@ document
         if (this.checked) {
             loadIrigasiArea(
                 "area_cikunten_2",
-                "js/area_cikunten_2.geojson",
+                "/js/area_cikunten_2.geojson",
                 "#00c853",
             );
         } else if (irigasiLayers["area_cikunten_2"]) {
@@ -816,7 +816,7 @@ async function loadBangunanCikuntenI() {
         return;
     }
 
-    const res = await fetch("js/bangunan_cikunten_1.geojson");
+    const res = await fetch("/js/bangunan_cikunten_1.geojson");
     let geojson = await res.json();
 
     geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
@@ -903,7 +903,7 @@ async function loadBangunanCikuntenII() {
         return;
     }
 
-    const res = await fetch("js/bangunan_cikunten_2.geojson");
+    const res = await fetch("/js/bangunan_cikunten_2.geojson");
     let geojson = await res.json();
 
     geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
@@ -991,7 +991,7 @@ async function loadJaringanCikuntenI() {
         return;
     }
 
-    const res = await fetch("js/jaringan_cikunten_1.geojson");
+    const res = await fetch("/js/jaringan_cikunten_1.geojson");
     let geojson = await res.json();
 
     geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
@@ -1072,7 +1072,7 @@ async function loadJaringanCikuntenII() {
         return;
     }
 
-    const res = await fetch("js/jaringan_cikunten_2.geojson");
+    const res = await fetch("/js/jaringan_cikunten_2.geojson");
     let geojson = await res.json();
 
     geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
