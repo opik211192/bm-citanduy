@@ -727,41 +727,49 @@ function drawIrigasiLayer(key, geojson, color) {
     mymap.fitBounds(irigasiLayers[key].getBounds());
 }
 
-document
-    .getElementById("irigasi-cikunten-1")
-    .addEventListener("change", function () {
-        if (this.checked) {
-            loadIrigasiArea(
-                "area_cikunten_1",
-                "/js/area_cikunten_1.geojson",
-                "#ff6f00",
-            );
-        } else if (irigasiLayers["area_cikunten_1"]) {
-            mymap.removeLayer(irigasiLayers["area_cikunten_1"]);
-        }
-    });
+document.addEventListener("DOMContentLoaded", function () {
+    const irigasi1 = document.getElementById("irigasi-cikunten-1");
+    const irigasi2 = document.getElementById("irigasi-cikunten-2");
+    const irigasiAll = document.getElementById("irigasi-all");
 
-document
-    .getElementById("irigasi-cikunten-2")
-    .addEventListener("change", function () {
-        if (this.checked) {
-            loadIrigasiArea(
-                "area_cikunten_2",
-                "/js/area_cikunten_2.geojson",
-                "#00c853",
-            );
-        } else if (irigasiLayers["area_cikunten_2"]) {
-            mymap.removeLayer(irigasiLayers["area_cikunten_2"]);
-        }
-    });
+    if (irigasi1) {
+        irigasi1.addEventListener("change", function () {
+            if (this.checked) {
+                loadIrigasiArea(
+                    "area_cikunten_1",
+                    "/js/area_cikunten_1.geojson",
+                    "#ff6f00",
+                );
+            } else if (irigasiLayers["area_cikunten_1"]) {
+                mymap.removeLayer(irigasiLayers["area_cikunten_1"]);
+            }
+        });
+    }
 
-document.getElementById("irigasi-all").addEventListener("change", function () {
-    const checked = this.checked;
+    if (irigasi2) {
+        irigasi2.addEventListener("change", function () {
+            if (this.checked) {
+                loadIrigasiArea(
+                    "area_cikunten_2",
+                    "/js/area_cikunten_2.geojson",
+                    "#00c853",
+                );
+            } else if (irigasiLayers["area_cikunten_2"]) {
+                mymap.removeLayer(irigasiLayers["area_cikunten_2"]);
+            }
+        });
+    }
 
-    document.querySelectorAll(".irigasi-filter").forEach((cb) => {
-        cb.checked = checked;
-        cb.dispatchEvent(new Event("change"));
-    });
+    if (irigasiAll) {
+        irigasiAll.addEventListener("change", function () {
+            const checked = this.checked;
+
+            document.querySelectorAll(".irigasi-filter").forEach((cb) => {
+                cb.checked = checked;
+                cb.dispatchEvent(new Event("change"));
+            });
+        });
+    }
 });
 
 //Bangunan CIkunten dan convert utm
