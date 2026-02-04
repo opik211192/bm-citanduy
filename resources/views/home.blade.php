@@ -1225,7 +1225,7 @@
             const urlAsset = APP_URL + "/api/data/aset";
             const urlAirbaku = APP_URL + "/api/data/airbaku";
     </script>
-    <script src="{{ asset('js/map.js') }}"></script>
+    <script src="{{ asset('js/map.js') }}?v={{ filemtime(public_path('js/map.js')) }}"></script>
     <script src="{{ asset('js/detail.js') }}"></script>
     <script>
         function toggleSidebar() {
