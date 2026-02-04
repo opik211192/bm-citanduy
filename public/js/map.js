@@ -3,6 +3,16 @@ var mymap = L.map("map", {
     zoomControl: false,
 }).setView([-7.2098686, 108.237827], 9);
 
+mymap.createPane("pane-irigasi-area");
+mymap.createPane("pane-sungai");
+mymap.createPane("pane-jaringan");
+mymap.createPane("pane-bangunan");
+
+mymap.getPane("pane-irigasi-area").style.zIndex = 400;
+mymap.getPane("pane-sungai").style.zIndex = 450;
+mymap.getPane("pane-jaringan").style.zIndex = 500;
+mymap.getPane("pane-bangunan").style.zIndex = 600;
+
 // --- Layer dasar ---
 const baseMaps = {
     "Esri Satellite": L.tileLayer(
@@ -570,6 +580,7 @@ function updateSungaiLayer(selectedOrdes) {
     sungaiLayer = L.geoJSON(
         { type: "FeatureCollection", features: filteredFeatures },
         {
+            pane: "pane-sungai",
             style: (feature) => {
                 const orde = feature.properties?.ORDE;
                 return {
@@ -668,6 +679,7 @@ function drawIrigasiLayer(key, geojson, color) {
     }
 
     irigasiLayers[key] = L.geoJSON(geojson, {
+        pane: "pane-irigasi-area",
         style: {
             color: color,
             weight: 2,
@@ -783,6 +795,7 @@ proj4.defs(
     "+proj=utm +zone=49 +south +datum=WGS84 +units=m +no_defs",
 );
 
+//FUNGSI untuk CONVERT UTM KE LAT LONG
 function convertGeoJSON_UTM49_to_LatLng(geojson) {
     geojson.features.forEach((f) => {
         if (!f.geometry) return;
@@ -832,7 +845,7 @@ async function loadBangunanCikuntenI() {
     const res = await fetch("/js/bangunan_cikunten_1.geojson");
     let geojson = await res.json();
 
-    geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
+    //geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
 
     bangunanIrigasiLayer = L.geoJSON(geojson, {
         pointToLayer: (f, latlng) =>
@@ -919,7 +932,7 @@ async function loadBangunanCikuntenII() {
     const res = await fetch("/js/bangunan_cikunten_2.geojson");
     let geojson = await res.json();
 
-    geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
+    //geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
 
     bangunanIrigasiLayerCikunten2 = L.geoJSON(geojson, {
         pointToLayer: (f, latlng) =>
@@ -1007,9 +1020,10 @@ async function loadJaringanCikuntenI() {
     const res = await fetch("/js/jaringan_cikunten_1.geojson");
     let geojson = await res.json();
 
-    geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
+    //geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
 
     jaringanCikunten1Layer = L.geoJSON(geojson, {
+        pane: "pane-jaringan",
         style: {
             color: "#ffca28",
             weight: 3,
@@ -1088,9 +1102,10 @@ async function loadJaringanCikuntenII() {
     const res = await fetch("/js/jaringan_cikunten_2.geojson");
     let geojson = await res.json();
 
-    geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
+    //geojson = convertGeoJSON_UTM49_to_LatLng(geojson);
 
     jaringanCikunten2Layer = L.geoJSON(geojson, {
+        pane: "pane-jaringan",
         style: {
             color: "#76ff03",
             weight: 3,
