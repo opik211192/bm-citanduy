@@ -1,18 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AsetController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\AirBakuController;
+use App\Http\Controllers\AsetController;
 use App\Http\Controllers\AsetPhotoController;
 use App\Http\Controllers\BenchmarkController;
+use App\Http\Controllers\BmController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DependantDropdownController;
 use App\Http\Controllers\GeojsonController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KonsultanController;
 use App\Http\Controllers\RoleandPermissionController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 
 /*
@@ -35,9 +36,16 @@ Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'inde
 Route::get('/benchmark/print/{id}', [BenchmarkController::class, 'print'])->name('benchmark.print');
 Route::get('/benchmark/download/{id}', [BenchmarkController::class, 'download'])->name('benchmark.download');
 
+
+
 Route::get('/aset/print/{id}', [AsetController::class, 'print'])->name('aset.print');
 Route::get('/airbaku/print/{id}', [AirBakuController::class, 'print'])->name('airbaku.print');
 
+
+Route::prefix('bm')->middleware(['auth'])->group(function () {
+    Route::get('/data', [BmController::class, 'index'])->name('bm.index');
+    Route::post('/import', [BmController::class, 'import'])->name('bm.import');
+});
 
 
 Route::prefix('benchmark')->middleware(['auth', 'role:Admin|Benchmark Manager'])->group(function () {

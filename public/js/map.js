@@ -165,17 +165,26 @@ var cacheBM = {};
 var cacheAirbaku = {};
 
 // --- Layer khusus untuk pencarian ---
-var searchLayer = L.layerGroup().addTo(mymap);
+//var searchLayer = L.layerGroup().addTo(mymap);
+// ===============================
+// SEARCH LAYER
+// ===============================
+var searchLayerAset = L.layerGroup();
+var searchLayerBM = L.layerGroup();
+var searchLayerAirbaku = L.layerGroup();
+var searchLayerSungai = L.layerGroup();
+var searchLayerIrigasi = L.layerGroup();
 
 // clear marker
-function clearMarkers(storage, jenis) {
-    if (storage[jenis]) {
-        storage[jenis].forEach((m) => {
-            mymap.removeLayer(m);
-            searchLayer.removeLayer(m);
-        });
-        storage[jenis] = [];
-    }
+function clearMarkers(storage, searchGroup, jenis) {
+    if (!storage[jenis]) return;
+
+    storage[jenis].forEach((layer) => {
+        mymap.removeLayer(layer);
+        searchGroup.removeLayer(layer);
+    });
+
+    storage[jenis] = [];
 }
 
 // --- Border Color by Kondisi ---
@@ -197,7 +206,7 @@ function getBorderColorByKondisi(kondisi) {
 
 // fungsi render marker dari data cache
 function renderAset(jenis, data) {
-    clearMarkers(markersAset, jenis);
+    clearMarkers(markersAset, searchLayerAset, jenis);
     markersAset[jenis] = [];
 
     data.forEach((item) => {
@@ -280,14 +289,15 @@ function renderAset(jenis, data) {
                 searchText: `${item.nama_aset} ${item.lat} ${item.long}`,
             },
         };
-        searchLayer.addLayer(marker);
+        // searchLayer.addLayer(marker);
 
-        searchLayer.addLayer(marker);
+        // searchLayer.addLayer(marker);
+        searchLayerAset.addLayer(marker);
     });
 }
 
 function renderBM(jenis, data) {
-    clearMarkers(markersBM, jenis);
+    clearMarkers(markersBM, searchLayerBM, jenis);
     markersBM[jenis] = [];
 
     data.forEach((item) => {
@@ -317,13 +327,13 @@ function renderBM(jenis, data) {
 
         markersBM[jenis].push(marker);
         marker.feature = { properties: { name: item.nama_pekerjaan } };
-        searchLayer.addLayer(marker);
+        searchLayerBM.addLayer(marker);
     });
 }
 
 // --- Render Air Baku ---
 function renderAirbaku(jenis, data) {
-    clearMarkers(markerAirbaku, jenis);
+    clearMarkers(markerAirbaku, searchLayerAirbaku, jenis);
     markerAirbaku[jenis] = [];
 
     data.forEach((item) => {
@@ -409,9 +419,7 @@ function renderAirbaku(jenis, data) {
                 searchText: `${item.nama_aset} ${item.lat} ${item.long}`,
             },
         };
-        searchLayer.addLayer(marker);
-
-        searchLayer.addLayer(marker);
+        searchLayerAirbaku.addLayer(marker);
     });
 }
 // --- Fetch Data Aset dengan cache ---
@@ -421,7 +429,7 @@ async function fetchDataAset() {
         if (cb.checked) {
             selected.push(cb.value);
         } else {
-            clearMarkers(markersAset, cb.value);
+            clearMarkers(markersAset, searchLayerAset, cb.value);
         }
     });
 
@@ -450,7 +458,7 @@ async function fetchDataBM() {
         if (cb.checked) {
             selected.push(cb.value);
         } else {
-            clearMarkers(markersBM, cb.value);
+            clearMarkers(markersBM, searchLayerBM, cb.value);
         }
     });
 
@@ -478,7 +486,7 @@ async function fetchDataAirbaku() {
         if (cb.checked) {
             selected.push(cb.value);
         } else {
-            clearMarkers(markerAirbaku, cb.value);
+            clearMarkers(markerAirbaku, searchLayerAirbaku, cb.value);
         }
     });
 
@@ -554,10 +562,21 @@ fetch("js/sungai.geojson")
         //console.log("Data sungai loaded:", allSungaiData);
     });
 
-var searchLayerSungai = L.layerGroup().addTo(mymap);
+//var searchLayerSungai = L.layerGroup().addTo(mymap);
+
+function getSelectedSungai() {
+    return [...document.querySelectorAll(".sungai-filter:checked")].map(
+        (cb) => cb.value,
+    );
+}
+
+function refreshSungai() {
+    updateSungaiLayer(getSelectedSungai());
+}
 
 // 2️⃣ Fungsi untuk menggambar sungai berdasarkan orde terpilih
 function updateSungaiLayer(selectedOrdes) {
+    //console.count("updateSungaiLayer");
     if (!allSungaiData) return;
 
     // hapus layer lama
@@ -611,7 +630,9 @@ function updateSungaiLayer(selectedOrdes) {
 
                 // 💡 Tambahkan properti searchable
                 layer.feature = {
-                    properties: { name: p.NAMOBJ || "Sungai Tanpa Nama" },
+                    properties: {
+                        name: `${p.NAMOBJ} (Orde ${p.ORDE})`,
+                    },
                 };
 
                 // 💡 Masukkan ke search layer
@@ -621,30 +642,6 @@ function updateSungaiLayer(selectedOrdes) {
         },
     ).addTo(mymap);
 }
-
-// 3️⃣ Event listener untuk semua checkbox sungai
-document.querySelectorAll(".sungai-filter").forEach((cb) => {
-    cb.addEventListener("change", () => {
-        const allCb = document.getElementById("sungai-all");
-
-        if (cb.value === "all" && cb.checked) {
-            // ✅ Jika "All" dicentang → centang semua
-            document
-                .querySelectorAll(".sungai-filter")
-                .forEach((el) => (el.checked = true));
-        } else if (cb.value !== "all") {
-            // ❌ Jika salah satu orde diubah → hapus centang "All"
-            allCb.checked = false;
-        }
-
-        // Ambil semua yang dicentang untuk update peta
-        const checked = Array.from(
-            document.querySelectorAll(".sungai-filter:checked"),
-        ).map((el) => el.value);
-
-        updateSungaiLayer(checked.length ? checked : []);
-    });
-});
 
 //irigasi layer
 let irigasiLayers = {};
@@ -736,12 +733,21 @@ function drawIrigasiLayer(key, geojson, color) {
                     name: p.Nm_Inf ?? "Daerah Irigasi",
                 },
             };
-            searchLayer.addLayer(layer);
+            //searchLayer.addLayer(layer);
+            searchLayerIrigasi.addLayer(layer);
         },
     }).addTo(mymap);
 
     // zoom ke area (opsional, hanya saat pertama ON)
     mymap.fitBounds(irigasiLayers[key].getBounds());
+}
+
+function eachSearchLayer(callback) {
+    searchLayerAset.eachLayer(callback);
+    searchLayerBM.eachLayer(callback);
+    searchLayerAirbaku.eachLayer(callback);
+    searchLayerSungai.eachLayer(callback);
+    searchLayerIrigasi.eachLayer(callback);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -905,7 +911,8 @@ async function loadBangunanCikuntenI() {
             };
 
             // 🔍 WAJIB: masukin ke searchLayer
-            searchLayer.addLayer(layer);
+            //searchLayer.addLayer(layer);
+            searchLayerIrigasi.addLayer(layer);
         },
     }).addTo(mymap);
 }
@@ -992,7 +999,8 @@ async function loadBangunanCikuntenII() {
             };
 
             // 🔍 WAJIB: masukin ke searchLayer
-            searchLayer.addLayer(layer);
+            //searchLayer.addLayer(layer);
+            searchLayerIrigasi.addLayer(layer);
         },
     }).addTo(mymap);
 }
@@ -1228,7 +1236,7 @@ function highlightFeature(layer) {
 
     // Terapkan efek glowing
     layer.setStyle({
-        weight: (layer.options.weight || 3) + 2,
+        weight: (layer.options.weight || 3) + 4,
         opacity: 1,
         className: "highlighted-sungai",
     });
@@ -1281,3 +1289,5 @@ mymap.on("popupclose", function () {
         originalStyle = {};
     }
 });
+
+console.log(mymap);

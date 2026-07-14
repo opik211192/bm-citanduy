@@ -154,7 +154,6 @@ public function index(Request $request)
             'tinggi_orthometrik' => 'nullable',
             'tinggi_elipsoid' => 'nullable',
             'keterangan' => 'nullable|string',
-            'konsultan' => 'nullable|string',
 
             'sketsa' => 'nullable',
             'foto' => 'nullable',
@@ -210,7 +209,6 @@ public function index(Request $request)
             'tinggi_orthometrik' => $validatedData['tinggi_orthometrik'],
             'tinggi_elipsoid' => $validatedData['tinggi_elipsoid'],
             'keterangan' => $validatedData['keterangan'],
-            'konsultan' => $validatedData['konsultan'],
         ]);
 
         // Membuat upload

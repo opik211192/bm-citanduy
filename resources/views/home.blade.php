@@ -1306,29 +1306,49 @@
             });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-        const sungaiAllOuter = document.getElementById('sungai-all');
-        const sungaiAllInner = document.getElementById('sungai-all-inner');
-        const sungaiItems = document.querySelectorAll('.sungai-filter:not(#sungai-all):not(#sungai-all-inner)');
-    
-        function syncAll(checked) {
-            sungaiItems.forEach(cb => cb.checked = checked);
-            sungaiAllOuter.checked = checked;
-            sungaiAllInner.checked = checked;
-            updateSungaiLayer(checked ? ["all"] : []); // fungsi kamu untuk refresh layer
-        }
-    
-        sungaiAllOuter.addEventListener('change', e => syncAll(e.target.checked));
-        sungaiAllInner.addEventListener('change', e => syncAll(e.target.checked));
-    
-        sungaiItems.forEach(cb => {
-            cb.addEventListener('change', () => {
-                const allChecked = Array.from(sungaiItems).every(c => c.checked);
-                sungaiAllOuter.checked = allChecked;
-                sungaiAllInner.checked = allChecked;
-            });
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const allOuter = document.getElementById("sungai-all");
+            const allInner = document.getElementById("sungai-all-inner");
+
+            function refreshAllCheckbox() {
+
+                const items = document.querySelectorAll(
+                    ".sungai-filter:not(#sungai-all):not(#sungai-all-inner)"
+                );
+
+                const allChecked = [...items].every(cb => cb.checked);
+
+                allOuter.checked = allChecked;
+                allInner.checked = allChecked;
+            }
+
+            function setAll(state){
+
+                document.querySelectorAll(".sungai-filter").forEach(cb=>{
+                    cb.checked = state;
+                });
+
+                refreshSungai();
+            }
+
+            allOuter.addEventListener("change",e=>setAll(e.target.checked));
+            allInner.addEventListener("change",e=>setAll(e.target.checked));
+
+            document.querySelectorAll(".sungai-filter:not(#sungai-all):not(#sungai-all-inner)")
+                .forEach(cb=>{
+
+                    cb.addEventListener("change",()=>{
+
+                        refreshAllCheckbox();
+
+                        refreshSungai();
+
+                    });
+
+                });
+
         });
-    });
     </script>
 
     {{-- FITUR SEARCH CUSTOM --}}
@@ -1358,7 +1378,7 @@
             // === 2. SEARCH DI SEMUA LAYER (aset, bm, sungai) ===
             let found = false;
 
-            searchLayer.eachLayer(layer => {
+            eachSearchLayer(function(layer){
                 const props = layer.feature?.properties;
                 if (!props) return;
 
@@ -1409,7 +1429,7 @@
             
                 let results = [];
             
-                searchLayer.eachLayer(layer => {
+               eachSearchLayer(function(layer){
                     const props = layer.feature?.properties;
                     if (!props) return;
             
@@ -1441,17 +1461,23 @@
                     div.textContent = item.text;
             
                     div.onclick = () => {
-                        const latlng = item.layer.getLatLng
-                            ? item.layer.getLatLng()
-                            : item.layer.getBounds().getCenter();
-            
-                        mymap.setView(latlng, 15);
+
+                        if (item.layer.getBounds) {
+                            mymap.flyToBounds(item.layer.getBounds(), {
+                                maxZoom: 13,
+                                padding: [80, 80]
+                            });
+                        } else {
+                            mymap.flyTo(item.layer.getLatLng(), 15, {
+                                duration: 1
+                            });
+                        }
+
                         if (item.layer.openPopup) item.layer.openPopup();
-            
+
                         input.value = item.text;
 
                         closeSearchBox();
-
                         suggestionBox.style.display = "none";
                     };
             
@@ -1646,7 +1672,7 @@ searchToggle.addEventListener("click", (e) => {
             /* ===== 2. SEARCH DATA ASET ===== */
             let results = [];
         
-            searchLayer.eachLayer(layer => {
+           eachSearchLayer(function(layer){
                 const props = layer.feature?.properties;
                 if (!props) return;
         

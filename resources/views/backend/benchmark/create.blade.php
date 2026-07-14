@@ -1,7 +1,7 @@
 @extends('layouts.app')
-@section('benchmark-create','active')
 
-@section('content')
+@section('benchmark-create', 'active')
+
 @push('styles')
 <style>
     #foto-preview,
@@ -11,245 +11,140 @@
     }
 </style>
 @endpush
+
+@section('content')
 <div class="col-md-10">
     <div class="card">
-        <div class="card-header bg-dark">
-            <h4 class="font-weight-bold">Tamabah Data Benchmark</h4>
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">Tambah Data Benchmark</h4>
         </div>
+
         <div class="card-body">
-            {{-- @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif --}}
-            <form method="POST" action="{{ route('benchmark.store') }}" class="row g-3" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('benchmark.store') }}" enctype="multipart/form-data" class="row g-3">
                 @csrf
-                <div class="col-md-6 mb-2">
-                    <label for="kode_bm" class="form-label">Kode BM</label>
-                    <input type="text" class="form-control @error('kode_bm') is-invalid @enderror" id=" kode_bm"
-                        name="kode_bm" value="{{ old('kode_bm') }}" placeholder="Kode BM">
+
+                {{-- ================== DATA UTAMA ================== --}}
+                <div class="col-md-6">
+                    <label class="form-label">Kode BM</label>
+                    <input type="text" name="kode_bm" class="form-control @error('kode_bm') is-invalid @enderror"
+                        value="{{ old('kode_bm') }}">
                     @error('kode_bm')
-                    <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
+                    <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="no_registrasi" class="form-label">No. Registrasi</label>
-                    <input type="text" class="form-control @error('no_registrasi') is-invalid @enderror"
-                        id="no_registrasi" name="no_registrasi" value="{{ old('no_registrasi') }}"
-                        placeholder="No. Registrasi">
-                    @error('no_registrasi')
-                    <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
-                    @enderror
+
+                <div class="col-md-6">
+                    <label class="form-label">No Registrasi</label>
+                    <input type="text" name="no_registrasi"
+                        class="form-control @error('no_registrasi') is-invalid @enderror"
+                        value="{{ old('no_registrasi') }}">
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="nama_pekerjaan" class="form-label">Nama Pekerjaan</label>
-                    <input type="text" class="form-control @error('nama_pekerjaan') is-invalid @enderror"
-                        id="nama_pekerjaan" name="nama_pekerjaan" value="{{ old('nama_pekerjaan') }}"
-                        placeholder="Nama Pekerjaan">
-                    @error('nama_pekerjaan')
-                    <span class="invalid-feedback"><strong>{{ $message }}</strong></span>
-                    @enderror
+
+                <div class="col-md-6">
+                    <label class="form-label">Nama Pekerjaan</label>
+                    <input type="text" name="nama_pekerjaan"
+                        class="form-control @error('nama_pekerjaan') is-invalid @enderror"
+                        value="{{ old('nama_pekerjaan') }}">
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="no_registrasi" class="form-label">Jenis Pekerjaan</label>
-                    <select id="jenis_pekerjaan" name="jenis_pekerjaan"
-                        class="form-control @error('jenis_pekerjaan') is-invalid @enderror">
-                        <option value="">Pilih Pekerjaan</option>
+
+                <div class="col-md-6">
+                    <label class="form-label">Jenis Pekerjaan</label>
+                    <select name="jenis_pekerjaan" class="form-control">
+                        <option value="">Pilih</option>
                         <option value="embung">Embung</option>
                         <option value="bendungan">Bendungan</option>
                         <option value="bendung">Bendung</option>
                     </select>
-                    @error('jenis_pekerjaan')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
                 </div>
-                <div class="col-md-3 mb-2">
-                    <label for="no_registrasi" class="form-label">Provinsi</label>
-                    <select id="province_id" name="province_id"
-                        class="form-control @error('province_id') is-invalid @enderror">
-                        <option value="">Pilih Provinsi</option>
+
+                {{-- ================== WILAYAH ================== --}}
+                <div class="col-md-3">
+                    <label class="form-label">Provinsi</label>
+                    <select id="province_id" name="province_id" class="form-control">
+                        <option value="">Pilih</option>
                         @foreach ($provinces as $item)
-                        <option value="{{ $item->id ?? '' }}">{{ $item->name ?? '' }}</option>
+                        <option value="{{ $item->id }}">{{ $item->name }}</option>
                         @endforeach
                     </select>
-                    @error('province_id')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
                 </div>
-                <div class="col-md-3 mb-2">
-                    <label for="no_registrasi" class="form-label">Kota</label>
-                    <select id="city_id" name="city_id" class="form-control @error('city_id') is-invalid @enderror">
-                        <option value="">Pilih Kota</option>
-                        <option value=""></option>
 
+                <div class="col-md-3">
+                    <label class="form-label">Kota</label>
+                    <select id="city_id" name="city_id" class="form-control"></select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Kecamatan</label>
+                    <select id="district_id" name="district_id" class="form-control"></select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Desa</label>
+                    <select id="village_id" name="village_id" class="form-control"></select>
+                </div>
+
+                {{-- ================== KOORDINAT ================== --}}
+                <div class="col-md-4">
+                    <label class="form-label">UTM X</label>
+                    <input type="text" id="utm_x" name="utm_x" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">UTM Y</label>
+                    <input type="text" id="utm_y" name="utm_y" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Zone</label>
+                    <select id="zone" name="zone" class="form-control">
+                        <option value="">Pilih</option>
+                        @foreach ([48,49,50,51,52] as $z)
+                        <option value="{{ $z }}">{{ $z }}</option>
+                        @endforeach
                     </select>
-
-                    @error('city_id')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
-                </div>
-                <div class="col-md-3 mb-2">
-                    <label for="no_registrasi" class="form-label">Kecamatan</label>
-                    <select id="district_id" name="district_id"
-                        class="form-control @error('district_id') is-invalid @enderror">
-                        <option value="">Pilih Kecamatan</option>
-                        <option value=""></option>
-
-                    </select>
-
-                    @error('district_id')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
-                </div>
-                <div class="col-md-3 mb-2">
-                    <label for="no_registrasi" class="form-label">Desa</label>
-                    <select id="village_id" name="village_id"
-                        class="form-control @error('village_id') is-invalid @enderror">
-                        <option value="">Pilih Desa</option>
-                        <option value=""></option>
-
-                    </select>
-
-                    @error('village_id')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
-                </div>
-                <div class="col-md-4 mb-2">
-                    <label for="utm_x" class="form-label">Koordinat X</label>
-                    <input type="text" class="form-control @error('utm_x') is-invalid @enderror" id="utm_x" name="utm_x"
-                        placeholder="UTM X" value="{{ old('utm_x') }}" pattern="[0-9.,]*">
-                    @error('utm_x')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
                 </div>
 
-                <div class="col-md-4 mb-2">
-                    <label for="utm_y" class="form-label">Koordinat Y</label>
-                    <input type="text" class="form-control @error('utm_y') is-invalid @enderror" id="utm_y" name="utm_y"
-                        placeholder="UTM Y" value="{{ old('utm_y') }}" pattern="[0-9.,]*">
-                    @error('utm_y')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
+                <div class="col-md-6">
+                    <label class="form-label">Latitude</label>
+                    <input type="text" id="lat" name="lat" class="form-control" readonly>
                 </div>
 
-                <div class="col-md-4 mb-2">
-                    <label for="zone" class="form-label">Zone</label>
-                    <select name="zone" id="zone" class="form-control @error('zone') is-invalid @enderror">
-                        <option value="">Pilih Zone</option>
-                        <option value="48" {{ old('zone')=='48' ? 'selected' : '' }}>48</option>
-                        <option value="49" {{ old('zone')=='49' ? 'selected' : '' }}>49</option>
-                        <option value="50" {{ old('zone')=='50' ? 'selected' : '' }}>50</option>
-                        <option value="51" {{ old('zone')=='51' ? 'selected' : '' }}>51</option>
-                        <option value="52" {{ old('zone')=='52' ? 'selected' : '' }}>52</option>
-                    </select>
-                    @error('zone')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
+                <div class="col-md-6">
+                    <label class="form-label">Longitude</label>
+                    <input type="text" id="long" name="long" class="form-control" readonly>
                 </div>
 
-                <div class="col-md-6 mb-2">
-                    <label for="lat" class="form-label">Latitude</label>
-                    <input type="text" class="form-control" id="lat" name="lat" value="{{ old('lat') }}" readonly>
+                {{-- ================== LAINNYA ================== --}}
+                <div class="col-md-6">
+                    <label class="form-label">Keterangan</label>
+                    <textarea name="keterangan" class="form-control"></textarea>
                 </div>
 
-                <div class="col-md-6 mb-2">
-                    <label for="long" class="form-label">Longitude</label>
-                    <input type="text" class="form-control" id="long" name="long" value="{{ old('long') }}" readonly>
+                <div class="col-md-6">
+                    <label class="form-label">Konsultan</label>
+                    <input type="text" name="konsultan" class="form-control">
                 </div>
 
-                <div class="col-md-6 mb-2">
-                    <label for="tinggi_orthometrik" class="form-label">Tinggi Orthometrik</label>
-                    <input type="text" class="form-control" id="tinggi_orthometrik" name="tinggi_orthometrik"
-                        value="{{ old('tinggi_orthometrik') }}" placeholder="Tinggi Orthometrik">
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="tinggi_elipsoid" class="form-label">Tinggi Elipsoid</label>
-                    <input type="text" class="form-control" id="tinggi_elipsoid" name="tinggi_elipsoid"
-                        value="{{ old('tinggi_elipsoid') }}" placeholder="Tinggi Elipsoid">
+                {{-- ================== FILE ================== --}}
+                <div class="col-md-6">
+                    <label class="form-label">Sketsa</label>
+                    <input type="file" id="sketsa" class="form-control">
+                    <img id="sketsa-preview" class="img-thumbnail mt-2 d-none">
                 </div>
 
-                <div class="col-md-6 mb-2">
-                    <label for="Keterangan" class="form-label">Keterangan</label>
-                    <textarea class="form-control" id="keterangan" name="keterangan" rows="3"
-                        placeholder="Keterangan">{{ old('keterangan') }}</textarea>
-                </div>
-                <div class="col-md-6 mb-2">
-                    <label for="konsultan" class="form-label">Konsultan</label>
-                    <input type="text" class="form-control @error('konsultan') is-invalid @enderror" name="konsultan"
-                        value="{{ old('konsultan') }}" placeholder="Nama Konsultan">
-                    @error('konsultan')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
+                <div class="col-md-6">
+                    <label class="form-label">Foto</label>
+                    <input type="file" id="foto" class="form-control">
+                    <img id="foto-preview" class="img-thumbnail mt-2 d-none">
                 </div>
 
-                <div class="col-md-6 mb-2">
-                    <label for="gambar_1" class="form-label">Gambar 1</label>
-                    <input class="form-control" type="file" id="gambar_1" name="gambar_1" accept="image/*">
-                    <div id="gambar1-upload-loading" style="display: none;">Loading...</div>
-                </div>
-
-                <div class="col-md-6 mb-2">
-                    <label for="gambar_2" class="form-label">Gambar 2</label>
-                    <input class="form-control" type="file" id="gambar_2" name="gambar_2" accept="image/*">
-                    <div id="gambar2-upload-loading" style="display: none;">Loading...</div>
-                </div>
-
-                <!-- Tambahkan animasi loading -->
-                <div class="col-md-6 mb-2">
-                    <label for="foto" class="form-label">Sket Lokasi</label>
-                    <input class="form-control" type="file" id="foto" name="foto" accept="image/*">
-                    <!-- Animasi loading -->
-                    <div id="foto-upload-loading" style="display: none;">
-                        Loading...
-                    </div>
-                </div>
-
-                <div class="col-md-6 mb-2">
-                    <label for="sketsa" class="form-label">Sket Detail</label>
-                    <input class="form-control" type="file" id="sketsa" name="sketsa" accept="image/*">
-                    <!-- Animasi loading -->
-                    <div id="sketsa-upload-loading" style="display: none;">
-                        Loading...
-                    </div>
-                </div>
-
-                <!-- Menampilkan gambar yang dipilih -->
-                <div class="col-md-6 mb-2">
-                    <img id="sketsa-preview" class="img-thumbnail" style="display: none;">
-                </div>
-                <div class="col-md-6 mb-2">
-                    <img id="foto-preview" class="img-thumbnail" style="display: none;">
-                </div>
-
-                <div class="col-md-12 mb-2 mt-2">
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                <div class="col-md-12 text-end mt-3">
+                    <button class="btn btn-primary">Simpan</button>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
-<div class="row"></div>
 @endsection
 
 @push('scripts')
