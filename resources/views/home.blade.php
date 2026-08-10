@@ -628,16 +628,38 @@
             <!-- Menu kanan (desktop) -->
             <div class="collapse navbar-collapse d-none d-lg-block" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+
                     <li class="nav-item">
-                        @if (Route::has('login'))
-                        @auth
-                        <a href="{{ url('/dashboard') }}" class="nav-link">Dashboard</a>
-                        @else
-                        <a href="{{ route('login') }}" class="nav-link">Log in</a>
-                        @endauth
-                        @endif
+                        <a class="nav-link active" href="{{ route('home') }}">
+                            Home
+                        </a>
                     </li>
+
+                    @auth
+                    @can('view dashboard')
+                    <li class="nav-item">
+                        <a href="{{ route('dashboard') }}" class="nav-link">
+                            Dashboard
+                        </a>
+                    </li>
+                    @endcan
+                    {{-- Logout --}}
+                    <li class="nav-item">
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="nav-link btn btn-link">
+                                Logout
+                            </button>
+                        </form>
+                    </li>
+                    @else
+                    <li class="nav-item">
+                        <a href="{{ route('login') }}" class="nav-link">
+                            Log in
+                        </a>
+                    </li>
+                    @endauth
+
                 </ul>
             </div>
 

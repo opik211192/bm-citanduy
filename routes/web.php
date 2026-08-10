@@ -27,25 +27,34 @@ use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Auth::routes();
 
-Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/benchmark/print/{id}', [BenchmarkController::class, 'print'])->name('benchmark.print');
-Route::get('/benchmark/download/{id}', [BenchmarkController::class, 'download'])->name('benchmark.download');
+    
 
-
-
-Route::get('/aset/print/{id}', [AsetController::class, 'print'])->name('aset.print');
-Route::get('/airbaku/print/{id}', [AirBakuController::class, 'print'])->name('airbaku.print');
+    Route::get('/benchmark/print/{id}', [BenchmarkController::class, 'print'])->name('benchmark.print');
+    Route::get('/benchmark/download/{id}', [BenchmarkController::class, 'download'])->name('benchmark.download');
 
 
-Route::prefix('bm')->middleware(['auth'])->group(function () {
-    Route::get('/data', [BmController::class, 'index'])->name('bm.index');
-    Route::post('/import', [BmController::class, 'import'])->name('bm.import');
+
+    Route::get('/aset/print/{id}', [AsetController::class, 'print'])->name('aset.print');
+    Route::get('/airbaku/print/{id}', [AirBakuController::class, 'print'])->name('airbaku.print');
+
+
 });
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'permission:view dashboard'])
+    ->name('dashboard');
+    
+    Route::prefix('bm')->middleware(['auth'])->group(function () {
+        Route::get('/data', [BmController::class, 'index'])->name('bm.index');
+        Route::post('/import', [BmController::class, 'import'])->name('bm.import');
+    });
+
 
 
 Route::prefix('benchmark')->middleware(['auth', 'role:Admin|Benchmark Manager'])->group(function () {
