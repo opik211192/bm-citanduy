@@ -45,25 +45,26 @@
                             </div>
 
                             {{-- Remember Me --}}
-                            <div class="mb-3 form-check">
+                            {{-- <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="remember" name="remember" {{
                                     old('remember') ? 'checked' : '' }}>
                                 <label class="form-check-label" for="remember">Remember Me</label>
-                            </div>
+                            </div> --}}
 
                             {{-- Tombol --}}
                             <div class="d-flex justify-content-between align-items-center">
-                                <a href="{{ url('/') }}" class="btn btn-outline-secondary">Kembali</a>
+                                {{-- <a href="{{ url('/') }}" class="btn btn-outline-secondary">Kembali</a> --}}
+                                {{-- Forgot Password --}}
+                                    @if (Route::has('password.request'))
+                                    <div class="mt-3 text-center text-md-start">
+                                        <a href="{{ route('password.request') }}">Forgot Your Password?</a>
+                                    </div>
+                                    @endif
                                 <button type="submit" class="btn btn-primary px-4">Login</button>
                             </div>
                         </form>
 
-                        {{-- Forgot Password --}}
-                        @if (Route::has('password.request'))
-                        <div class="mt-3 text-center text-md-start">
-                            <a href="{{ route('password.request') }}">Forgot Your Password?</a>
-                        </div>
-                        @endif
+                 
                     </div>
 
                 </div>
