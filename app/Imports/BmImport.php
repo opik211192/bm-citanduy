@@ -5,47 +5,146 @@ namespace App\Imports;
 use App\Models\Bm;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class BmImport implements ToModel, WithStartRow
+class BmImport implements WithMultipleSheets
 {
     /**
-     * Mulai baca dari baris ke-3
-     * karena row 1-2 adalah header excel
+     * Sheet yang dipilih user untuk diimport
+     */
+    protected $selectedSheets;
+
+    /**
+     * Total data yang berhasil diimport
+     */
+    public $importedCount = 0;
+
+    /**
+     * Sheet yang berhasil diimport
+     */
+    public $importedSheets = [];
+
+    public function __construct(array $selectedSheets = [])
+    {
+        $this->selectedSheets = $selectedSheets;
+    }
+
+    /**
+     * Mapping setiap sheet ke BmSheetImport
+     */
+    public function sheets(): array
+    {
+        $sheets = [];
+
+        foreach ($this->selectedSheets as $sheetName) {
+            $sheetImport = new BmSheetImport($sheetName);
+            $sheets[$sheetName] = $sheetImport;
+            $this->importedSheets[$sheetName] = $sheetImport;
+        }
+
+        return $sheets;
+    }
+
+    /**
+     * Hitung total data yang diimport dari semua sheet
+     */
+    public function getTotalImported(): int
+    {
+        $total = 0;
+        foreach ($this->importedSheets as $sheet) {
+            $total += $sheet->getImportedCount();
+        }
+        return $total;
+    }
+}
+
+
+class BmSheetImport implements ToModel, WithStartRow
+{
+    protected $namaPekerjaan;
+    protected $importedCount = 0;
+    protected $debugFirstRow = true;
+
+    public function __construct(string $namaPekerjaan)
+    {
+        $this->namaPekerjaan = $namaPekerjaan;
+    }
+
+    /**
+     * Data mulai dari baris ke-7
+     * Row 1: kosong
+     * Row 2-3: judul
+     * Row 4: kosong
+     * Row 5-6: header tabel
+     * Row 7+: data
      */
     public function startRow(): int
     {
-        return 3;
+        return 7;
     }
 
     public function model(array $row)
     {
-        // Ambil koordinat UTM
-        $utmX = str_replace(',', '.', $row[6] ?? '');
-        $utmY = str_replace(',', '.', $row[7] ?? '');
+        // Debug: log baris pertama untuk verifikasi mapping kolom
+        if ($this->debugFirstRow) {
+            \Illuminate\Support\Facades\Log::info("BmImport [{$this->namaPekerjaan}] Row data:", $row);
+            $this->debugFirstRow = false;
+        }
 
-        // Convert UTM -> Latitude Longitude
+        // Skip baris kosong (jika kolom C / index 2 kosong = tidak ada nama BM)
+        $kodeBm = trim($row[2] ?? '');
+        if (empty($kodeBm)) {
+            return null;
+        }
+
+        // Ambil koordinat UTM
+        $utmX = str_replace(',', '.', $row[3] ?? '');
+        $utmY = str_replace(',', '.', $row[4] ?? '');
+
+        // Skip jika koordinat kosong
+        if (empty($utmX) || empty($utmY)) {
+            return null;
+        }
+
+        // Convert UTM -> Latitude Longitude (Zone 49, Southern Hemisphere)
         $coord = $this->utmToLatLon($utmX, $utmY, 49, true);
 
-        return new Bm([
-            'kode_bm' => trim($row[1] ?? ''),
-            'nama_pekerjaan' => strtoupper(trim($row[2] ?? '')),
+        $tinggiOrthometrik = str_replace(',', '.', $row[5] ?? '');
 
-            'provinsi' => '-',
+        // Keterangan: ambil dari kolom G (index 6), handle multiline text
+        $keterangan = trim(str_replace(["\r\n", "\r"], "\n", $row[6] ?? ''));
 
-            'desa' => trim($row[3] ?? ''),
-            'kecamatan' => trim($row[4] ?? ''),
-            'kota' => trim($row[5] ?? ''),
+        \Illuminate\Support\Facades\Log::info("BmImport [{$this->namaPekerjaan}] Saving: kode_bm={$kodeBm}, keterangan={$keterangan}");
 
-            'utm_x' => $utmX,
-            'utm_y' => $utmY,
+        // UpdateOrCreate: jika kode_bm + nama_pekerjaan sudah ada, update. Jika belum, buat baru.
+        $bm = Bm::updateOrCreate(
+            [
+                'kode_bm' => $kodeBm,
+                'nama_pekerjaan' => strtoupper($this->namaPekerjaan),
+            ],
+            [
+                'provinsi' => '-',
+                'desa' => '-',
+                'kecamatan' => '-',
+                'kota' => '-',
+                'utm_x' => $utmX,
+                'utm_y' => $utmY,
+                'zone' => '49',
+                'latitude' => $coord['latitude'],
+                'longitude' => $coord['longitude'],
+                'tinggi_orthometrik' => $tinggiOrthometrik,
+                'keterangan' => $keterangan,
+            ]
+        );
 
-            'zone' => '49',
+        $this->importedCount++;
 
-            'latitude' => $coord['latitude'],
-            'longitude' => $coord['longitude'],
+        return null; // Return null karena sudah pakai updateOrCreate
+    }
 
-            'tinggi_orthometrik' => $row[8] ?? '',
-        ]);
+    public function getImportedCount(): int
+    {
+        return $this->importedCount;
     }
 
     /**

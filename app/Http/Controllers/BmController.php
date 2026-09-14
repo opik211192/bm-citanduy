@@ -3,27 +3,193 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bm;
+use App\Models\BmPhoto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\BmImport;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class BmController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $data = Bm::latest()->get();
-        return view('backend.bm.index', compact('data'));
+        $data = Bm::with('photos')->latest()->get();
+
+        // Ambil daftar nama pekerjaan unik untuk filter dropdown
+        $pekerjaanList = Bm::select('nama_pekerjaan')
+            ->distinct()
+            ->orderBy('nama_pekerjaan')
+            ->pluck('nama_pekerjaan');
+
+        return view('backend.bm.index', compact('data', 'pekerjaanList'));
+    }
+
+    /**
+     * Preview: baca nama-nama sheet dari file Excel
+     */
+    public function preview(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        try {
+            $file = $request->file('file');
+            $spreadsheet = IOFactory::load($file->getPathname());
+            $sheetNames = $spreadsheet->getSheetNames();
+
+            return response()->json([
+                'success' => true,
+                'sheets' => $sheetNames,
+                'total_sheets' => count($sheetNames),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal membaca file Excel: ' . $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * Import data BM dari sheet-sheet yang dipilih
+     * Behavior: updateOrCreate — data lama tetap, data baru bertambah
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+            'sheets' => 'required|array|min:1',
+            'sheets.*' => 'required|string',
+        ]);
+
+        try {
+            $selectedSheets = $request->input('sheets');
+            $import = new BmImport($selectedSheets);
+
+            Excel::import($import, $request->file('file'));
+
+            $totalImported = $import->getTotalImported();
+            $totalSheets = count($selectedSheets);
+
+            return response()->json([
+                'success' => true,
+                'message' => "Import berhasil! {$totalImported} data dari {$totalSheets} sheet.",
+                'total_imported' => $totalImported,
+                'total_sheets' => $totalSheets,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal import: ' . $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * Update BM data (keterangan, dll)
+     */
+    public function update(Request $request, $id)
+    {
+        $bm = Bm::findOrFail($id);
+
+        $bm->update([
+            'keterangan' => $request->input('keterangan', $bm->keterangan),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data BM berhasil diupdate.',
+        ]);
+    }
+
+    /**
+     * Get photos for a BM
+     */
+    public function getPhotos($id)
+    {
+        $bm = Bm::with('photos')->findOrFail($id);
+
+        return response()->json(
+            $bm->photos->map(function ($p) {
+                return [
+                    'id' => $p->id,
+                    'bm_id' => $p->bm_id,
+                    'url' => asset('storage/' . $p->file_path),
+                ];
+            })
+        );
+    }
+
+    /**
+     * Upload photos for a BM (multiple)
+     */
+    public function photosStore(Request $request)
+    {
+        $request->validate([
+            'bm_id' => 'required|exists:bms,id',
+            'file.*' => 'required|mimes:jpg,jpeg,png',
+        ], [
+            'file.*.mimes' => 'Format file harus JPG atau PNG',
+        ]);
+
+        $bmId = $request->bm_id;
+        $manager = new ImageManager(new Driver());
+
+        foreach ($request->file('file') as $file) {
+            // Baca image
+            $image = $manager->read($file->getRealPath());
+
+            // Resize kalau terlalu besar (max width 1920px)
+            $image->scaleDown(width: 1920);
+
+            // Compress mulai kualitas 85
+            $quality = 85;
+            $encoded = $image->encodeByExtension('jpg', quality: $quality);
+
+            // Loop turunkan kualitas sampai <= 2MB
+            while (strlen($encoded) > 2 * 1024 * 1024 && $quality > 10) {
+                $quality -= 5;
+                $encoded = $image->encodeByExtension('jpg', quality: $quality);
+            }
+
+            // Simpan ke storage
+            $filename = 'bm_photos/' . uniqid() . '.jpg';
+            Storage::disk('public')->put($filename, (string) $encoded);
+
+            BmPhoto::create([
+                'bm_id' => $bmId,
+                'file_path' => $filename,
+            ]);
+        }
+
+        return response()->json(['message' => 'Foto berhasil diupload!'], 200);
+    }
+
+    /**
+     * Delete a BM photo
+     */
+    public function photosDestroy($id)
+    {
+        $photo = BmPhoto::findOrFail($id);
+
+        if (Storage::disk('public')->exists($photo->file_path)) {
+            Storage::disk('public')->delete($photo->file_path);
+        }
+
+        $photo->delete();
+
+        return response()->json(['success' => true, 'message' => 'Foto berhasil dihapus.']);
     }
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -32,9 +198,6 @@ class BmController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
@@ -43,9 +206,6 @@ class BmController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\Models\bm  $bm
-     * @return \Illuminate\Http\Response
      */
     public function show(Bm $bm)
     {
@@ -54,9 +214,6 @@ class BmController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\bm  $bm
-     * @return \Illuminate\Http\Response
      */
     public function edit(Bm $bm)
     {
@@ -64,36 +221,10 @@ class BmController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\bm  $bm
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Bm $bm)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\bm  $bm
-     * @return \Illuminate\Http\Response
      */
     public function destroy(Bm $bm)
     {
         //
-    }
-
-    public function import(Request $request)
-    {
-        $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv',
-        ]);
-
-        Excel::import(new BmImport, $request->file('file'));
-
-        return back()->with('success', 'Data berhasil diimport');
     }
 }

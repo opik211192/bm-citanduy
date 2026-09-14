@@ -50,9 +50,16 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'permission:view dashboard'])
     ->name('dashboard');
     
-    Route::prefix('bm')->middleware(['auth'])->group(function () {
+    Route::prefix('bm')->middleware(['auth', 'role:Admin|Benchmark Manager'])->group(function () {
         Route::get('/data', [BmController::class, 'index'])->name('bm.index');
+        Route::post('/preview', [BmController::class, 'preview'])->name('bm.preview');
         Route::post('/import', [BmController::class, 'import'])->name('bm.import');
+        Route::put('/update/{id}', [BmController::class, 'update'])->name('bm.update');
+
+        // Photos
+        Route::get('/{id}/photos', [BmController::class, 'getPhotos'])->name('bm.photos');
+        Route::post('/photos', [BmController::class, 'photosStore'])->name('bm.photos.store');
+        Route::delete('/photos/{id}', [BmController::class, 'photosDestroy'])->name('bm.photos.destroy');
     });
 
 

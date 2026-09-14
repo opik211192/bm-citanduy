@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Bm extends Model
+class BmPhoto extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
-    public function photos()
+    public function bm()
     {
-        return $this->hasMany(BmPhoto::class, 'bm_id', 'id');
+        return $this->belongsTo(Bm::class, 'bm_id', 'id');
     }
 }
+

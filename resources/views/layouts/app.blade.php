@@ -143,35 +143,14 @@
 
                             <!-- ✅ BENCHMARK (FIXED) -->
                             @if($user->hasRole('Admin') || $user->hasRole('Benchmark Manager'))
-                            <li class="nav-item {{ request()->routeIs('benchmark.*') ? 'menu-open' : '' }}">
-                                <a href="#" class="nav-link {{ request()->routeIs('benchmark.*') ? 'active' : '' }}">
+                            <li class="nav-item">
+                                <a href="{{ route('bm.index') }}"
+                                    class="nav-link {{ request()->routeIs('bm.*') ? 'active' : '' }}">
                                     <i class="nav-icon fas fa-map-marked-alt"></i>
-                                    <p>
-                                        Benchmark
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
+                                    <p>Benchmark</p>
                                 </a>
-
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{{ route('benchmark.index') }}"
-                                            class="nav-link {{ request()->routeIs('benchmark.index') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Data BM</p>
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item">
-                                        <a href="{{ route('benchmark.data.konsultan') }}"
-                                            class="nav-link {{ request()->routeIs('benchmark.data.konsultan') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Data Konsultan</p>
-                                        </a>
-                                    </li>
-                                </ul>
                             </li>
                             @endif
-
                             <!-- ✅ MANAJEMEN USER (DIGABUNG, BUKAN UL BARU) -->
                             @if($user->hasRole('Admin'))
                             <li
