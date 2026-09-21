@@ -227,6 +227,16 @@ class BmController extends Controller
     }
 
     /**
+     * Public page for QR/NFC scan (no auth)
+     */
+    public function showPublic($kode_bm)
+    {
+        $bm = Bm::with('photos')->where('kode_bm', $kode_bm)->firstOrFail();
+
+        return view('backend.bm.show_data_bm', compact('bm'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Bm $bm)

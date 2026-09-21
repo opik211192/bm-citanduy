@@ -49,6 +49,9 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'permission:view dashboard'])
     ->name('dashboard');
+
+    // Route publik untuk scan QR/NFC (tanpa login)
+    Route::get('/bm/scan/{kode_bm}', [BmController::class, 'showPublic'])->name('bm.scan');
     
     Route::prefix('bm')->middleware(['auth', 'role:Admin|Benchmark Manager'])->group(function () {
         Route::get('/data', [BmController::class, 'index'])->name('bm.index');
