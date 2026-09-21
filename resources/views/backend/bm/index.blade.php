@@ -42,6 +42,9 @@
                         <td>{{ $bm->latitude }}</td>
                         <td>{{ $bm->longitude }}</td>
                         <td>
+                            <a href="{{ route('bm.show', $bm->id) }}" class="btn btn-sm btn-info" title="Detail">
+                                <i class="fas fa-eye"></i>
+                            </a>
                             <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="">
                                 <i class="fas fa-edit"></i>
                             </button>

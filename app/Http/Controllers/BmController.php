@@ -207,9 +207,11 @@ class BmController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Bm $bm)
+    public function show($id)
     {
-        //
+        $bm = Bm::with('photos')->findOrFail($id);
+
+        return view('backend.bm.detail', compact('bm'));
     }
 
     /**

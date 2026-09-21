@@ -55,6 +55,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
         Route::post('/preview', [BmController::class, 'preview'])->name('bm.preview');
         Route::post('/import', [BmController::class, 'import'])->name('bm.import');
         Route::put('/update/{id}', [BmController::class, 'update'])->name('bm.update');
+        Route::get('/show/{id}', [BmController::class, 'show'])->name('bm.show');
 
         // Photos
         Route::get('/{id}/photos', [BmController::class, 'getPhotos'])->name('bm.photos');
