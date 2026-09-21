@@ -7,10 +7,14 @@
         <div class="card-header d-flex align-items-center">
             <h4 class="font-weight-bold mb-0">Data Bench Mark (BM)</h4>
 
-            <button class="btn btn-success" style="margin-left: auto;" data-bs-toggle="modal"
-                data-bs-target="#importModal">
-                <i class="fas fa-file-excel mr-1"></i> Import Excel
-            </button>
+            <div style="margin-left: auto;">
+                <a href="{{ route('bm.qr.all') }}" target="_blank" class="btn btn-dark mr-1">
+                    <i class="fas fa-qrcode mr-1"></i> Print QR Semua
+                </a>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#importModal">
+                    <i class="fas fa-file-excel mr-1"></i> Import Excel
+                </button>
+            </div>
         </div>
         <div class="card-body">
 
@@ -44,6 +48,10 @@
                         <td>
                             <a href="{{ route('bm.show', $bm->id) }}" class="btn btn-sm btn-info" title="Detail">
                                 <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ route('bm.qr', $bm->id) }}" target="_blank" class="btn btn-sm btn-dark"
+                                title="QR Code">
+                                <i class="fas fa-qrcode"></i>
                             </a>
                             <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $bm->id }}"
                                 data-kode_bm="{{ $bm->kode_bm }}" data-nama_pekerjaan="{{ $bm->nama_pekerjaan }}"

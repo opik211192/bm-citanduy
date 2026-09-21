@@ -37,6 +37,16 @@
             font-family: 'Inter', sans-serif !important;
             font-size: 15px;
         }
+
+        .main-sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            min-height: 100vh !important;
+            overflow-y: auto !important;
+            z-index: 1038 !important;
+        }
     </style>
     @stack('styles')
 </head>

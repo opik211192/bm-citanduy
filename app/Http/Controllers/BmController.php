@@ -237,6 +237,27 @@ class BmController extends Controller
     }
 
     /**
+     * QR Code print page (single)
+     */
+    public function qrCode($id)
+    {
+        $bm = Bm::findOrFail($id);
+        $bms = collect([$bm]);
+
+        return view('backend.bm.qr_print', compact('bms'));
+    }
+
+    /**
+     * QR Code print page (all)
+     */
+    public function qrCodeAll()
+    {
+        $bms = Bm::orderBy('nama_pekerjaan')->orderBy('kode_bm')->get();
+
+        return view('backend.bm.qr_print', compact('bms'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Bm $bm)

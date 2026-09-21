@@ -134,6 +134,7 @@ class BmSheetImport implements ToModel, WithStartRow
                 'longitude' => $coord['longitude'],
                 'tinggi_orthometrik' => $tinggiOrthometrik,
                 'keterangan' => $keterangan,
+                'qr_code' => str_replace(' ', '', $kodeBm),
             ]
         );
 

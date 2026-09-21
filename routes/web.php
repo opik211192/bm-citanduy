@@ -64,6 +64,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
         Route::get('/{id}/photos', [BmController::class, 'getPhotos'])->name('bm.photos');
         Route::post('/photos', [BmController::class, 'photosStore'])->name('bm.photos.store');
         Route::delete('/photos/{id}', [BmController::class, 'photosDestroy'])->name('bm.photos.destroy');
+
+        // QR Code
+        Route::get('/qr/{id}', [BmController::class, 'qrCode'])->name('bm.qr');
+        Route::get('/qr-all', [BmController::class, 'qrCodeAll'])->name('bm.qr.all');
     });
 
 
