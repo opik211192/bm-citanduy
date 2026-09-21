@@ -30,10 +30,6 @@
                             <td>{{ $bm->nama_pekerjaan ?? '-' }}</td>
                         </tr>
                         <tr>
-                            <td class="font-weight-bold">Tahun</td>
-                            <td>{{ $bm->tahun ?? '-' }}</td>
-                        </tr>
-                        <tr>
                             <td class="font-weight-bold">Keterangan</td>
                             <td>{{ $bm->keterangan ?? '-' }}</td>
                         </tr>

@@ -100,7 +100,19 @@ class BmController extends Controller
         $bm = Bm::findOrFail($id);
 
         $bm->update([
-            'keterangan' => $request->input('keterangan', $bm->keterangan),
+            'kode_bm'           => $request->input('kode_bm', $bm->kode_bm),
+            'nama_pekerjaan'    => $request->input('nama_pekerjaan', $bm->nama_pekerjaan),
+            'provinsi'          => $request->input('provinsi', $bm->provinsi),
+            'kota'              => $request->input('kota', $bm->kota),
+            'kecamatan'         => $request->input('kecamatan', $bm->kecamatan),
+            'desa'              => $request->input('desa', $bm->desa),
+            'utm_x'             => $request->input('utm_x', $bm->utm_x),
+            'utm_y'             => $request->input('utm_y', $bm->utm_y),
+            'tinggi_orthometrik'=> $request->input('tinggi_orthometrik', $bm->tinggi_orthometrik),
+            'keterangan'        => $request->input('keterangan', $bm->keterangan),
+            'nfc_id'            => $request->input('nfc_id', $bm->nfc_id),
+            'latitude'          => $request->input('latitude', $bm->latitude),
+            'longitude'         => $request->input('longitude', $bm->longitude),
         ]);
 
         return response()->json([

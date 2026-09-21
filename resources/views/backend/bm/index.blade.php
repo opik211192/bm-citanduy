@@ -45,7 +45,14 @@
                             <a href="{{ route('bm.show', $bm->id) }}" class="btn btn-sm btn-info" title="Detail">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="">
+                            <button class="btn btn-sm btn-warning btn-edit" data-id="{{ $bm->id }}"
+                                data-kode_bm="{{ $bm->kode_bm }}" data-nama_pekerjaan="{{ $bm->nama_pekerjaan }}"
+                                data-provinsi="{{ $bm->provinsi }}" data-kota="{{ $bm->kota }}"
+                                data-kecamatan="{{ $bm->kecamatan }}" data-desa="{{ $bm->desa }}"
+                                data-utm_x="{{ $bm->utm_x }}" data-utm_y="{{ $bm->utm_y }}"
+                                data-tinggi_orthometrik="{{ $bm->tinggi_orthometrik }}"
+                                data-keterangan="{{ $bm->keterangan }}" data-nfc_id="{{ $bm->nfc_id }}"
+                                data-latitude="{{ $bm->latitude }}" data-longitude="{{ $bm->longitude }}" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button>
                         </td>
@@ -147,6 +154,148 @@
     </div>
 </div>
 @endsection
+
+{{-- Modal Edit BM --}}
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit mr-1"></i> Edit Data BM — <span id="editKodeBmTitle"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formEdit">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" id="editId" name="id">
+
+                    {{-- Data Utama --}}
+                    <h6 class="fw-bold text-primary mb-2"><i class="fas fa-database mr-1"></i> Data Utama</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Kode BM</label>
+                            <input type="text" class="form-control" id="editKodeBm" name="kode_bm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nama Pekerjaan</label>
+                            <input type="text" class="form-control" id="editNamaPekerjaan" name="nama_pekerjaan">
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    {{-- Lokasi --}}
+                    <h6 class="fw-bold text-success mb-2"><i class="fas fa-map-marked-alt mr-1"></i> Lokasi</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Provinsi</label>
+                            <input type="text" class="form-control" id="editProvinsi" name="provinsi">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Kota / Kabupaten</label>
+                            <input type="text" class="form-control" id="editKota" name="kota">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Kecamatan</label>
+                            <input type="text" class="form-control" id="editKecamatan" name="kecamatan">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Desa</label>
+                            <input type="text" class="form-control" id="editDesa" name="desa">
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    {{-- Koordinat & Elevasi --}}
+                    <h6 class="fw-bold text-warning mb-2"><i class="fas fa-crosshairs mr-1"></i> Koordinat & Elevasi
+                    </h6>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">UTM X</label>
+                            <input type="text" class="form-control" id="editUtmX" name="utm_x">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">UTM Y</label>
+                            <input type="text" class="form-control" id="editUtmY" name="utm_y">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Tinggi Orthometrik</label>
+                            <input type="text" class="form-control" id="editTinggiOrthometrik"
+                                name="tinggi_orthometrik">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Latitude</label>
+                            <input type="text" class="form-control" id="editLatitude" name="latitude">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Longitude</label>
+                            <input type="text" class="form-control" id="editLongitude" name="longitude">
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    {{-- Lainnya --}}
+                    <h6 class="fw-bold text-dark mb-2"><i class="fas fa-info-circle mr-1"></i> Lainnya</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">NFC ID</label>
+                            <input type="text" class="form-control" id="editNfcId" name="nfc_id"
+                                placeholder="Scan atau isi manual">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Keterangan</label>
+                            <textarea class="form-control" id="editKeterangan" name="keterangan" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                </form>
+
+                <hr>
+
+                {{-- Galeri Foto --}}
+                <h6 class="fw-bold text-dark mb-2"><i class="fas fa-images mr-1"></i> Foto BM</h6>
+
+                <div id="editPhotoGallery" class="row mb-3">
+                    {{-- Foto akan diload via AJAX --}}
+                    <div class="text-center text-muted py-3" id="photoLoading">
+                        <i class="fas fa-spinner fa-spin"></i> Memuat foto...
+                    </div>
+                </div>
+
+                {{-- Upload Foto Baru --}}
+                <div class="mb-2">
+                    <label class="form-label fw-bold"><i class="fas fa-upload mr-1"></i> Upload Foto Baru</label>
+                    <input type="file" id="editPhotoInput" class="form-control" accept=".jpg,.jpeg,.png" multiple>
+                    <small class="text-muted">Format: JPG/PNG. Bisa pilih beberapa file sekaligus.</small>
+                </div>
+                <button type="button" class="btn btn-success btn-sm" id="btnUploadPhoto" disabled>
+                    <i class="fas fa-cloud-upload-alt mr-1"></i> Upload Foto
+                </button>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times mr-1"></i> Batal
+                </button>
+                <button type="button" class="btn btn-primary" id="btnSaveEdit">
+                    <i class="fas fa-save mr-1"></i> Simpan
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 @push('scripts')
 <script>
@@ -395,6 +544,163 @@
         $('#loadingOverlay').hide();
         $('#formPreview')[0].reset();
         $('#sheetList').html('');
+    });
+
+    // ============================================
+    // EDIT BM
+    // ============================================
+
+    // Klik tombol edit → isi form modal
+    $(document).on('click', '.btn-edit', function(){
+        let btn = $(this);
+        let bmId = btn.data('id');
+        $('#editId').val(bmId);
+        $('#editKodeBmTitle').text(btn.data('kode_bm'));
+        $('#editKodeBm').val(btn.data('kode_bm'));
+        $('#editNamaPekerjaan').val(btn.data('nama_pekerjaan'));
+        $('#editProvinsi').val(btn.data('provinsi'));
+        $('#editKota').val(btn.data('kota'));
+        $('#editKecamatan').val(btn.data('kecamatan'));
+        $('#editDesa').val(btn.data('desa'));
+        $('#editUtmX').val(btn.data('utm_x'));
+        $('#editUtmY').val(btn.data('utm_y'));
+        $('#editTinggiOrthometrik').val(btn.data('tinggi_orthometrik'));
+        $('#editKeterangan').val(btn.data('keterangan'));
+        $('#editNfcId').val(btn.data('nfc_id'));
+        $('#editLatitude').val(btn.data('latitude'));
+        $('#editLongitude').val(btn.data('longitude'));
+
+        // Reset foto
+        $('#editPhotoInput').val('');
+        $('#btnUploadPhoto').prop('disabled', true);
+
+        // Load foto
+        loadPhotos(bmId);
+
+        $('#editModal').modal('show');
+    });
+
+    // Load foto dari server
+    function loadPhotos(bmId){
+        $('#editPhotoGallery').html('<div class="text-center text-muted py-3" id="photoLoading"><i class="fas fa-spinner fa-spin"></i> Memuat foto...</div>');
+
+        $.get(`/bm/${bmId}/photos`, function(photos){
+            let html = '';
+            if(photos.length > 0){
+                photos.forEach(function(photo){
+                    html += `
+                        <div class="col-md-3 col-sm-4 col-6 mb-3 photo-item" id="photo-${photo.id}">
+                            <div class="position-relative">
+                                <img src="${photo.url}" class="img-fluid rounded shadow-sm"
+                                     style="height: 120px; width: 100%; object-fit: cover;">
+                                <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 btn-delete-photo"
+                                        data-photo-id="${photo.id}" title="Hapus foto"
+                                        style="padding: 2px 6px; font-size: 11px;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                html = '<div class="col-12 text-center text-muted py-3"><i class="fas fa-camera fa-2x mb-2"></i><p>Belum ada foto</p></div>';
+            }
+            $('#editPhotoGallery').html(html);
+        }).fail(function(){
+            $('#editPhotoGallery').html('<div class="col-12 text-center text-danger py-3">Gagal memuat foto</div>');
+        });
+    }
+
+    // Enable upload button saat file dipilih
+    $('#editPhotoInput').on('change', function(){
+        $('#btnUploadPhoto').prop('disabled', this.files.length === 0);
+    });
+
+    // Upload foto
+    $('#btnUploadPhoto').click(function(){
+        let bmId = $('#editId').val();
+        let files = $('#editPhotoInput')[0].files;
+        if(files.length === 0) return;
+
+        let formData = new FormData();
+        formData.append('bm_id', bmId);
+        formData.append('_token', '{{ csrf_token() }}');
+        for(let i = 0; i < files.length; i++){
+            formData.append('file[]', files[i]);
+        }
+
+        let btn = $(this);
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Mengupload...');
+
+        $.ajax({
+            url: "{{ route('bm.photos.store') }}",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(res){
+                btn.prop('disabled', true).html('<i class="fas fa-cloud-upload-alt mr-1"></i> Upload Foto');
+                $('#editPhotoInput').val('');
+                loadPhotos(bmId);
+                alert(res.message || 'Foto berhasil diupload!');
+            },
+            error: function(err){
+                let msg = 'Gagal upload foto!';
+                if(err.responseJSON && err.responseJSON.message){
+                    msg = err.responseJSON.message;
+                }
+                alert(msg);
+                btn.prop('disabled', false).html('<i class="fas fa-cloud-upload-alt mr-1"></i> Upload Foto');
+            }
+        });
+    });
+
+    // Hapus foto
+    $(document).on('click', '.btn-delete-photo', function(){
+        if(!confirm('Yakin ingin menghapus foto ini?')) return;
+
+        let photoId = $(this).data('photo-id');
+        let bmId = $('#editId').val();
+
+        $.ajax({
+            url: `/bm/photos/${photoId}`,
+            type: 'DELETE',
+            data: { _token: '{{ csrf_token() }}' },
+            success: function(res){
+                $(`#photo-${photoId}`).fadeOut(300, function(){ $(this).remove(); });
+            },
+            error: function(){
+                alert('Gagal menghapus foto!');
+            }
+        });
+    });
+
+    // Simpan edit
+    $('#btnSaveEdit').click(function(){
+        let id = $('#editId').val();
+        let btn = $(this);
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...');
+
+        $.ajax({
+            url: `/bm/update/${id}`,
+            type: 'POST',
+            data: $('#formEdit').serialize(),
+            success: function(res){
+                if(res.success){
+                    $('#editModal').modal('hide');
+                    alert(res.message || 'Data berhasil diupdate!');
+                    location.reload();
+                }
+            },
+            error: function(err){
+                let msg = 'Gagal menyimpan!';
+                if(err.responseJSON && err.responseJSON.message){
+                    msg = err.responseJSON.message;
+                }
+                alert(msg);
+                btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Simpan');
+            }
+        });
     });
 
 });
